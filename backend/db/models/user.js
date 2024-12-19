@@ -1,15 +1,26 @@
 "use strict";
-const { Model, Validator } = require("sequelize");
+const { Model, Validator, Sequelize } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
         static associate(models) {
-            // define association here
+            User.hasMany(models.Review, {
+                foreignKey: "userId",
+                onDelete: "CASCADE",
+                hooks: true,
+            });
+
+            User.hasMany(models.Booking, {
+                foreignKey: "userId",
+                onDelete: "CASCADE",
+                hooks: true,
+            });
+
+            User.hasMany(models.Spot, {
+                foreignKey: "ownerId",
+                onDelete: "CASCADE",
+                hooks: true,
+            });
         }
     }
     User.init(
@@ -19,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 validate: {
                     len: [1, 50],
+                    isAlphanumeric: true,
                 },
             },
             lastName: {
@@ -26,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 validate: {
                     len: [1, 50],
+                    isAlphanumeric: true,
                 },
             },
             username: {
@@ -36,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
                     len: [4, 30],
                     isNotEmail(value) {
                         if (Validator.isEmail(value)) {
-                            throw new Error("Cannot be an email.");
+                            throw new Error("Cannot be an email");
                         }
                     },
                 },
@@ -71,6 +84,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: "User",
+            tableName: "Users",
             defaultScope: {
                 attributes: {
                     exclude: [

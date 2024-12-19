@@ -60,11 +60,11 @@ router.post("/", validateLogin, async (req, res, next) => {
     });
 });
 
-// Log out
-router.delete("/", (_req, res) => {
-    res.clearCookie("token");
-    return res.json({ message: "success" });
-});
+// // Log out
+// router.delete("/", (_req, res) => {
+//     res.clearCookie("token");
+//     return res.json({ message: "success" });
+// });
 
 // Restore session user
 router.get("/", (req, res) => {
@@ -81,6 +81,12 @@ router.get("/", (req, res) => {
             user: safeUser,
         });
     } else return res.json({ user: null });
+});
+
+// Delete session
+router.delete("/", (req, res) => {
+    res.clearCookies("token");
+    return res.json({ message: "Success" });
 });
 
 module.exports = router;
