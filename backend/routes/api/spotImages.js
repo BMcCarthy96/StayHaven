@@ -12,25 +12,6 @@ const { requireAuth } = require("../../utils/auth");
 const { parse } = require("dotenv");
 const review = require("../../db/models/review");
 
-// // Add an image to a spot
-// router.post("/:spotId/images", async (req, res) => {
-//     try {
-//         const { imageUrl } = req.body;
-//         const spot = await Spot.findByPk(req.params.spotId);
-//         if (spot) {
-//             const newImage = await SpotImage.create({
-//                 spotId: spot.id,
-//                 imageUrl,
-//             });
-//             res.status(201).json(newImage);
-//         } else {
-//             res.status(404).json({ message: "Spot not found" });
-//         }
-//     } catch (error) {
-//         res.status(500).json({ message: "Error adding image to spot" });
-//     }
-// });
-
 // Delete an image from a spot
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
     const spotImage = req.params.imageId;

@@ -14,14 +14,12 @@ const review = require("../../db/models/review");
 
 // Delete an image from a review
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
-    try {
-        const userId = req.user.id;
-        const imageId = req.params.imageId;
+    const { id: userId } = req.user;
+    const { imageId } = req.params;
 
+    try {
         const reviewImage = await ReviewImage.findOne({
-            where: {
-                id: imageId,
-            },
+            where: { id: imageId },
         });
 
         if (!reviewImage) {
@@ -30,7 +28,6 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
                 .json({ message: "Review image couldn't be found" });
         }
 
-        // Check if the user owns the review to delete the image
         const review = await Review.findByPk(reviewImage.reviewId);
 
         if (!review || review.userId !== userId) {
@@ -40,7 +37,7 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
         await reviewImage.destroy();
         res.status(200).json({ message: "Successfully deleted" });
     } catch (error) {
-        next(err);
+        next(error);
     }
 });
 
