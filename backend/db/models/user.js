@@ -1,5 +1,5 @@
 "use strict";
-const { Model, Validator, Sequelize } = require("sequelize");
+const { Model, Validator } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
@@ -7,19 +7,17 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.Review, {
                 foreignKey: "userId",
                 onDelete: "CASCADE",
-                hooks: true,
             });
 
             User.hasMany(models.Booking, {
                 foreignKey: "userId",
                 onDelete: "CASCADE",
-                hooks: true,
             });
 
             User.hasMany(models.Spot, {
                 foreignKey: "ownerId",
+                as: "Owner",
                 onDelete: "CASCADE",
-                hooks: true,
             });
         }
     }
@@ -28,18 +26,10 @@ module.exports = (sequelize, DataTypes) => {
             firstName: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    len: [1, 50],
-                    isAlphanumeric: true,
-                },
             },
             lastName: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    len: [1, 50],
-                    isAlphanumeric: true,
-                },
             },
             username: {
                 type: DataTypes.STRING,
@@ -72,13 +62,9 @@ module.exports = (sequelize, DataTypes) => {
             },
             createdAt: {
                 type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: DataTypes.NOW,
             },
             updatedAt: {
                 type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: DataTypes.NOW,
             },
         },
         {

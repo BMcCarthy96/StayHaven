@@ -20,6 +20,11 @@ module.exports = {
                 ownerId: {
                     type: Sequelize.INTEGER,
                     allowNull: false,
+                    references: {
+                        model: "Users",
+                        key: "id",
+                        as: "Owner",
+                    },
                 },
                 address: {
                     type: Sequelize.STRING,
@@ -38,11 +43,11 @@ module.exports = {
                     allowNull: false,
                 },
                 lat: {
-                    type: Sequelize.DECIMAL,
+                    type: Sequelize.DECIMAL(10, 6),
                     unique: false,
                 },
                 lng: {
-                    type: Sequelize.DECIMAL,
+                    type: Sequelize.DECIMAL(10, 6),
                     unique: false,
                 },
                 name: {
@@ -50,11 +55,11 @@ module.exports = {
                     allowNull: false,
                 },
                 description: {
-                    type: Sequelize.STRING,
+                    type: Sequelize.TEXT,
                     allowNull: false,
                 },
                 price: {
-                    type: Sequelize.DECIMAL,
+                    type: Sequelize.DECIMAL(6, 2),
                     allowNull: false,
                 },
                 createdAt: {

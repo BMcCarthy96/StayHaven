@@ -6,6 +6,7 @@ const {
     User,
     ReviewImage,
     Review,
+    Booking,
 } = require("../../db/models");
 const { Model, json } = require("sequelize");
 const { requireAuth } = require("../../utils/auth");

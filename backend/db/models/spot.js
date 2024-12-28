@@ -7,21 +7,16 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Spot.hasMany(models.Review, {
                 foreignKey: "spotId",
-                onDelete: "CASCADE",
-                hooks: true,
             });
             Spot.belongsTo(models.User, {
                 foreignKey: "ownerId",
+                as: "Owner",
             });
             Spot.hasMany(models.Booking, {
                 foreignKey: "spotId",
-                onDelete: "CASCADE",
-                hooks: true,
             });
             Spot.hasMany(models.SpotImage, {
                 foreignKey: "spotId",
-                onDelete: "CASCADE",
-                hooks: true,
             });
         }
     }
@@ -34,86 +29,59 @@ module.exports = (sequelize, DataTypes) => {
                 references: {
                     model: "Users",
                     key: "id",
-                },
-                validate: {
-                    isInt: true,
-                },
-                onDelete: "CASCADE",
-            },
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    len: [1, 50],
-                },
-            },
-            description: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    notEmpty: true,
-                },
-            },
-            price: {
-                type: DataTypes.DECIMAL(10, 2),
-                allowNull: false,
-                validate: {
-                    min: 1,
+                    as: "Owner",
                 },
             },
             address: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    notEmpty: true,
-                },
             },
             city: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    is: /^[a-zA-Z_ ]+$/i,
-                },
             },
             state: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    notEmpty: true,
-                },
             },
             country: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    notEmpty: true,
-                },
             },
             lat: {
-                type: DataTypes.DECIMAL(10, 7),
-                unique: false,
+                type: DataTypes.DECIMAL,
+                allowNull: true,
                 validate: {
-                    min: -90,
-                    max: 90,
+                    len: [8, 10],
                 },
             },
             lng: {
-                type: DataTypes.DECIMAL(10, 7),
-                unique: false,
+                type: DataTypes.DECIMAL,
+                allowNull: true,
                 validate: {
-                    min: -180,
-                    max: 180,
+                    len: [8, 10],
+                },
+            },
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            description: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+            },
+            price: {
+                type: DataTypes.DECIMAL,
+                allowNull: false,
+                validate: {
+                    min: 0,
                 },
             },
             createdAt: {
                 type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: DataTypes.NOW,
             },
             updatedAt: {
                 type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: DataTypes.NOW,
             },
         },
         {
