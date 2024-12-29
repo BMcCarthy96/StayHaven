@@ -1,14 +1,15 @@
 const express = require("express");
+const router = express.Router();
+const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
-const { setTokenCookie, requireAuth } = require("../../utils/auth");
+const { setTokenCookie } = require("../../utils/auth");
 const { User } = require("../../db/models");
-
-const router = express.Router();
 
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
+// Validation middleware
 const validateSignup = [
     check("email")
         .exists({ checkFalsy: true })
@@ -17,8 +18,7 @@ const validateSignup = [
     check("username")
         .exists({ checkFalsy: true })
         .isLength({ min: 4 })
-        .withMessage("Please provide a username with at least 4 characters."),
-    check("username")
+        .withMessage("Please provide a username with at least 4 characters.")
         .not()
         .isEmail()
         .withMessage("Username cannot be an email."),
@@ -29,34 +29,35 @@ const validateSignup = [
     handleValidationErrors,
 ];
 
-// Sign up
+// Sign up route
 router.post("/", validateSignup, async (req, res, next) => {
-    const { email, password, username, firstName, lastName } = req.body;
+    const { firstName, lastName, email, password, username } = req.body;
+    const hashedPassword = bcrypt.hashSync(password);
 
     try {
-        const existingUser = await User.findOne({ where: { email } });
-        const existingUsername = await User.findOne({ where: { username } });
+        // Check if username or email already exists
+        const existingUser = await User.findOne({
+            where: {
+                [Op.or]: [{ username }, { email }],
+            },
+        });
 
-        if (existingUser || existingUsername) {
-            const errors = {};
-            if (existingUser) {
-                errors.email = "User with that email already exists";
-            }
-            if (existingUsername) {
-                errors.username = "User with that username already exists";
-            }
-            return res.status(400).json({
-                message: "Validation error",
-                errors,
-            });
+        if (existingUser) {
+            const err = new Error("User already exists");
+            err.status = 400; // Change to 400 for client-side validation
+            err.errors = {
+                username: "User with that username already exists",
+                email: "User with that email already exists",
+            };
+            return next(err);
         }
 
-        const hashedPassword = bcrypt.hashSync(password);
+        // Create new user
         const user = await User.create({
-            email,
-            username,
             firstName,
             lastName,
+            email,
+            username,
             hashedPassword,
         });
 
@@ -66,13 +67,13 @@ router.post("/", validateSignup, async (req, res, next) => {
             lastName: user.lastName,
             email: user.email,
             username: user.username,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
         };
 
         await setTokenCookie(res, safeUser);
 
-        return res.status(201).json({ user: safeUser });
+        return res.status(201).json({
+            user: safeUser,
+        });
     } catch (error) {
         next(error);
     }

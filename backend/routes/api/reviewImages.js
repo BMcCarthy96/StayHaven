@@ -1,45 +1,37 @@
 const express = require("express");
 const router = express.Router();
 const {
-    Spot,
-    SpotImage,
-    User,
-    ReviewImage,
     Review,
+    ReviewImage,
+    User,
+    Spot,
     Booking,
+    SpotImage,
 } = require("../../db/models");
-const { Model, json } = require("sequelize");
 const { requireAuth } = require("../../utils/auth");
-const { parse } = require("dotenv");
-const review = require("../../db/models/review");
 
-// Delete an image from a review
-router.delete("/:imageId", requireAuth, async (req, res, next) => {
-    const { id: userId } = req.user;
+// Delete review image
+router.delete("/:imageId", requireAuth, async (req, res) => {
     const { imageId } = req.params;
+    const userId = req.user.id;
 
-    try {
-        const reviewImage = await ReviewImage.findOne({
-            where: { id: imageId },
-        });
+    const image = await ReviewImage.findByPk(imageId, {
+        include: { model: Review, attributes: ["userId"] },
+    });
 
-        if (!reviewImage) {
-            return res
-                .status(404)
-                .json({ message: "Review image couldn't be found" });
-        }
-
-        const review = await Review.findByPk(reviewImage.reviewId);
-
-        if (!review || review.userId !== userId) {
-            return res.status(403).json({ message: "Unauthorized" });
-        }
-
-        await reviewImage.destroy();
-        res.status(200).json({ message: "Successfully deleted" });
-    } catch (error) {
-        next(error);
+    if (!image) {
+        return res
+            .status(404)
+            .json({ message: "Review Image couldn't be found" });
     }
+
+    // Check if current user is the owner of the review
+    if (image.Review.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+
+    await image.destroy();
+    return res.json({ message: "Successfully deleted" });
 });
 
 module.exports = router;

@@ -1,46 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const {
-    Spot,
-    SpotImage,
-    Review,
-    ReviewImage,
-    User,
-} = require("../../db/models");
-const { Model, json } = require("sequelize");
+const { Spot, SpotImage } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
-const { parse } = require("dotenv");
-const review = require("../../db/models/review");
 
-// Delete an image from a spot
-router.delete("/:imageId", requireAuth, async (req, res, next) => {
-    const spotImage = req.params.imageId;
-    let spotId;
+// Delete a spot image
+router.delete("/:imageId", requireAuth, async (req, res) => {
+    const { imageId } = req.params;
+    const userId = req.user.id;
 
-    try {
-        const findSpotImageId = await SpotImage.findByPk(spotImage);
-        if (!findSpotImageId)
-            res.status(404).json({
-                message: "Spot image couldn't be found",
-            });
+    // Find the image by id
+    const image = await SpotImage.findByPk(imageId, {
+        include: { model: Spot, attributes: ["ownerId"] },
+    });
 
-        spotId = findSpotImageId.spotId;
-
-        const findSpot = await Spot.findAll({
-            where: { id: spotId },
-        });
-
-        findSpot.forEach((element) => {
-            if (req.user.id !== element.ownerId)
-                return res.status(403).json({
-                    message: "Forbidden",
-                });
-        });
-        await findSpotImageId.destroy();
-        res.json({ message: "Successfully deleted" });
-    } catch (error) {
-        next(error);
+    if (!image) {
+        return res
+            .status(404)
+            .json({ message: "Spot Image couldn't be found" });
     }
+
+    // Check if the current user owns the spot associated with the image
+    if (image.Spot.ownerId !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+
+    await image.destroy();
+    return res.json({ message: "Successfully deleted" });
 });
 
 module.exports = router;

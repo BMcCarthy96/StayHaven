@@ -1,15 +1,13 @@
 const express = require("express");
+const router = express.Router();
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
-
 const { setTokenCookie, restoreUser } = require("../../utils/auth");
 const { User } = require("../../db/models");
-
-const router = express.Router();
-
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
+// Validation middleware for login
 const validateLogin = [
     check("credential")
         .exists({ checkFalsy: true })
@@ -27,10 +25,7 @@ router.post("/", validateLogin, async (req, res, next) => {
 
     const user = await User.unscoped().findOne({
         where: {
-            [Op.or]: {
-                username: credential,
-                email: credential,
-            },
+            [Op.or]: { username: credential, email: credential },
         },
     });
 
@@ -38,11 +33,12 @@ router.post("/", validateLogin, async (req, res, next) => {
         !user ||
         !bcrypt.compareSync(password, user.hashedPassword.toString())
     ) {
-        const err = new Error("Login failed");
-        err.status = 401;
-        err.title = "Login failed";
-        err.errors = { credential: "The provided credentials were invalid." };
-        return next(err);
+        return next({
+            status: 401,
+            title: "Login failed",
+            message: "Invalid credentials",
+            errors: { credential: "The provided credentials were invalid." },
+        });
     }
 
     const safeUser = {
@@ -55,14 +51,19 @@ router.post("/", validateLogin, async (req, res, next) => {
 
     await setTokenCookie(res, safeUser);
 
-    return res.json({
-        user: safeUser,
-    });
+    return res.json({ user: safeUser });
+});
+
+// Log out
+router.delete("/", (req, res) => {
+    res.clearCookie("token");
+    return res.json({ message: "success" });
 });
 
 // Restore session user
 router.get("/", (req, res) => {
     const { user } = req;
+
     if (user) {
         const safeUser = {
             id: user.id,
@@ -71,16 +72,10 @@ router.get("/", (req, res) => {
             email: user.email,
             username: user.username,
         };
-        return res.json({
-            user: safeUser,
-        });
-    } else return res.json({ user: null });
-});
+        return res.json({ user: safeUser });
+    }
 
-// Logout session
-router.delete("/", (req, res) => {
-    res.clearCookies("token");
-    return res.json({ message: "Success" });
+    return res.json({ user: null });
 });
 
 module.exports = router;
