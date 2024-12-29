@@ -44,7 +44,7 @@ router.post("/", validateSignup, async (req, res, next) => {
 
         if (existingUser) {
             const err = new Error("User already exists");
-            err.status = 400; // Change to 400 for client-side validation
+            err.status = 500;
             err.errors = {
                 username: "User with that username already exists",
                 email: "User with that email already exists",
