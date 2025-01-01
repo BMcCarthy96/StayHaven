@@ -10,6 +10,7 @@ const {
     Booking,
 } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
+const { Op } = require("sequelize");
 
 // Helper function, retrieves preview image URL
 const getPreviewImage = async (spotId) => {
@@ -38,6 +39,15 @@ router.get("/current", requireAuth, async (req, res) => {
                 "price",
             ],
         },
+        attributes: [
+            "id",
+            "spotId",
+            "userId",
+            "startDate",
+            "endDate",
+            "createdAt",
+            "updatedAt",
+        ],
     });
 
     if (!bookings.length) {
@@ -109,8 +119,11 @@ router.put("/:id", requireAuth, async (req, res) => {
     const existingBooking = await Booking.findOne({
         where: {
             spotId: booking.spotId,
-            startDate: { [Op.between]: [startDate, endDate] },
-            endDate: { [Op.between]: [startDate, endDate] },
+            id: { [Op.ne]: booking.id },
+            [Op.or]: [
+                { startDate: { [Op.between]: [startDate, endDate] } },
+                { endDate: { [Op.between]: [startDate, endDate] } },
+            ],
         },
     });
 
