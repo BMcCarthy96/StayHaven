@@ -52,19 +52,24 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DECIMAL,
                 allowNull: true,
                 validate: {
-                    len: [8, 10],
+                    min: -90,
+                    max: 90,
                 },
             },
             lng: {
                 type: DataTypes.DECIMAL,
                 allowNull: true,
                 validate: {
-                    len: [8, 10],
+                    min: -180,
+                    max: 180,
                 },
             },
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                validate: {
+                    len: [1, 49],
+                },
             },
             description: {
                 type: DataTypes.TEXT,
