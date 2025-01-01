@@ -25,6 +25,7 @@ module.exports = {
                         key: "id",
                         as: "Owner",
                     },
+                    onDelete: "CASCADE",
                 },
                 address: {
                     type: Sequelize.STRING,
