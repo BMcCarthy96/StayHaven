@@ -5,7 +5,7 @@ const apiRouter = require("./api");
 router.use("/api", apiRouter);
 
 // Add CSRF token route
-router.get("/csrf/restore", (req, res) => {
+router.get("/api/csrf/restore", (req, res) => {
     const csrfToken = req.csrfToken();
     res.cookie("XSRF-TOKEN", csrfToken);
     res.status(200).json({ "XSRF-Token": csrfToken });
