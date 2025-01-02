@@ -58,26 +58,8 @@ router.get("/current", requireAuth, async (req, res) => {
         bookings.map(async (booking) => {
             const previewImage = await getPreviewImage(booking.Spot.id);
             return {
-                id: booking.id,
-                spotId: booking.spotId,
-                userId: booking.userId,
-                startDate: booking.startDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
-                endDate: booking.endDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
-                createdAt: booking.createdAt,
-                updatedAt: booking.updatedAt,
-                Spot: {
-                    id: booking.Spot.id,
-                    ownerId: booking.Spot.ownerId,
-                    address: booking.Spot.address,
-                    city: booking.Spot.city,
-                    state: booking.Spot.state,
-                    country: booking.Spot.country,
-                    lat: booking.Spot.lat,
-                    lng: booking.Spot.lng,
-                    name: booking.Spot.name,
-                    price: booking.Spot.price,
-                    previewImage: previewImage,
-                },
+                ...booking.toJSON(),
+                Spot: { ...booking.Spot.toJSON(), previewImage },
             };
         })
     );
@@ -89,11 +71,7 @@ router.get("/current", requireAuth, async (req, res) => {
 router.put("/:id", requireAuth, async (req, res) => {
     const userId = req.user.id;
     const bookingId = req.params.id;
-    let { startDate, endDate } = req.body;
-
-    // Ensure the dates are in the correct format
-    startDate = new Date(startDate).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
-    endDate = new Date(endDate).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+    const { startDate, endDate } = req.body;
 
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
@@ -165,15 +143,7 @@ router.put("/:id", requireAuth, async (req, res) => {
     booking.endDate = endDate;
     await booking.save();
 
-    return res.json({
-        id: booking.id,
-        spotId: booking.spotId,
-        userId: booking.userId,
-        startDate: booking.startDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
-        endDate: booking.endDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
-        createdAt: booking.createdAt,
-        updatedAt: booking.updatedAt,
-    });
+    return res.json(booking);
 });
 
 // Delete a Booking

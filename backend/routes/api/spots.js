@@ -473,11 +473,7 @@ router.get("/:spotId/bookings", requireAuth, async (req, res) => {
 router.post("/:spotId/bookings", requireAuth, async (req, res) => {
     const { spotId } = req.params;
     const userId = req.user.id;
-    let { startDate, endDate } = req.body;
-
-    // Ensure that startDate and endDate are in the correct format (YYYY-MM-DD)
-    startDate = new Date(startDate).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
-    endDate = new Date(endDate).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+    const { startDate, endDate } = req.body;
 
     // Checks if both startDate and endDate are provided
     if (!startDate || !endDate) {
@@ -554,16 +550,7 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
             endDate,
         });
 
-        // Return the newly created booking in the response, ensuring it's in the correct format
-        return res.status(201).json({
-            id: newBooking.id,
-            spotId: newBooking.spotId,
-            userId: newBooking.userId,
-            startDate: newBooking.startDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
-            endDate: newBooking.endDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
-            createdAt: newBooking.createdAt,
-            updatedAt: newBooking.updatedAt,
-        });
+        res.status(201).json(newBooking);
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
