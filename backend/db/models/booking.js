@@ -61,7 +61,8 @@ module.exports = (sequelize, DataTypes) => {
     const formatDate = (date, includeTime = false) => {
         const d = new Date(date);
         if (isNaN(d.getTime())) {
-            throw new Error("Invalid date");
+            console.log(`Invalid date value: ${date}`);
+            return null; // Handle invalid dates
         }
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, "0");
