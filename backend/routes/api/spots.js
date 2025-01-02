@@ -550,7 +550,32 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
             endDate,
         });
 
-        res.status(201).json(newBooking);
+        // Format dates to YYYY-MM-DD
+        const formatDate = (date, formatTime = false) => {
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+
+            if (formatTime) {
+                const hours = String(d.getHours()).padStart(2, "0");
+                const minutes = String(d.getMinutes()).padStart(2, "0");
+                const seconds = String(d.getSeconds()).padStart(2, "0");
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+            return `${year}-${month}-${day}`;
+        };
+
+        // Format createdAt and updatedAt to YYYY-MM-DD HH:mm:ss
+        const formattedBooking = {
+            ...newBooking.toJSON(),
+            startDate: formatDate(newBooking.startDate),
+            endDate: formatDate(newBooking.endDate),
+            createdAt: formatDate(newBooking.createdAt, true),
+            updatedAt: formatDate(newBooking.updatedAt, true),
+        };
+
+        res.status(201).json(formattedBooking);
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
