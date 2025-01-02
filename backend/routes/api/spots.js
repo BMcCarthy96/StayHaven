@@ -475,30 +475,33 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
     const userId = req.user.id;
     const { startDate, endDate } = req.body;
 
+    // Checks if both startDate and endDate are provided
     if (!startDate || !endDate) {
         return res.status(400).json({
             message: "Bad Request",
             errors: {
-                startDate: "startDate cannot be in the past",
+                startDate: "Start date is required",
+                endDate: "End date is required",
+            },
+        });
+    }
+
+    // Makes sure endDate is after startDate
+    if (new Date(endDate) <= new Date(startDate)) {
+        return res.status(400).json({
+            message: "Bad Request",
+            errors: {
                 endDate: "endDate cannot be on or before startDate",
             },
         });
     }
 
-    if (new Date(endDate) <= new Date(startDate)) {
-        return res.status(400).json({
-            message: "Bad Request",
-            errors: {
-                endDate: "End date cannot be on or before startDate",
-            },
-        });
-    }
-
+    // Makes sure startDate is not in the past
     if (new Date(startDate) < new Date()) {
         return res.status(400).json({
             message: "Bad Request",
             errors: {
-                startDate: "Start date cannot be in the past",
+                startDate: "startDate cannot be in the past",
             },
         });
     }
@@ -547,7 +550,7 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
             endDate,
         });
 
-        res.status(200).json(newBooking);
+        res.status(201).json(newBooking);
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
