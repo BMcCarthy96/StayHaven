@@ -58,8 +58,26 @@ router.get("/current", requireAuth, async (req, res) => {
         bookings.map(async (booking) => {
             const previewImage = await getPreviewImage(booking.Spot.id);
             return {
-                ...booking.toJSON(),
-                Spot: { ...booking.Spot.toJSON(), previewImage },
+                id: booking.id,
+                spotId: booking.spotId,
+                userId: booking.userId,
+                startDate: booking.startDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
+                endDate: booking.endDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
+                createdAt: booking.createdAt,
+                updatedAt: booking.updatedAt,
+                Spot: {
+                    id: booking.Spot.id,
+                    ownerId: booking.Spot.ownerId,
+                    address: booking.Spot.address,
+                    city: booking.Spot.city,
+                    state: booking.Spot.state,
+                    country: booking.Spot.country,
+                    lat: booking.Spot.lat,
+                    lng: booking.Spot.lng,
+                    name: booking.Spot.name,
+                    price: booking.Spot.price,
+                    previewImage: previewImage,
+                },
             };
         })
     );
