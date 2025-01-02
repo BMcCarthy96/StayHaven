@@ -89,7 +89,11 @@ router.get("/current", requireAuth, async (req, res) => {
 router.put("/:id", requireAuth, async (req, res) => {
     const userId = req.user.id;
     const bookingId = req.params.id;
-    const { startDate, endDate } = req.body;
+    let { startDate, endDate } = req.body;
+
+    // Ensure the dates are in the correct format
+    startDate = new Date(startDate).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+    endDate = new Date(endDate).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
 
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
@@ -161,7 +165,15 @@ router.put("/:id", requireAuth, async (req, res) => {
     booking.endDate = endDate;
     await booking.save();
 
-    return res.json(booking);
+    return res.json({
+        id: booking.id,
+        spotId: booking.spotId,
+        userId: booking.userId,
+        startDate: booking.startDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
+        endDate: booking.endDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
+        createdAt: booking.createdAt,
+        updatedAt: booking.updatedAt,
+    });
 });
 
 // Delete a Booking

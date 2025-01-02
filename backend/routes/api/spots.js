@@ -473,7 +473,7 @@ router.get("/:spotId/bookings", requireAuth, async (req, res) => {
 router.post("/:spotId/bookings", requireAuth, async (req, res) => {
     const { spotId } = req.params;
     const userId = req.user.id;
-    const { startDate, endDate } = req.body;
+    let { startDate, endDate } = req.body;
 
     // Ensure that startDate and endDate are in the correct format (YYYY-MM-DD)
     startDate = new Date(startDate).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
