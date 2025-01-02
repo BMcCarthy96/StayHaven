@@ -475,8 +475,17 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
     const userId = req.user.id;
     const { startDate, endDate } = req.body;
 
+    // Convert startDate and endDate to Date objects for validation
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
     // Checks if both startDate and endDate are provided
-    if (!startDate || !endDate) {
+    if (
+        !startDate ||
+        !endDate ||
+        isNaN(start.getTime()) ||
+        isNaN(end.getTime())
+    ) {
         return res.status(400).json({
             message: "Bad Request",
             errors: {
@@ -487,7 +496,7 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
     }
 
     // Makes sure endDate is after startDate
-    if (new Date(endDate) <= new Date(startDate)) {
+    if (end <= start) {
         return res.status(400).json({
             message: "Bad Request",
             errors: {
@@ -497,7 +506,7 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
     }
 
     // Makes sure startDate is not in the past
-    if (new Date(startDate) < new Date()) {
+    if (start < new Date()) {
         return res.status(400).json({
             message: "Bad Request",
             errors: {
@@ -523,10 +532,10 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
                 spotId,
                 [Op.or]: [
                     {
-                        startDate: { [Op.between]: [startDate, endDate] },
+                        startDate: { [Op.between]: [start, end] },
                     },
                     {
-                        endDate: { [Op.between]: [startDate, endDate] },
+                        endDate: { [Op.between]: [start, end] },
                     },
                 ],
             },
@@ -546,11 +555,20 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
         const newBooking = await Booking.create({
             spotId,
             userId,
-            startDate,
-            endDate,
+            startDate: start,
+            endDate: end,
         });
 
-        res.status(201).json(newBooking);
+        // Return the new booking with proper date formatting
+        res.status(201).json({
+            id: newBooking.id,
+            spotId: newBooking.spotId,
+            userId: newBooking.userId,
+            startDate: newBooking.startDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
+            endDate: newBooking.endDate.toISOString().split("T")[0], // Format to YYYY-MM-DD
+            createdAt: newBooking.createdAt,
+            updatedAt: newBooking.updatedAt,
+        });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
