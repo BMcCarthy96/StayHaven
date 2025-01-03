@@ -485,13 +485,13 @@ router.get("/:spotId/bookings", requireAuth, async (req, res) => {
 
         const formattedBookings = bookings.map((booking) => {
             const formattedBooking = { ...booking.toJSON() };
-            // Format the startDate and endDate
+            // Format the startDate and endDate to 'YYYY-MM-DD' without time
             formattedBooking.startDate = formatDateTime(
                 new Date(formattedBooking.startDate)
-            );
+            ).split(" ")[0];
             formattedBooking.endDate = formatDateTime(
                 new Date(formattedBooking.endDate)
-            );
+            ).split(" ")[0];
 
             // Format createdAt and updatedAt for the owner
             if (isOwner) {
