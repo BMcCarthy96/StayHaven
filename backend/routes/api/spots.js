@@ -120,6 +120,7 @@ const enrichSpotDetails = (spot) => {
     };
 };
 
+// Get all spots
 router.get("/", validateQueryParams, async (req, res) => {
     let {
         page = 1,
@@ -168,11 +169,25 @@ router.get("/", validateQueryParams, async (req, res) => {
             ...spot.toJSON(),
             avgRating: await calculateAvgStarRating(spot.id),
             previewImage: await getPreviewImage(spot.id),
+            createdAt: formatDateTime(new Date(spot.createdAt)),
+            updatedAt: formatDateTime(new Date(spot.updatedAt)),
         }))
     );
 
     return res.status(200).json({ Spots: spotsWithDetails, page, size });
 });
+
+// Helper function to format date to "YYYY-MM-DD HH:mm:ss"
+const formatDateTime = (date) => {
+    const pad = (num) => (num < 10 ? `0${num}` : num);
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
 
 // Get all Spots owned by the Current User
 router.get("/current", requireAuth, async (req, res) => {
@@ -182,6 +197,8 @@ router.get("/current", requireAuth, async (req, res) => {
             ...spot.toJSON(),
             avgRating: await calculateAvgStarRating(spot.id),
             previewImage: await getPreviewImage(spot.id),
+            createdAt: formatDateTime(new Date(spot.createdAt)),
+            updatedAt: formatDateTime(new Date(spot.updatedAt)),
         }))
     );
     res.json({ Spots });
@@ -205,7 +222,10 @@ router.get("/:spotId", async (req, res) => {
         return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    res.json(enrichSpotDetails(spot.toJSON()));
+    const spotDetails = enrichSpotDetails(spot.toJSON());
+    spotDetails.createdAt = formatDateTime(new Date(spotDetails.createdAt));
+    spotDetails.updatedAt = formatDateTime(new Date(spotDetails.updatedAt));
+    res.json(spotDetails);
 });
 
 // Create a Spot
@@ -463,7 +483,20 @@ router.get("/:spotId/bookings", requireAuth, async (req, res) => {
                 : [],
         });
 
-        res.status(200).json({ Bookings: bookings });
+        const formattedBookings = bookings.map((booking) => {
+            const formattedBooking = { ...booking.toJSON() };
+            if (isOwner) {
+                formattedBooking.createdAt = formatDateTime(
+                    new Date(formattedBooking.createdAt)
+                );
+                formattedBooking.updatedAt = formatDateTime(
+                    new Date(formattedBooking.updatedAt)
+                );
+            }
+            return formattedBooking;
+        });
+
+        res.status(200).json({ Bookings: formattedBookings });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
@@ -550,7 +583,18 @@ router.post("/:spotId/bookings", requireAuth, async (req, res) => {
             endDate,
         });
 
-        res.status(201).json(newBooking);
+        // Format the response object
+        res.status(201).json({
+            id: newBooking.id,
+            spotId: newBooking.spotId,
+            userId: newBooking.userId,
+            startDate: new Date(newBooking.startDate)
+                .toISOString()
+                .split("T")[0],
+            endDate: new Date(newBooking.endDate).toISOString().split("T")[0],
+            createdAt: formatDateTime(new Date(newBooking.createdAt)),
+            updatedAt: formatDateTime(new Date(newBooking.updatedAt)),
+        });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }

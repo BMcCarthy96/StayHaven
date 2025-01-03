@@ -18,6 +18,18 @@ const getPreviewImage = async (spotId) => {
     return image ? image.url : "No preview image available";
 };
 
+// Helper function to format date to "YYYY-MM-DD HH:mm:ss"
+const formatDateTime = (date) => {
+    const pad = (num) => (num < 10 ? `0${num}` : num);
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
 // Get all current user's bookings
 router.get("/current", requireAuth, async (req, res) => {
     const currentUser = req.user.id;
@@ -59,6 +71,10 @@ router.get("/current", requireAuth, async (req, res) => {
             const previewImage = await getPreviewImage(booking.Spot.id);
             return {
                 ...booking.toJSON(),
+                startDate: booking.startDate.toISOString().split("T")[0],
+                endDate: booking.endDate.toISOString().split("T")[0],
+                createdAt: formatDateTime(new Date(booking.createdAt)),
+                updatedAt: formatDateTime(new Date(booking.updatedAt)),
                 Spot: { ...booking.Spot.toJSON(), previewImage },
             };
         })
@@ -143,7 +159,15 @@ router.put("/:id", requireAuth, async (req, res) => {
     booking.endDate = endDate;
     await booking.save();
 
-    return res.json(booking);
+    return res.json({
+        id: booking.id,
+        spotId: booking.spotId,
+        userId: booking.userId,
+        startDate: booking.startDate.toISOString().split("T")[0],
+        endDate: booking.endDate.toISOString().split("T")[0],
+        createdAt: formatDateTime(new Date(booking.createdAt)),
+        updatedAt: formatDateTime(new Date(booking.updatedAt)),
+    });
 });
 
 // Delete a Booking
