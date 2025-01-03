@@ -132,7 +132,7 @@ const formatDateTime = (date) => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-// Get all spots
+// Add Query Filters to Get All Spots
 router.get("/", validateQueryParams, async (req, res) => {
     let {
         page = 1,
