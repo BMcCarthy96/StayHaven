@@ -179,8 +179,13 @@ router.delete("/:id", requireAuth, async (req, res) => {
         return res.status(404).json({ message: "Booking couldn't be found" });
     }
 
-    // Check if the current user is the owner of the booking
-    if (booking.userId !== userId) {
+    // Check if the current user is the owner of the booking or owner of the spot
+    const spot = await Spot.findByPk(booking.spotId);
+    if (!spot) {
+        return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    if (booking.userId !== userId && spot.ownerId !== userId) {
         return res.status(403).json({ message: "Forbidden" });
     }
 
