@@ -4,6 +4,11 @@ const apiRouter = require("./api");
 
 router.use("/api", apiRouter);
 
+// Root route for '/'
+router.get("/", (req, res) => {
+    res.send("Welcome to the root of the API");
+});
+
 // Add CSRF token route
 router.get("/api/csrf/restore", (req, res) => {
     const csrfToken = req.csrfToken();

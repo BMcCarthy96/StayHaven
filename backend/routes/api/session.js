@@ -51,13 +51,13 @@ router.post("/", validateLogin, async (req, res, next) => {
 
     await setTokenCookie(res, safeUser);
 
-    return res.json({ user: safeUser });
+    return res.status(200).json({ user: safeUser });
 });
 
 // Log out
 router.delete("/", (req, res) => {
     res.clearCookie("token");
-    return res.json({ message: "success" });
+    return res.status(200).json({ message: "success" });
 });
 
 // Restore session user
@@ -75,7 +75,7 @@ router.get("/", (req, res) => {
         return res.json({ user: safeUser });
     }
 
-    return res.json({ user: null });
+    return res.status(200).json({ user: null });
 });
 
 module.exports = router;
