@@ -113,14 +113,14 @@ router.put("/:id", requireAuth, async (req, res) => {
     if (new Date(startDate) < new Date()) {
         return res.status(400).json({
             message: "Bad Request",
-            errors: { startDate: "Start date cannot be in the past" },
+            errors: { startDate: "startDate cannot be in the past" },
         });
     }
 
     if (new Date(endDate) <= new Date(startDate)) {
         return res.status(400).json({
             message: "Bad Request",
-            errors: { endDate: "End date must be after the start date" },
+            errors: { endDate: "endDate cannot be on or before startDate" },
         });
     }
 
