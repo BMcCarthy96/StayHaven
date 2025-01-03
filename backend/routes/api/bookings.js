@@ -20,6 +20,8 @@ const getPreviewImage = async (spotId) => {
 
 // Helper function to format date to "YYYY-MM-DD HH:mm:ss"
 const formatDateTime = (date) => {
+    if (!date) return null; // If the date is null, return null
+
     const pad = (num) => (num < 10 ? `0${num}` : num);
     const year = date.getFullYear();
     const month = pad(date.getMonth() + 1);

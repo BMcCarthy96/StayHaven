@@ -120,6 +120,20 @@ const enrichSpotDetails = (spot) => {
     };
 };
 
+// Helper function to format date to "YYYY-MM-DD HH:mm:ss"
+const formatDateTime = (date) => {
+    if (!date) return null; // If the date is null, return null
+
+    const pad = (num) => (num < 10 ? `0${num}` : num);
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
 // Get all spots
 router.get("/", validateQueryParams, async (req, res) => {
     let {
@@ -176,18 +190,6 @@ router.get("/", validateQueryParams, async (req, res) => {
 
     return res.status(200).json({ Spots: spotsWithDetails, page, size });
 });
-
-// Helper function to format date to "YYYY-MM-DD HH:mm:ss"
-const formatDateTime = (date) => {
-    const pad = (num) => (num < 10 ? `0${num}` : num);
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1);
-    const day = pad(date.getDate());
-    const hours = pad(date.getHours());
-    const minutes = pad(date.getMinutes());
-    const seconds = pad(date.getSeconds());
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-};
 
 // Get all Spots owned by the Current User
 router.get("/current", requireAuth, async (req, res) => {
