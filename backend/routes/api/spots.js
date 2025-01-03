@@ -485,6 +485,15 @@ router.get("/:spotId/bookings", requireAuth, async (req, res) => {
 
         const formattedBookings = bookings.map((booking) => {
             const formattedBooking = { ...booking.toJSON() };
+            // Format the startDate and endDate
+            formattedBooking.startDate = formatDateTime(
+                new Date(formattedBooking.startDate)
+            );
+            formattedBooking.endDate = formatDateTime(
+                new Date(formattedBooking.endDate)
+            );
+
+            // Format createdAt and updatedAt for the owner
             if (isOwner) {
                 formattedBooking.createdAt = formatDateTime(
                     new Date(formattedBooking.createdAt)
@@ -493,6 +502,7 @@ router.get("/:spotId/bookings", requireAuth, async (req, res) => {
                     new Date(formattedBooking.updatedAt)
                 );
             }
+
             return formattedBooking;
         });
 
