@@ -1,5 +1,7 @@
 # StayHaven
 
+https://stayhaven-hyyh.onrender.com
+
 ## Database Schema Design
 
 ![airbnb-database-schema]
