@@ -55,6 +55,10 @@ router.get("/current", requireAuth, async (req, res) => {
         ],
     });
 
+    if (!reviews.length) {
+        return res.status(404).json({ message: "No reviews found" });
+    }
+
     const reviewsWithDetails = await Promise.all(
         reviews.map(async (review) => {
             const spot = review.Spot;
