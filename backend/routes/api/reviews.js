@@ -19,6 +19,7 @@ const getPreviewImage = async (spotId) => {
 // Get all Reviews of the Current User
 router.get("/current", requireAuth, async (req, res) => {
     const userId = req.user.id;
+
     const reviews = await Review.findAll({
         where: { userId },
         include: [
@@ -37,13 +38,22 @@ router.get("/current", requireAuth, async (req, res) => {
                     "name",
                     "price",
                 ],
+                include: [
+                    {
+                        model: SpotImage,
+                        as: "SpotImages",
+                        where: { preview: true },
+                        attributes: ["url"],
+                        required: false,
+                    },
+                ],
+            },
+            {
+                model: ReviewImage,
+                attributes: ["id", "url"],
             },
         ],
     });
-
-    if (!reviews.length) {
-        return res.status(200).json({ message: "No reviews yet" });
-    }
 
     const reviewsWithDetails = await Promise.all(
         reviews.map(async (review) => {
