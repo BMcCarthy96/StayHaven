@@ -1,0 +1,68 @@
+/* General Container for Sign Up Form */
+.sign-up-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 40px auto; /* Center horizontally and provide spacing from top */
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+.form-div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Increased gap for better spacing between fields */
+}
+
+/* Input fields */
+input {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+input:focus {
+    border-color: #9AAB89; /* Highlight border color when focused */
+}
+
+/* Button Styling */
+.sign-up-button {
+    height: 40px;
+    background-color: #9AAB89;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    width: 100%; /* Ensure button takes full width */
+}
+
+.sign-up-button:hover {
+    background-color: #354A26;
+}
+
+.sign-up-button:disabled {
+    background-color: #D3D3D3;
+    color: #A9A9A9;
+    cursor: not-allowed;
+}
+
+/* Error Messages */
+.error-container {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    margin: 0;
+}
