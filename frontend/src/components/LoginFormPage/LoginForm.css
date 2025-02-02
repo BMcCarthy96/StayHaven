@@ -1,0 +1,84 @@
+/* Center the form */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  }
+
+  .login-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+  }
+
+  .login-form h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+
+  /* Input fields */
+  .login-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+  }
+
+  .login-form input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  /* Error message styling */
+  .error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+
+  /* Submit button */
+  .login-form button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .login-form button:hover {
+    background: #0056b3;
+  }
+
+  /* Loading state */
+  .login-form button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  /* Small text links */
+  .login-form .signup-link {
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+
+  .login-form .signup-link a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .login-form .signup-link a:hover {
+    text-decoration: underline;
+  }
