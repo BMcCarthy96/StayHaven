@@ -3,6 +3,9 @@ import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
+import LoginFormModal from './components/LoginFormModal';
+import SignupFormModal from './components/SignupFormModal';
+import LandingPage from './components/LandingPage';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -28,7 +31,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Welcome!</h1>
+        element: <LandingPage />
+      },
+      {
+        path: '/login',
+        element: <LoginFormModal />
+      },
+      {
+        path: '/signup',
+        element: <SignupFormModal />
+      },
+      {
+        path: '*',
+        element: <h1>Page Not Found</h1>
       }
     ]
   }
