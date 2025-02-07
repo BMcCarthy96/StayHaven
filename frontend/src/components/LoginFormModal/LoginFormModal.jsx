@@ -50,10 +50,10 @@ function LoginFormModal() {
           <p>{errors.credential}</p>
         )}
         {/*Disables the login button if credentials are not long enough */}
-        <button type="submit" disabled={credential.length < 4 || password.length < 6}>Log In</button>
+        <button type="submit" className="login-in-button" disabled={credential.length < 4 || password.length < 6}>Log In</button>
 
         {/* Demo user login button */}
-        <button type="button" onClick={() => dispatch(sessionActions.login({ credential: "demo", password: "password" })).then(closeModal)}>
+        <button type="button" className="demo-user-button" onClick={() => dispatch(sessionActions.login({ credential: "demo", password: "password" })).then(closeModal)}>
         Log in as Demo User
         </button>
       </form>
