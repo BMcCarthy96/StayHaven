@@ -1,9 +1,16 @@
+/* Prevents the whitespace on the side */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #354A26; /* Deep green */
-    padding: 15px 30px;
+    background-color: #FF6F61; /* Coral */
+    padding: 15px 0px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
@@ -11,36 +18,44 @@
     z-index: 1000;
 }
 
-.navbar ul {
-    list-style: none;
+.icon {
     display: flex;
     align-items: center;
-    margin: 0;
-    padding: 0;
-}
-
-.navbar li {
-    margin: 0 15px;
-}
-
-.navbar a {
-    text-decoration: none;
-    color: white;
-    font-size: 16px;
-    font-weight: 500;
-    padding: 8px 12px;
-    transition: all 0.3s ease-in-out;
-    border-radius: 5px;
-}
-
-.navbar a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.auth-buttons {
-    position: absolute;
-    top: 15px;
-    right: 30px;
-    display: flex;
     gap: 10px;
-  }
+}
+
+.home-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding-left: 10px;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.profile-button {
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 15px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .home-logo svg {
+        width: 30px;
+        height: 30px;
+    }
+}
