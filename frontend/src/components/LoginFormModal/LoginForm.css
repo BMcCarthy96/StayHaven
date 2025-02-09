@@ -1,84 +1,103 @@
-/* Center the form */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  }
+.login-modal-container {
+  border: 2px solid black;
+  border-radius: 12px;
+  width: 350px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  text-align: center;
+}
 
-  .login-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 350px;
-    text-align: center;
-  }
+h1 {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
 
-  .login-form h1 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 1rem;
-  }
+.error-container {
+  color: #d9534f;
+  margin-bottom: 10px;
+  text-align: center;
+}
 
-  /* Input fields */
-  .login-form input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border 0.3s ease;
-  }
+.login-modal-container input {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
 
-  .login-form input:focus {
-    border-color: #007bff;
-    outline: none;
-  }
+.login-modal-container input:focus {
+  border-color: black;
+  outline: none;
+}
 
-  /* Error message styling */
-  .error-message {
-    color: red;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-  }
+.login-button {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: #FF6F61;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-  /* Submit button */
-  .login-form button {
-    width: 100%;
-    padding: 12px;
-    background: #007bff;
-    color: white;
-    font-size: 1rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
+.login-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 
-  .login-form button:hover {
-    background: #0056b3;
-  }
+.login-button:hover {
+  background-color: #f84d3e;
+}
 
-  /* Loading state */
-  .login-form button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
+.demo-user-div {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
 
-  /* Small text links */
-  .login-form .signup-link {
-    font-size: 0.9rem;
-    margin-top: 10px;
-  }
+.demo-user-button {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: white;
+  color: #FF6F61;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  text-decoration: underline;
+}
 
-  .login-form .signup-link a {
-    color: #007bff;
-    text-decoration: none;
-  }
+.demo-user-button:hover {
+  color: grey;
+}
 
-  .login-form .signup-link a:hover {
-    text-decoration: underline;
-  }
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.email, .password {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.log-in-button-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.demo-user-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

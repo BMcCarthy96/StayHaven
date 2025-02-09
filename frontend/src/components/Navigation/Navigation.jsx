@@ -15,8 +15,7 @@ function Navigation({ isLoaded }) {
       </div>
 
       <div className='profile-button'>
-      {isLoaded && (
-        <ProfileButton user={sessionUser} />)}
+      {isLoaded && <ProfileButton user={sessionUser} />}
       </div>
     </nav>
   );

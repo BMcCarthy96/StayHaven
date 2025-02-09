@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import { HiBars3 } from "react-icons/hi2";
 import './ProfileButton.css'
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
@@ -37,25 +40,49 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    navigate('/') // Navigates to home page after logging out
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
     <>
-      <button onClick={toggleMenu}>
-        <FaUserCircle />
+      <button onClick={toggleMenu} className='profile-button'>
+        <div className='menu'>
+          <HiBars3 size={30} />
+        </div>
+        <div className='user'>
+          <FaUserCircle size={30}/>
+        </div>
       </button>
+
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
-            <li>
-              <button onClick={logout}>Log Out</button>
-            </li>
-          </>
+          <div className="options">
+            <div>Hello, {user.username}</div>
+            <div>{user.email}</div>
+          </div>
+          <hr />
+          <div className="manage-div">
+            <div>
+              <Link to="/api/spots/current" className="manage-link">
+                Manage Spots
+              </Link>
+            </div>
+            <div>
+              <Link to="/api/reviews/current" className="manage-link">
+                Manage Reviews
+              </Link>
+            </div>
+          </div>
+          <hr />
+          <div className="logout-button-div">
+            <button className="logout-button" onClick={logout}>
+              Log Out
+            </button>
+          </div>
+        </>
         ) : (
           <>
             <OpenModalMenuItem
