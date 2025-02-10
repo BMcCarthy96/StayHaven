@@ -6,6 +6,7 @@ import * as sessionActions from './store/session';
 import LoginFormModal from './components/LoginFormModal';
 import SignupFormModal from './components/SignupFormModal';
 import LandingPage from './components/LandingPage';
+import {fetchSpots} from './store/spots'
 
 function Layout() {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ function Layout() {
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => {
+      dispatch(fetchSpots())
       setIsLoaded(true)
     });
   }, [dispatch]);
