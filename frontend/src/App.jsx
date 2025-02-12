@@ -7,6 +7,7 @@ import LoginFormModal from './components/LoginFormModal';
 import SignupFormModal from './components/SignupFormModal';
 import LandingPage from './components/LandingPage';
 import {fetchSpots} from './store/spots'
+import SpotDetails from './components/SpotDetails';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: '/signup',
         element: <SignupFormModal />
+      },
+      {
+        path: '/api/spots/:spotId',
+        element: <SpotDetails />
       },
       {
         path: '*',

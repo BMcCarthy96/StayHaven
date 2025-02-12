@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MdStar } from "react-icons/md";
+import { Tooltip } from "react-tooltip";
 import "./LandingPage.css";
 
 function LandingPage() {
@@ -33,6 +34,9 @@ function LandingPage() {
                             </p>
                         </div>
                     </div>
+                    <Tooltip id={`tooltip-${spot.id}`} place="top" effect="solid" className="tooltip">
+                    {spot.name}
+                    </Tooltip>
                 </Link>
             ))}
         </section>
