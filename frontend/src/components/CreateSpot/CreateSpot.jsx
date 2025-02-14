@@ -2,7 +2,7 @@ import "./CreateSpot.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { addSpot, editSpot, fetchSpotDetails } from "../../store/spots";
+import { createSpot, updateSpot, fetchSpotDetails } from "../../store/spots";
 
 function CreateSpot() {
   const dispatch = useDispatch();
@@ -98,7 +98,7 @@ function CreateSpot() {
     const imageUrls = [previewImage, ...otherImages.filter((url) => url.trim())];
 
     try {
-      const spot = isUpdate ? await dispatch(editSpot(spotId, formattedData)) : await dispatch(addSpot(formattedData, imageUrls));
+      const spot = isUpdate ? await dispatch(updateSpot(spotId, formattedData)) : await dispatch(createSpot(formattedData, imageUrls));
       navigate(`/spots/${spot.id}`);
     } catch (error) {
       console.error("Error submitting spot:", error);
