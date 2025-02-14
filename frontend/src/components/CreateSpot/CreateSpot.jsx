@@ -107,7 +107,7 @@ function CreateSpot() {
 
   return (
     <div className="create-spot-container">
-      <h1>{isUpdate ? "Revise Your Listing" : "Add a Brand New Spot"}</h1>
+      <h1>{isUpdate ? "Revise Your Listing" : "Create a New Spot"}</h1>
       <form onSubmit={handleSubmit}>
         <h2>Location Details</h2>
         <label>Country<input name="country" value={spotData.country} onChange={handleChange} /></label>
