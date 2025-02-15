@@ -78,6 +78,7 @@
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .logout-button:hover {

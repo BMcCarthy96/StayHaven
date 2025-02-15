@@ -113,7 +113,10 @@
 }
 
 .booking-button {
-    background-color: #9AAB89;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FF6F61;
     color: white;
     width: 275px;
     margin-left: 20px;
@@ -122,7 +125,7 @@
 }
 
 .booking-button:hover {
-    background-color: #354A26;
+    background-color: #f84d3e;
 }
 
 hr {
@@ -160,7 +163,7 @@ hr {
 
 .update-delete-div {
     display: flex;
-    justify-content: space-between;
+    justify-content: left;
 }
 
 .post-review-button,
@@ -177,6 +180,19 @@ hr {
 .delete-modal:hover {
     background-color: #354A26;
 }
+
+/* .delete-spot-button {
+    background-color: #FF6F61;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.delete-spot-button:hover {
+    background-color: #f84d3e;
+} */
 
 @media (max-width: 768px) {
     .image-gallery {

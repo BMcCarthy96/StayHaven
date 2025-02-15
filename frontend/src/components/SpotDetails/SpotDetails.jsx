@@ -9,6 +9,7 @@ import { fetchReviewsForSpot } from '../../store/reviews';
 import OpenModalButton from '../OpenModalButton/OpenModalButton.jsx';
 import CreateReviewModal from '../CreateReviewModal/CreateReviewModal.jsx';
 import DeleteReviewModal from '../DeleteReviewModal/DeleteReviewModal.jsx';
+import UpdateReviewModal from '../UpdateReviewModal/UpdateReviewModal.jsx';
 
 function SpotDetails() {
     const { spotId } = useParams();
@@ -101,6 +102,7 @@ function SpotDetails() {
                         .map((review) => {
                             const reviewDate = new Date(review.createdAt);
                             const formattedDate = reviewDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+                            const isReviewAuthor = loggedInUser && review.User?.id === loggedInUser.id;
 
                             return (
                                 <div key={review.id} className='review-card'>
@@ -112,8 +114,21 @@ function SpotDetails() {
                                         <p>{review.review}</p>
                                     </div>
 
-                                    {loggedInUser && review.User?.id === loggedInUser.id && (
+                                    {isReviewAuthor && (
                                         <div className='update-delete-div'>
+                                            <OpenModalButton
+                                                buttonText="Update"
+                                                modalComponent={
+                                                    <UpdateReviewModal
+                                                        reviewId={review.id}
+                                                        initialReview={review.review}
+                                                        initialRating={review.stars}
+                                                        spotId={review.spotId}
+                                                        pageType="spot"
+                                                    />
+                                                }
+                                                className='update-modal'
+                                            />
                                             <OpenModalButton
                                                 buttonText="Delete"
                                                 modalComponent={<DeleteReviewModal reviewId={review.id} spotId={spotId} />}
