@@ -117,9 +117,93 @@
     color: white;
     width: 275px;
     margin-left: 20px;
-    height: 30px;
+    margin-bottom: 20px;
+    height: 40px;
 }
 
 .booking-button:hover {
     background-color: #354A26;
+}
+
+hr {
+    border-top: grey 2px solid;
+}
+
+.reviews-section {
+    margin-top: 20px;
+}
+
+.review-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.review-header h3 {
+    margin-top: 0;
+}
+
+.review-card {
+    border: 2px solid grey;
+    border-radius: 8px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 5px;
+}
+
+.review-body {
+    margin-top: 10px;
+}
+
+.update-delete-div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-review-button,
+.delete-modal {
+    background-color: #9AAB89;
+    color: white;
+    padding: 7px 15px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.post-review-button:hover,
+.delete-modal:hover {
+    background-color: #354A26;
+}
+
+@media (max-width: 768px) {
+    .image-gallery {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .primary-image,
+    .additional-images {
+        width: 100%;
+        height: auto;
+    }
+
+    .additional-images {
+        grid-template-columns: 1fr;
+    }
+
+    .details-container {
+        flex-direction: column;
+    }
+
+    .spot-info {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .booking-section {
+        width: 100%;
+    }
 }

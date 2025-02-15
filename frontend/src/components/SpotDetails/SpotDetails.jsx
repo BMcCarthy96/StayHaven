@@ -5,20 +5,25 @@ import { fetchSpotDetails } from '../../store/spots';
 import './SpotDetails.css';
 import { MdOutlineStar } from "react-icons/md";
 import { GoDotFill } from 'react-icons/go';
-import {fetchReviewsForSpot} from '../../store/reviews'
+import { fetchReviewsForSpot } from '../../store/reviews';
+import OpenModalButton from '../OpenModalButton/OpenModalButton.jsx';
+import CreateReviewModal from '../CreateReviewModal/CreateReviewModal.jsx';
+import DeleteReviewModal from '../DeleteReviewModal/DeleteReviewModal.jsx';
 
 function SpotDetails() {
     const { spotId } = useParams();
     const dispatch = useDispatch();
 
     const spotData = useSelector((state) => state.spots.spotDetails);
+    const reviews = useSelector(state => state.reviews.reviewsBySpot[spotId] || {});
     const loggedInUser = useSelector((state) => state.session.user);
 
     const isOwner = loggedInUser && spotData.Owner?.id === loggedInUser.id;
+    const hasReviewed = Object.values(reviews).some(review => review.User?.id === loggedInUser?.id);
 
     useEffect(() => {
         dispatch(fetchSpotDetails(spotId));
-        dispatch(fetchReviewsForSpot(spotId))
+        dispatch(fetchReviewsForSpot(spotId));
     }, [dispatch, spotId]);
 
     if (!spotData || Object.keys(spotData).length === 0) {
@@ -26,7 +31,7 @@ function SpotDetails() {
     }
 
     const mainImage = spotData.SpotImages?.length > 0 ? spotData.SpotImages[0].url : 'https://placehold.co/600x400/ffcc00/png';
-    const extraImages = spotData.SpotImages?.slice(1, 5).map((img) => img.url) || []; // Ensure 4 images max
+    const extraImages = spotData.SpotImages?.slice(1, 5).map((img) => img.url) || [];
 
     return (
         <div className='spot-wrapper'>
@@ -80,7 +85,48 @@ function SpotDetails() {
                     )}
                 </div>
 
-                {!isOwner && <p>Post a review!</p>}
+                <div className='post-review-div'>
+                    {loggedInUser && !isOwner && !hasReviewed && (
+                        <OpenModalButton
+                            buttonText="Post Your Review"
+                            modalComponent={<CreateReviewModal spotId={spotId} />}
+                            className="post-review-button"
+                        />
+                    )}
+                </div>
+
+                {reviews && Object.keys(reviews).length > 0 ? (
+                    Object.values(reviews)
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .map((review) => {
+                            const reviewDate = new Date(review.createdAt);
+                            const formattedDate = reviewDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+                            return (
+                                <div key={review.id} className='review-card'>
+                                    <div className='review-header'>
+                                        <strong>{review.User?.firstName}</strong>
+                                        <span>{formattedDate}</span>
+                                    </div>
+                                    <div className='review-body'>
+                                        <p>{review.review}</p>
+                                    </div>
+
+                                    {loggedInUser && review.User?.id === loggedInUser.id && (
+                                        <div className='update-delete-div'>
+                                            <OpenModalButton
+                                                buttonText="Delete"
+                                                modalComponent={<DeleteReviewModal reviewId={review.id} spotId={spotId} />}
+                                                className="delete-modal"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })
+                ) : (
+                    !isOwner && <p>Be the first to post a review!</p>
+                )}
             </div>
         </div>
     );

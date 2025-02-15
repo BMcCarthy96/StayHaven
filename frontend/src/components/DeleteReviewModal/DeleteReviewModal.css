@@ -1,0 +1,49 @@
+.modal-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 400px;
+  }
+
+  .h4-container {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #555;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .yes {
+    background-color: red;
+    color: white;
+  }
+
+  .yes:hover {
+    background-color: darkred;
+  }
+
+  .no {
+    background-color: darkgray;
+    color: white;
+  }
+
+  .no:hover {
+    background-color: gray;
+  }
