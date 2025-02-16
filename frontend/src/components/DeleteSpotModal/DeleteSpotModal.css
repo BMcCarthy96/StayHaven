@@ -27,6 +27,10 @@
 }
 
 .yes, .no {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     height: 40px;
     width: 90%;
     border: none;

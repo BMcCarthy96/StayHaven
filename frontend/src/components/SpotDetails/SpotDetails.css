@@ -1,6 +1,8 @@
 .spot-wrapper {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    /* margin-top: 20px;
+    margin-bottom: 20px; */
+    margin: 20px 30px 20px 30px;
+    /* margin: 20px; */
 }
 
 .spot-title {
@@ -146,6 +148,13 @@ hr {
     margin-bottom: 20px;
 } */
 
+.reviews-section .review-header {
+    display: flex;
+    align-items: left;
+    flex-direction: row;
+    gap: 10px;
+}
+
 .review-header {
     display: flex;
     justify-content: flex-start;
@@ -155,6 +164,15 @@ hr {
 
 .review-header h3 {
     margin-top: 0;
+}
+
+.reviews-section .review-header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.go-dot-fill {
+    margin-top: 6px;
 }
 
 .review-card {
@@ -184,6 +202,7 @@ hr {
 .update-delete-div {
     display: flex;
     justify-content: left;
+    gap: 10px
 }
 
 .post-review-button,

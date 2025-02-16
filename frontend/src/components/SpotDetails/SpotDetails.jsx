@@ -66,7 +66,7 @@ function SpotDetails() {
                         <span className='rating-display'>
                             <MdOutlineStar /> {spotData.avgStarRating ? spotData.avgStarRating.toFixed(1) : 'New'}
                         </span>
-                        {spotData.numReviews > 0 && <GoDotFill size={8} />}
+                        {spotData.numReviews > 0 && <GoDotFill size={8} className="go-dot-fill"/>}
                         {spotData.numReviews > 0 && (
                             <span className='review-count'>{spotData.numReviews} {spotData.numReviews === 1 ? 'Review' : 'Reviews'}</span>
                         )}
@@ -80,7 +80,7 @@ function SpotDetails() {
             <div className='reviews-section'>
                 <div className='review-header'>
                     <h3><MdOutlineStar /> {spotData.avgStarRating ? spotData.avgStarRating.toFixed(1) : 'New'}</h3>
-                    {spotData.numReviews > 0 && <GoDotFill size={8} />}
+                    {spotData.numReviews > 0 && <GoDotFill size={8} className="go-dot-fill"/>}
                     {spotData.numReviews > 0 && (
                         <h3>{spotData.numReviews} {spotData.numReviews === 1 ? 'Review' : 'Reviews'}</h3>
                     )}

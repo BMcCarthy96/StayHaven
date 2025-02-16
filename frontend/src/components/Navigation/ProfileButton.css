@@ -66,10 +66,13 @@
 .logout-button-div {
   display: flex;
   justify-content: center;
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 
 .logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #FF6F61;
   color: white;
   border: none;

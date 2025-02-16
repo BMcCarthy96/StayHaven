@@ -11,6 +11,9 @@
 }
 
 .spot-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     border-radius: 12px;
     overflow: hidden;
     background-color: #fff;
@@ -38,8 +41,10 @@
 .spot-info {
     padding: 10px;
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
     gap: 5px;
+    justify-content: space-between;
 }
 
 .spot-location {

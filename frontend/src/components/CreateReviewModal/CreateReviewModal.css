@@ -60,14 +60,14 @@
     color: #ffc107;
     cursor: pointer;
     font-size: 24px;
-    transition: color 0.2s ease-in-out;
+    /* transition: color 0.2s ease-in-out; */
 }
 
 .empty-star {
     color: #e4e5e9;
     cursor: pointer;
     font-size: 24px;
-    transition: color 0.2s ease-in-out;
+    /* transition: color 0.2s ease-in-out; */
 }
 
 .filled-star:hover,
