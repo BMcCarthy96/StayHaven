@@ -63,7 +63,7 @@ function SpotDetails() {
                 <div className='booking-section'>
                     <div className='rating-separator'>
                     <div className='booking-details'>
-                        <span className='nightly-rate'>${isNaN(parseFloat(spotData.price)) ? parseFloat(spotData.price).toFixed(2) : "N/A"} night</span>
+                        <span className='nightly-rate'>${spotData.price !== undefined && !isNaN(parseFloat(spotData.price)) ? parseFloat(spotData.price).toFixed(2) : "N/A"} night</span>
                         <span className='rating-display'>
                             <MdOutlineStar /> {spotData.avgStarRating ? spotData.avgStarRating.toFixed(1) : 'New'}
                         </span>

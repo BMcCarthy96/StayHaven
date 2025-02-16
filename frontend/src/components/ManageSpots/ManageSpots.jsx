@@ -57,7 +57,7 @@ function ManageSpotsModal() {
                                         </span>
                                     </p>
                                     <p className="listing-price">
-                                        ${listing.price.toFixed(2)} <span>night</span>
+                                    ${listing.price !== undefined && !isNaN(parseFloat(listing.price)) ? parseFloat(listing.price).toFixed(2) : "N/A"} <span>night</span>
                                     </p>
                                 </div>
                                 <Tooltip id={`tooltip-${listing.id}`} place="top" effect="solid" className="tooltip">
