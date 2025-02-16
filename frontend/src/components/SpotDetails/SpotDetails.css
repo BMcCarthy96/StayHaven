@@ -96,23 +96,32 @@
 .booking-details {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    align-items: center;
     padding-top: 10px;
+    padding: 10px 30px 0px 30px;
+    width: 100%;
 }
 
 .nightly-rate {
     font-weight: bolder;
     font-size: medium;
+    flex: 1;
 }
 
 .rating-display, .review-count {
     font-size: small;
+    margin-left: 5px;
+}
+
+.rating-display {
+    padding-right: 5px;
 }
 
 .rating-separator {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .booking-button {

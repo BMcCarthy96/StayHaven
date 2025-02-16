@@ -61,15 +61,17 @@ function SpotDetails() {
                 </div>
 
                 <div className='booking-section'>
+                    <div className='rating-separator'>
                     <div className='booking-details'>
                         <span className='nightly-rate'>${spotData.price.toFixed(2)} night</span>
                         <span className='rating-display'>
                             <MdOutlineStar /> {spotData.avgStarRating ? spotData.avgStarRating.toFixed(1) : 'New'}
                         </span>
-                        {spotData.numReviews > 0 && <GoDotFill size={8} className="go-dot-fill"/>}
+                        {spotData.numReviews > 0 && <GoDotFill size={8}/>}
                         {spotData.numReviews > 0 && (
                             <span className='review-count'>{spotData.numReviews} {spotData.numReviews === 1 ? 'Review' : 'Reviews'}</span>
                         )}
+                    </div>
                     </div>
                     <button className='booking-button' onClick={() => alert('Feature coming soon')}>Reserve</button>
                 </div>
