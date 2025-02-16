@@ -2,13 +2,14 @@
     width: 500px;
     min-height: 550px;
     border: 2px solid black;
-    border-radius: 12px; /* Rounded edges for the form */
+    border-radius: 12px;
     background-color: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 0px 25px 0px 25px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    z-index: 1001;
 }
 
 .sign-up-container h1 {
