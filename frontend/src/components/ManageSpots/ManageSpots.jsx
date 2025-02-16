@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IoMdStar } from 'react-icons/io';
 import { fetchSpots } from '../../store/spots';
 import { Tooltip } from 'react-tooltip';
-import OpenModalButton from '../OpenModalButton/OpenModalButton.jsx';
+import OpenModalButton from "../OpenModalButton/OpenModalButton.jsx";
 import DeleteSpotModal from '../DeleteSpotModal/DeleteSpotModal.jsx';
 import './ManageSpots.css';
 
@@ -72,8 +72,8 @@ function ManageSpotsModal() {
                                 {/* Delete button for spots */}
                                 <OpenModalButton
                                     buttonText="Delete"
-                                    modalComponent={<DeleteSpotModal spotId={listing.id} />}
-                                    className="delete-listing-button"
+                                    modalComponent={<DeleteSpotModal spot={listing} />}
+                                    className="delete-modal"
                                 />
                             </div>
                         </div>

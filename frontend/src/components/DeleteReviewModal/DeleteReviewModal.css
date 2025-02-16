@@ -43,10 +43,10 @@
   }
 
   .no {
-    background-color: darkgray;
+    background-color: grey;
     color: white;
   }
 
   .no:hover {
-    background-color: gray;
+    background-color: rgb(88, 88, 88);
   }

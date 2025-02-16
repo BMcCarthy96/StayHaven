@@ -1,33 +1,29 @@
+import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
-import { deleteSpot } from "../../store/spots";
-import { useNavigate } from "react-router-dom";
-import './DeleteSpotModal.css';
+import { deleteSpot, fetchSpots } from "../../store/spots";
+import "./DeleteSpotModal.css";
 
-function DeleteSpotModal({ spotId, closeModal }) {
+function DeleteSpotModal({ spot }) {
+    const { closeModal } = useModal();
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const handleDelete = async () => {
         try {
-            await dispatch(deleteSpot(spotId));
-            navigate("/");
+            await dispatch(deleteSpot(spot.id));
+            await dispatch(fetchSpots());
             closeModal();
         } catch (error) {
             console.error("Failed to delete spot:", error);
         }
     };
 
-    const handleCancel = () => {
-        closeModal();
-    };
-
     return (
-        <div className="delete-spot-modal">
-            <h3>Confirm Delete</h3>
-            <p>Are you sure you want to remove this spot?</p>
-            <div className="modal-actions">
-                <button className="cancel-btn" onClick={handleCancel}>No (Keep Spot)</button>
-                <button className="delete-btn" onClick={handleDelete}>Yes (Delete Spot)</button>
+        <div className="delete-modal">
+            <h1>Confirm Delete</h1>
+            <h4 className="h4-container">Are you sure you want to remove this spot?</h4>
+            <div className="action-buttons">
+                <button onClick={handleDelete} className="yes">Yes (Delete Spot)</button>
+                <button onClick={closeModal} className="no">No (Keep Spot)</button>
             </div>
         </div>
     );

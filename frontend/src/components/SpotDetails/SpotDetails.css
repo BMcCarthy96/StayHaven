@@ -171,15 +171,15 @@ hr {
     background-color: #9AAB89;
     color: white;
     padding: 7px 15px;
-    border: none;
+    border: 5px solid black;
     border-radius: 5px;
     margin-top: 20px;
 }
 
-.post-review-button:hover,
+/* .post-review-button:hover,
 .delete-modal:hover {
-    background-color: #354A26;
-}
+    background-color: #5208e5;
+} */
 
 /* .delete-spot-button {
     background-color: #FF6F61;
