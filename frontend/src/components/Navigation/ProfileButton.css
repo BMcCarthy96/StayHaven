@@ -25,6 +25,7 @@
   width: 220px;
   z-index: 1000;
   border: 3px solid black;
+  list-style: none
 }
 
 .profile-dropdown.hidden {

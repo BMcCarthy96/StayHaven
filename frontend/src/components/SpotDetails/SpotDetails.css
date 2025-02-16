@@ -6,11 +6,12 @@
 .spot-title {
     font-weight: bold;
     margin-bottom: 20px;
-    font-size: large;
+    font-size: xx-large;
+    text-align: left;
 }
 
 .spot-location {
-    font-size: small;
+    font-size: medium;
 }
 
 .image-gallery {
@@ -136,13 +137,20 @@ hr {
     margin-top: 20px;
 }
 
-.review-header {
+/* .review-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     text-align: center;
     margin-bottom: 20px;
+} */
+
+.review-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px
 }
 
 .review-header h3 {
@@ -155,6 +163,18 @@ hr {
     margin-top: 30px;
     margin-bottom: 30px;
     padding: 5px;
+}
+
+.review-card .review-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.review-card .review-header span {
+    font-size: 14px;
+    color: gray;
+    margin-top: 2px;
 }
 
 .review-body {

@@ -57,7 +57,7 @@ function ManageSpotsModal() {
                                         </span>
                                     </p>
                                     <p className="listing-price">
-                                        ${listing.price} <span>night</span>
+                                        ${listing.price.toFixed(2)} <span>night</span>
                                     </p>
                                 </div>
                                 <Tooltip id={`tooltip-${listing.id}`} place="top" effect="solid" className="tooltip">

@@ -62,7 +62,7 @@ function SpotDetails() {
 
                 <div className='booking-section'>
                     <div className='booking-details'>
-                        <span className='nightly-rate'>${spotData.price} per night</span>
+                        <span className='nightly-rate'>${spotData.price.toFixed(2)} night</span>
                         <span className='rating-display'>
                             <MdOutlineStar /> {spotData.avgStarRating ? spotData.avgStarRating.toFixed(1) : 'New'}
                         </span>

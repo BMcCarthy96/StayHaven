@@ -26,11 +26,11 @@ function LandingPage() {
                             <p className="spot-location">
                                 {spot.city}, {spot.state}
                                 <span className="spot-rating">
-                                    <MdStar /> {spot.avgRating ? spot.avgRating.toFixed(1) : "New"}
+                                    <MdStar /> {spot.avgRating !== null && spot.avgRating !== undefined ? spot.avgRating.toFixed(1) : "New"}
                                 </span>
                             </p>
                             <p className="spot-price">
-                                ${spot.price} <span>night</span>
+                                ${spot.price.toFixed(2)} <span>night</span>
                             </p>
                         </div>
                     </div>
