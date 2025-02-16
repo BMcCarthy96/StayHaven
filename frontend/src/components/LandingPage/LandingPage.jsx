@@ -30,7 +30,7 @@ function LandingPage() {
                                 </span>
                             </p>
                             <p className="spot-price">
-                                ${typeof spot.price === "number" ? spot.price.toFixed(2) : "N/A"} <span>night</span>
+                                ${!isNaN(parseFloat(spot.price)) ? parseFloat(spot.price).toFixed(2) : "N/A"} <span>night</span>
                             </p>
                         </div>
                     </div>
