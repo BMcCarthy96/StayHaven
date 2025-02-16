@@ -72,7 +72,7 @@ function CreateSpot() {
     if (!spotData.country) errors.country = "A country is required";
     if (!spotData.price || spotData.price <= 0) errors.price = "Price must be greater than 0";
     if (!spotData.description || spotData.description.length < 30) errors.description = "Description must be at least 30 characters";
-    if (!previewImage || !urlRegex.test(previewImage)) errors.previewImage = "Preview image must be a valid URL ending in .png, .jpg, or .jpeg";
+    if (!previewImage || !urlRegex.test(previewImage)) errors.previewImage = "Image URL needs to end in .png or .jpg (or .jpeg)";
     otherImages.forEach((url) => {
       if (url.trim() && !urlRegex.test(url)) {
         errors.otherImages = "All images must be valid URLs ending in .png, .jpg, or .jpeg";

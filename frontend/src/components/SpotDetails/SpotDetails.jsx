@@ -56,7 +56,7 @@ function SpotDetails() {
 
             <div className='details-container'>
                 <div className='spot-info'>
-                    <h3 className='spot-host'>Hosted by {spotData.Owner?.firstName} {spotData.Owner?.lastName}</h3>
+                    <h3 className='spot-host'>Hosted by: {spotData.Owner?.firstName} {spotData.Owner?.lastName}</h3>
                     <p className='spot-description'>{spotData.description}</p>
                 </div>
 

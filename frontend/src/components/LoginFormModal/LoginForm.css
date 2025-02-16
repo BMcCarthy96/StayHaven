@@ -36,6 +36,13 @@ h1 {
   outline: none;
 }
 
+.login-button, .demo-user-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .login-button {
   width: 100%;
   padding: 12px 15px;
