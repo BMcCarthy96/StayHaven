@@ -1,8 +1,5 @@
 .spot-wrapper {
-    /* margin-top: 20px;
-    margin-bottom: 20px; */
     margin: 20px 30px 20px 30px;
-    /* margin: 20px; */
 }
 
 .spot-title {
@@ -148,15 +145,6 @@ hr {
     margin-top: 20px;
 }
 
-/* .review-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 20px;
-} */
-
 .reviews-section .review-header {
     display: flex;
     align-items: left;
@@ -223,24 +211,6 @@ hr {
     border-radius: 5px;
     margin-top: 20px;
 }
-
-/* .post-review-button:hover,
-.delete-modal:hover {
-    background-color: #5208e5;
-} */
-
-/* .delete-spot-button {
-    background-color: #FF6F61;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-.delete-spot-button:hover {
-    background-color: #f84d3e;
-} */
 
 @media (max-width: 768px) {
     .image-gallery {

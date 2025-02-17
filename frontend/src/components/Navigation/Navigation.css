@@ -51,10 +51,6 @@ html, body {
     font-size: large;
   }
 
-  /* .profile-btn-wrapper {
-
-  } */
-
   @media (max-width: 768px) {
     .navbar {
       padding: 10px 15px;

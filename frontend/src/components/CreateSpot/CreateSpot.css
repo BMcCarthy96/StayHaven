@@ -62,7 +62,6 @@ textarea {
 
 button {
     display: flex;
-    /* width: 100%; */
     background-color: #FF6F61;
     color: white;
     padding: 10px;
