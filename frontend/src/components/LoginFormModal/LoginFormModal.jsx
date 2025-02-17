@@ -27,8 +27,10 @@ function LoginFormModal() {
       })
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
+        if (data?.errors?.credential) {
+          setErrors({ credential: data.errors.credential });
+        } else {
+          setErrors({ credential: "The provided credentials were invalid." });
         }
       });
   };
@@ -85,6 +87,9 @@ function LoginFormModal() {
           onClick={() => {
             setCredential("FakeUser1");
             setPassword("password2");
+            setTimeout(() => {
+              document.getElementById("login-form").requestSubmit();
+            }, 0);
           }}
         >
           Demo User
