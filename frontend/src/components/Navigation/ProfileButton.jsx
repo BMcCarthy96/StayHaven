@@ -60,7 +60,7 @@ function ProfileButton({ user }) {
         {user ? (
           <>
           <div className="options">
-            <div>Hello, {user.username}</div>
+            <div>Hello, {user.firstName}</div>
             <div>{user.email}</div>
           </div>
           <hr />

@@ -20,7 +20,7 @@ function CreateReviewModal({ spotId }) {
     setHoverRating(0);
     setReview('');
     setError(null);
-  }, []);
+  }, [spotId]);
 
   const fillStars = () => {
     return [0, 1, 2, 3, 4].map((index) => (

@@ -26,7 +26,7 @@ function LandingPage() {
                             <p className="spot-location">
                                 {spot.city}, {spot.state}
                                 <span className="spot-rating">
-                                    <MdStar /> {spot.avgRating !== null && spot.avgRating !== undefined ? spot.avgRating.toFixed(1) : "New"}
+                                    <MdStar /> {Number(spot.avgRating) > 0 ? Number(spot.avgRating).toFixed(1) : "New"}
                                 </span>
                             </p>
                             <p className="spot-price">

@@ -25,7 +25,7 @@ function SignupFormModal() {
     setPassword("");
     setConfirmPassword("");
     setErrors({});
-  }, []);
+  }, [closeModal]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +36,7 @@ function SignupFormModal() {
 
     setErrors({});
     try {
-      await dispatch(
+      const newUser = await dispatch(
         sessionActions.signup({
           email,
           username,
@@ -45,10 +45,12 @@ function SignupFormModal() {
           password
         })
       );
-      closeModal();
+      if(newUser) {
+        closeModal();
+      }
     } catch (res) {
       const data = await res.json();
-      if (data?.errors) setErrors(data.errors);
+      if(data?.errors) setErrors(data.errors);
     }
   };
 
