@@ -151,7 +151,7 @@ const spotsReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                allSpots: updatedSpots,
+                allSpots: { ...updatedSpots },
                 spotDetails:
                     state.spotDetails.id === action.spotId
                         ? {}

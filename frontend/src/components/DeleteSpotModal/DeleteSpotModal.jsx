@@ -10,7 +10,7 @@ function DeleteSpotModal({ spot }) {
     const handleDelete = async () => {
         try {
             await dispatch(deleteSpot(spot.id));
-            await dispatch(fetchSpots());
+            setTimeout(() => dispatch(fetchSpots()), 200);
             closeModal();
         } catch (error) {
             console.error("Failed to delete spot:", error);
