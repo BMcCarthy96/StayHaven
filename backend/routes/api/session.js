@@ -61,7 +61,7 @@ router.delete("/", (req, res) => {
 });
 
 // Restore session user
-router.get("/", (req, res) => {
+router.get("/", restoreUser, (req, res) => {
     const { user } = req;
 
     if (user) {
@@ -71,6 +71,10 @@ router.get("/", (req, res) => {
             lastName: user.lastName,
             email: user.email,
             username: user.username,
+            bio: user.bio,
+            avatarUrl: user.avatarUrl || null,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         };
         return res.json({ user: safeUser });
     }
