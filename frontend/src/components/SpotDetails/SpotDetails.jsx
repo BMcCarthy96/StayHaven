@@ -1,15 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSpotDetails } from "../../store/spots";
 import "./SpotDetails.css";
 import { MdOutlineStar } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
+import {
+    FaHeart,
+    FaShareAlt,
+    FaWifi,
+    FaBed,
+    FaBath,
+    FaSmokingBan,
+} from "react-icons/fa";
 import { fetchReviewsForSpot } from "../../store/reviews";
 import OpenModalButton from "../OpenModalButton/OpenModalButton.jsx";
 import CreateReviewModal from "../CreateReviewModal/CreateReviewModal.jsx";
 import DeleteReviewModal from "../DeleteReviewModal/DeleteReviewModal.jsx";
 import UpdateReviewModal from "../UpdateReviewModal/UpdateReviewModal.jsx";
+import HostProfileModal from "../HostProfileModal/HostProfileModal.jsx";
+import Slider from "react-slick";
+import gravatarUrl from "gravatar-url";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { motion } from "framer-motion";
 
 function SpotDetails() {
     const { spotId } = useParams();
@@ -26,30 +41,78 @@ function SpotDetails() {
         (review) => review.User?.id === loggedInUser?.id
     );
 
+    const [liked, setLiked] = useState(false);
+
     useEffect(() => {
         dispatch(fetchSpotDetails(spotId));
         dispatch(fetchReviewsForSpot(spotId));
     }, [dispatch, spotId]);
 
+    // Google Maps
+    const { isLoaded: mapLoaded } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCHx89b489Ou8emoXAOgYMSfAkf8UJ1Wng",
+    });
+
+    // Carousel images
+    const images = spotData.SpotImages?.map((img) => img.url) || [];
+
+    const sliderSettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        adaptiveHeight: true,
+    };
+
     if (!spotData || Object.keys(spotData).length === 0) {
-        return <p>Loading spot details...</p>;
+        return (
+            <div style={{ padding: 32 }}>
+                <Skeleton height={340} />
+                <Skeleton count={5} />
+            </div>
+        );
     }
 
-    const mainImage =
-        spotData.SpotImages?.length > 0
-            ? spotData.SpotImages[0].url
-            : "https://placehold.co/600x400/ffcc00/png";
-    const extraImages =
-        spotData.SpotImages?.slice(1, 5).map((img) => img.url) || [];
+    const center = {
+        lat: Number(spotData.lat) || 0,
+        lng: Number(spotData.lng) || 0,
+    };
+
+    // Share button handler
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+    };
 
     return (
         <div className="spot-wrapper">
+            <button
+                className={`favorite-btn${liked ? " liked" : ""}`}
+                onClick={() => setLiked(!liked)}
+                aria-label="Favorite"
+            >
+                <FaHeart color={liked ? "#ff6f61" : "#ccc"} size={28} />
+            </button>
+            <button
+                className="share-btn"
+                onClick={handleShare}
+                aria-label="Share"
+            >
+                <FaShareAlt size={22} />
+            </button>
             <div className="hero-image-container">
-                <img
-                    className="hero-image"
-                    src={mainImage}
-                    alt={`${spotData.name} main`}
-                />
+                <Slider {...sliderSettings}>
+                    {images.map((img, idx) => (
+                        <div key={idx}>
+                            <img
+                                className="hero-image"
+                                src={img}
+                                alt={`Spot image ${idx + 1}`}
+                            />
+                        </div>
+                    ))}
+                </Slider>
                 <div className="hero-overlay">
                     <h1 className="hero-title">{spotData.name}</h1>
                     <div className="hero-location">
@@ -58,21 +121,17 @@ function SpotDetails() {
                 </div>
             </div>
 
-            <div className="gallery-section">
-                {extraImages.map((imgUrl, index) => (
-                    <div className="gallery-image" key={index}>
-                        <img
-                            src={imgUrl}
-                            alt={`${spotData.name} view ${index + 1}`}
-                        />
-                    </div>
-                ))}
-            </div>
-
             <div className="details-booking-section">
                 <div className="spot-info-card">
                     <div className="host-row">
-                        <span className="host-badge">SUPERHOST</span>
+                        <OpenModalButton
+                            buttonText={
+                                <span className="host-badge">SUPERHOST</span>
+                            }
+                            modalComponent={
+                                <HostProfileModal host={spotData.Owner} />
+                            }
+                        />
                         <span className="spot-host">
                             Hosted by {spotData.Owner?.firstName}{" "}
                             {spotData.Owner?.lastName}
@@ -80,10 +139,18 @@ function SpotDetails() {
                     </div>
                     <p className="spot-description">{spotData.description}</p>
                     <div className="amenities-row">
-                        <span className="amenity">🛏️ 2 Beds</span>
-                        <span className="amenity">🛁 1 Bath</span>
-                        <span className="amenity">📶 Wifi</span>
-                        <span className="amenity">🚭 No Smoking</span>
+                        <span className="amenity">
+                            <FaBed /> 2 Beds
+                        </span>
+                        <span className="amenity">
+                            <FaBath /> 1 Bath
+                        </span>
+                        <span className="amenity">
+                            <FaWifi /> Wifi
+                        </span>
+                        <span className="amenity">
+                            <FaSmokingBan /> No Smoking
+                        </span>
                         {/* Add more amenities as needed */}
                     </div>
                 </div>
@@ -122,6 +189,22 @@ function SpotDetails() {
                     </button>
                 </div>
             </div>
+
+            {mapLoaded && (
+                <div style={{ margin: "32px" }}>
+                    <GoogleMap
+                        mapContainerStyle={{
+                            width: "100%",
+                            height: "300px",
+                            borderRadius: "12px",
+                        }}
+                        center={center}
+                        zoom={14}
+                    >
+                        <Marker position={center} />
+                    </GoogleMap>
+                </div>
+            )}
 
             <hr className="section-divider" />
 
@@ -162,7 +245,7 @@ function SpotDetails() {
                               (a, b) =>
                                   new Date(b.createdAt) - new Date(a.createdAt)
                           )
-                          .map((review) => {
+                          .map((review, idx) => {
                               const reviewDate = new Date(review.createdAt);
                               const formattedDate = reviewDate.toLocaleString(
                                   "en-US",
@@ -172,18 +255,41 @@ function SpotDetails() {
                                   loggedInUser &&
                                   review.User?.id === loggedInUser.id;
 
-                              // Avatar: use first initial or fallback star
-                              const avatar = review.User?.firstName ? (
-                                  review.User.firstName[0].toUpperCase()
-                              ) : (
-                                  <MdOutlineStar />
-                              );
+                              // Gravatar avatar or fallback
+                              const avatarUrl = review.User?.email
+                                  ? gravatarUrl(review.User.email, {
+                                        size: 44,
+                                        default: "retro",
+                                    })
+                                  : null;
 
                               return (
-                                  <div key={review.id} className="review-card">
+                                  <motion.div
+                                      key={review.id}
+                                      className="review-card"
+                                      initial={{ opacity: 0, y: 30 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{
+                                          duration: 0.5,
+                                          delay: idx * 0.1,
+                                      }}
+                                  >
                                       <div className="review-header">
                                           <div className="review-avatar">
-                                              {avatar}
+                                              {avatarUrl ? (
+                                                  <img
+                                                      src={avatarUrl}
+                                                      alt="avatar"
+                                                      style={{
+                                                          width: "100%",
+                                                          borderRadius: "50%",
+                                                      }}
+                                                  />
+                                              ) : review.User?.firstName ? (
+                                                  review.User.firstName[0].toUpperCase()
+                                              ) : (
+                                                  <MdOutlineStar />
+                                              )}
                                           </div>
                                           <div style={{ flex: 1 }}>
                                               <div className="review-name-date">
@@ -244,7 +350,7 @@ function SpotDetails() {
                                               />
                                           </div>
                                       )}
-                                  </div>
+                                  </motion.div>
                               );
                           })
                     : !isOwner && <p>Be the first to post a review!</p>}

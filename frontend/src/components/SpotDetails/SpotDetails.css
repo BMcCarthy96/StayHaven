@@ -6,8 +6,47 @@
     box-shadow: 0 6px 32px rgba(0, 0, 0, 0.09);
     padding-bottom: 40px;
     overflow: hidden;
+    position: relative;
 }
 
+/* Favorite/Share Buttons */
+.favorite-btn,
+.share-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    z-index: 2;
+    top: 18px;
+    transition: transform 0.1s, opacity 0.2s;
+    opacity: 0.85;
+}
+.favorite-btn {
+    right: 18px;
+}
+.favorite-btn.liked {
+    animation: pop 0.2s;
+}
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.share-btn {
+    left: 18px;
+}
+.favorite-btn:hover,
+.share-btn:hover {
+    opacity: 1;
+}
+
+/* Hero Image & Carousel */
 .hero-image-container {
     position: relative;
     width: 100%;
@@ -15,20 +54,31 @@
     overflow: hidden;
     border-radius: 18px 18px 0 0;
 }
-
 .hero-image {
     width: 100%;
-    height: 100%;
+    height: 340px;
     object-fit: cover;
     filter: brightness(0.92);
     border-radius: 18px 18px 0 0;
     transition: transform 0.3s;
 }
-
 .hero-image-container:hover .hero-image {
     transform: scale(1.03);
 }
+.slick-slider,
+.slick-list,
+.slick-track,
+.slick-slide > div {
+    height: 100%;
+}
+.slick-dots li button:before {
+    color: #ff6f61;
+}
+.slick-dots li.slick-active button:before {
+    color: #ff6f61;
+}
 
+/* Overlay Title */
 .hero-overlay {
     position: absolute;
     left: 0;
@@ -43,7 +93,6 @@
     padding: 32px 32px 18px 32px;
     border-radius: 0 0 18px 18px;
 }
-
 .hero-title {
     font-size: 2.5rem;
     font-weight: 700;
@@ -52,19 +101,18 @@
     color: #fff;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.7);
 }
-
 .hero-location {
     font-size: 1.2rem;
     font-weight: 400;
     opacity: 0.93;
 }
 
+/* Gallery Section (if used) */
 .gallery-section {
     display: flex;
     gap: 10px;
     margin: 18px 32px 0 32px;
 }
-
 .gallery-image {
     flex: 1;
     min-width: 0;
@@ -72,7 +120,6 @@
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
-
 .gallery-image img {
     width: 100%;
     height: 120px;
@@ -80,18 +127,17 @@
     border-radius: 12px;
     transition: transform 0.2s;
 }
-
 .gallery-image img:hover {
     transform: scale(1.04);
 }
 
+/* Details & Booking Section */
 .details-booking-section {
     display: flex;
     gap: 32px;
     margin: 32px 32px 0 32px;
     flex-wrap: wrap;
 }
-
 .spot-info-card {
     flex: 2;
     background: #fff;
@@ -100,14 +146,12 @@
     padding: 32px 28px 24px 28px;
     margin-bottom: 24px;
 }
-
 .host-row {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 12px;
 }
-
 .host-badge {
     background: #ff6f61;
     color: #fff;
@@ -118,27 +162,23 @@
     letter-spacing: 0.04em;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
-
 .spot-host {
     font-size: 1.1rem;
     font-weight: 600;
     color: #333;
 }
-
 .spot-description {
     margin-bottom: 18px;
     font-size: 1.08rem;
     color: #444;
     line-height: 1.6;
 }
-
 .amenities-row {
     display: flex;
     gap: 18px;
     flex-wrap: wrap;
     margin-top: 10px;
 }
-
 .amenity {
     background: #f2f2f2;
     color: #555;
@@ -146,8 +186,12 @@
     padding: 6px 14px;
     font-size: 0.98rem;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
+/* Booking Card */
 .booking-card {
     flex: 1;
     background: #fff;
@@ -162,7 +206,6 @@
     max-width: 340px;
     height: fit-content;
 }
-
 .booking-header {
     display: flex;
     align-items: center;
@@ -170,20 +213,17 @@
     margin-bottom: 18px;
     font-size: 1.15rem;
 }
-
 .booking-price {
     font-size: 1.3rem;
     font-weight: 700;
     color: #222;
 }
-
 .per-night {
     font-size: 1rem;
     font-weight: 400;
     color: #888;
     margin-left: 2px;
 }
-
 .booking-rating {
     display: flex;
     align-items: center;
@@ -192,13 +232,11 @@
     font-size: 1.1rem;
     font-weight: 600;
 }
-
 .review-count {
     font-size: 1rem;
     color: #888;
     margin-left: 6px;
 }
-
 .booking-button {
     margin-top: 12px;
     background-color: #ff6f61;
@@ -215,12 +253,19 @@
     justify-content: center;
     align-items: center;
 }
-
 .booking-button:hover {
     background-color: #f84d3e;
     transform: translateY(-2px) scale(1.03);
 }
 
+/* Google Map */
+.google-map {
+    margin: 32px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Divider */
 .section-divider {
     margin: 40px 0 0 0;
     border: none;
@@ -232,7 +277,6 @@
     margin-top: 40px;
     padding: 0 32px;
 }
-
 .reviews-section .review-header {
     display: flex;
     align-items: center;
@@ -240,14 +284,12 @@
     gap: 10px;
     margin-bottom: 8px;
 }
-
 .review-header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 12px;
 }
-
 .review-header h3 {
     margin-top: 0;
     margin-bottom: 0;
@@ -255,11 +297,9 @@
     font-weight: 700;
     color: #222;
 }
-
 .go-dot-fill {
     margin-top: 6px;
 }
-
 .review-card {
     background: #fff;
     border-radius: 16px;
@@ -274,7 +314,6 @@
     gap: 10px;
     animation: fadeInUp 0.5s;
 }
-
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -285,18 +324,15 @@
         transform: translateY(0);
     }
 }
-
 .review-card:hover {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
 }
-
 .review-card .review-header {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 14px;
 }
-
 .review-avatar {
     width: 44px;
     height: 44px;
@@ -310,40 +346,41 @@
     color: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
     flex-shrink: 0;
+    overflow: hidden;
 }
-
+.review-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
 .review-name-date {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 }
-
 .review-header strong {
     font-size: 1.1rem;
     color: #222;
     font-weight: 600;
 }
-
 .review-date {
     font-size: 0.95rem;
     color: #888;
     margin-left: auto;
     white-space: nowrap;
 }
-
 .review-stars {
     display: flex;
     align-items: center;
     gap: 2px;
     margin-left: 8px;
 }
-
 .review-stars svg {
     color: #ffb400;
     font-size: 18px;
 }
-
 .review-body {
     margin-top: 10px;
     font-size: 1.08rem;
@@ -351,14 +388,12 @@
     line-height: 1.6;
     letter-spacing: 0.01em;
 }
-
 .update-delete-div {
     display: flex;
     justify-content: left;
     gap: 10px;
     margin-top: 18px;
 }
-
 .post-review-button,
 .delete-modal {
     background-color: #9aab89;
@@ -372,12 +407,12 @@
     cursor: pointer;
     transition: background 0.2s;
 }
-
 .post-review-button:hover,
 .delete-modal:hover {
     background-color: #7e8e6c;
 }
 
+/* Responsive Design */
 @media (max-width: 900px) {
     .details-booking-section {
         flex-direction: column;
@@ -388,7 +423,6 @@
         gap: 8px;
     }
 }
-
 @media (max-width: 600px) {
     .spot-wrapper {
         padding-bottom: 0;

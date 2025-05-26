@@ -1,0 +1,45 @@
+.host-profile-modal {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+    padding: 32px 28px 24px 28px;
+    min-width: 320px;
+    max-width: 400px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.host-profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6f61 60%, #f8e1e1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #fff;
+    margin: 0 auto 16px auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.host-profile-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 6px;
+}
+
+.host-profile-email {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 18px;
+}
+
+.host-profile-bio {
+    font-size: 1.05rem;
+    color: #444;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
