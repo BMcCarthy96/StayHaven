@@ -74,6 +74,23 @@ export const restoreUser = () => async (dispatch) => {
     return response;
 };
 
+// Update user profile
+export const updateUserProfile = (profileData) => async (dispatch) => {
+    const response = await fetch("/api/users/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profileData),
+    });
+    if (response.ok) {
+        const updatedUser = await response.json();
+        dispatch(setUser(updatedUser));
+        return updatedUser;
+    } else {
+        const errorData = await response.json();
+        throw errorData;
+    }
+};
+
 // initial state
 const initialState = { user: null };
 

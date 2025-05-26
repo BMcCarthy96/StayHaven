@@ -1,0 +1,74 @@
+.edit-profile-modal {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+    padding: 32px 28px 24px 28px;
+    min-width: 320px;
+    max-width: 400px;
+    text-align: center;
+    margin: 0 auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+}
+.edit-profile-modal h2 {
+    margin-bottom: 18px;
+}
+.edit-profile-modal label {
+    display: block;
+    text-align: left;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+.edit-profile-modal input,
+.edit-profile-modal textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+.edit-profile-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+}
+.save-btn {
+    background: #ff6f61;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.save-btn:hover {
+    background: #f84d3e;
+}
+.cancel-btn {
+    background: #eee;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.cancel-btn:hover {
+    background: #ccc;
+}
+.edit-profile-error {
+    color: #ff6f61;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
