@@ -44,65 +44,75 @@ function SpotDetails() {
 
     return (
         <div className="spot-wrapper">
-            <div className="spot-header">
-                <h1 className="spot-title">{spotData.name}</h1>
-                <p className="spot-location">
-                    {spotData.city}, {spotData.state}, {spotData.country}
-                </p>
-            </div>
-
-            <div className="image-gallery">
-                <div className="primary-image">
-                    <img src={mainImage} alt={`${spotData.name} main`} />
-                </div>
-                <div className="additional-images">
-                    {extraImages.map((imgUrl, index) => (
-                        <div className="gallery-image" key={index}>
-                            <img
-                                src={imgUrl}
-                                alt={`${spotData.name} view ${index + 1}`}
-                            />
-                        </div>
-                    ))}
+            <div className="hero-image-container">
+                <img
+                    className="hero-image"
+                    src={mainImage}
+                    alt={`${spotData.name} main`}
+                />
+                <div className="hero-overlay">
+                    <h1 className="hero-title">{spotData.name}</h1>
+                    <div className="hero-location">
+                        {spotData.city}, {spotData.state}, {spotData.country}
+                    </div>
                 </div>
             </div>
 
-            <div className="details-container">
-                <div className="spot-info">
-                    <h3 className="spot-host">
-                        Hosted by: {spotData.Owner?.firstName}{" "}
-                        {spotData.Owner?.lastName}
-                    </h3>
+            <div className="gallery-section">
+                {extraImages.map((imgUrl, index) => (
+                    <div className="gallery-image" key={index}>
+                        <img
+                            src={imgUrl}
+                            alt={`${spotData.name} view ${index + 1}`}
+                        />
+                    </div>
+                ))}
+            </div>
+
+            <div className="details-booking-section">
+                <div className="spot-info-card">
+                    <div className="host-row">
+                        <span className="host-badge">SUPERHOST</span>
+                        <span className="spot-host">
+                            Hosted by {spotData.Owner?.firstName}{" "}
+                            {spotData.Owner?.lastName}
+                        </span>
+                    </div>
                     <p className="spot-description">{spotData.description}</p>
+                    <div className="amenities-row">
+                        <span className="amenity">🛏️ 2 Beds</span>
+                        <span className="amenity">🛁 1 Bath</span>
+                        <span className="amenity">📶 Wifi</span>
+                        <span className="amenity">🚭 No Smoking</span>
+                        {/* Add more amenities as needed */}
+                    </div>
                 </div>
 
-                <div className="booking-section">
-                    <div className="rating-separator">
-                        <div className="booking-details">
-                            <span className="nightly-rate">
-                                $
-                                {spotData.price !== undefined &&
-                                !isNaN(parseFloat(spotData.price))
-                                    ? parseFloat(spotData.price).toFixed(2)
-                                    : "N/A"}{" "}
-                                night
+                <div className="booking-card">
+                    <div className="booking-header">
+                        <span className="booking-price">
+                            $
+                            {spotData.price !== undefined &&
+                            !isNaN(parseFloat(spotData.price))
+                                ? parseFloat(spotData.price).toFixed(2)
+                                : "N/A"}{" "}
+                            <span className="per-night">night</span>
+                        </span>
+                        <span className="booking-rating">
+                            <MdOutlineStar />{" "}
+                            {spotData.avgStarRating
+                                ? spotData.avgStarRating.toFixed(1)
+                                : "New"}
+                        </span>
+                        {spotData.numReviews > 0 && <GoDotFill size={8} />}
+                        {spotData.numReviews > 0 && (
+                            <span className="review-count">
+                                {spotData.numReviews}{" "}
+                                {spotData.numReviews === 1
+                                    ? "Review"
+                                    : "Reviews"}
                             </span>
-                            <span className="rating-display">
-                                <MdOutlineStar />{" "}
-                                {spotData.avgStarRating
-                                    ? spotData.avgStarRating.toFixed(1)
-                                    : "New"}
-                            </span>
-                            {spotData.numReviews > 0 && <GoDotFill size={8} />}
-                            {spotData.numReviews > 0 && (
-                                <span className="review-count">
-                                    {spotData.numReviews}{" "}
-                                    {spotData.numReviews === 1
-                                        ? "Review"
-                                        : "Reviews"}
-                                </span>
-                            )}
-                        </div>
+                        )}
                     </div>
                     <button
                         className="booking-button"
@@ -113,7 +123,7 @@ function SpotDetails() {
                 </div>
             </div>
 
-            <hr />
+            <hr className="section-divider" />
 
             <div className="reviews-section">
                 <div className="review-header">
