@@ -76,15 +76,14 @@ export const restoreUser = () => async (dispatch) => {
 
 // Update user profile
 export const updateUserProfile = (profileData) => async (dispatch) => {
-    const response = await fetch("/api/users/profile", {
+    const response = await csrfFetch("/api/users/profile", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileData),
     });
     if (response.ok) {
-        const updatedUser = await response.json();
-        dispatch(setUser(updatedUser));
-        return updatedUser;
+        const data = await response.json();
+        dispatch(setUser(data.user));
+        return data.user;
     } else {
         const errorData = await response.json();
         throw errorData;

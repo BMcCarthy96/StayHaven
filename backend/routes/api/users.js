@@ -77,17 +77,33 @@ router.post("/", validateSignup, async (req, res, next) => {
 
 // Update user profile
 router.put("/profile", requireAuth, async (req, res) => {
-    const { firstName, lastName, bio, avatarUrl } = req.body;
+    const { firstName, lastName, email, bio, avatarUrl } = req.body;
     const user = await User.findByPk(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     user.firstName = firstName;
     user.lastName = lastName;
     user.bio = bio;
-    user.avatarUrl = avatarUrl;
+    if (email) user.email = email;
+    if (avatarUrl !== undefined && avatarUrl.trim() !== "") {
+        user.avatarUrl = avatarUrl;
+    }
+
     await user.save();
 
-    return res.json(user);
+    const safeUser = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        username: user.username,
+        bio: user.bio,
+        avatarUrl: user.avatarUrl || null,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+    };
+
+    return res.json({ user: safeUser });
 });
 
 module.exports = router;

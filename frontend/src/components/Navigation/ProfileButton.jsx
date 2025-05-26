@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { FaUserCircle } from "react-icons/fa";
+// import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
 import { HiBars3 } from "react-icons/hi2";
+import gravatarUrl from "gravatar-url";
 import "./ProfileButton.css";
 
 function ProfileButton({ user }) {
@@ -45,6 +46,13 @@ function ProfileButton({ user }) {
 
     const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
+    const avatarSrc =
+        user?.avatarUrl && user.avatarUrl.trim() !== ""
+            ? user.avatarUrl
+            : user?.email
+            ? gravatarUrl(user.email, { size: 40, default: "retro" })
+            : "https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg?semt=ais_hybrid&w=740";
+
     return (
         <>
             <button onClick={toggleMenu} className="profile-button">
@@ -52,7 +60,16 @@ function ProfileButton({ user }) {
                     <HiBars3 size={30} />
                 </div>
                 <div className="user">
-                    <FaUserCircle size={30} />
+                    <img
+                        src={avatarSrc}
+                        alt="avatar"
+                        style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                        }}
+                    />
                 </div>
             </button>
 

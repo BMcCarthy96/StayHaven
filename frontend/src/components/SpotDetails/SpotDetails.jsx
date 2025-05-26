@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSpotDetails } from "../../store/spots";
@@ -31,13 +31,15 @@ function SpotDetails() {
     const dispatch = useDispatch();
 
     const spotData = useSelector((state) => state.spots.spotDetails);
-    const reviews = useSelector(
+    const reviewsObj = useSelector(
         (state) => state.reviews.reviewsBySpot[spotId] || {}
     );
     const loggedInUser = useSelector((state) => state.session.user);
 
+    const reviews = useMemo(() => Object.values(reviewsObj), [reviewsObj]);
+
     const isOwner = loggedInUser && spotData.Owner?.id === loggedInUser.id;
-    const hasReviewed = Object.values(reviews).some(
+    const hasReviewed = reviews.some(
         (review) => review.User?.id === loggedInUser?.id
     );
 
@@ -239,8 +241,8 @@ function SpotDetails() {
                     )}
                 </div>
 
-                {reviews && Object.keys(reviews).length > 0
-                    ? Object.values(reviews)
+                {reviews && reviews.length > 0
+                    ? reviews
                           .sort(
                               (a, b) =>
                                   new Date(b.createdAt) - new Date(a.createdAt)

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateUserProfile } from "../../store/session";
 import "./EditProfileModal.css";
@@ -7,17 +7,35 @@ export default function EditProfileModal({ user, onClose, onSave }) {
     const dispatch = useDispatch();
     const [firstName, setFirstName] = useState(user.firstName);
     const [lastName, setLastName] = useState(user.lastName);
+    const [email, setEmail] = useState(user.email || "");
     const [bio, setBio] = useState(user.bio || "");
     const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
     const [error, setError] = useState(null);
 
+    useEffect(() => {
+        setFirstName(user.firstName);
+        setLastName(user.lastName);
+        setEmail(user.email || "");
+        setBio(user.bio || "");
+        setAvatarUrl(user.avatarUrl || "");
+    }, [user]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
+
+        const payload = {
+            firstName,
+            lastName,
+            email,
+            bio,
+        };
+        if (avatarUrl && avatarUrl.trim() !== "") {
+            payload.avatarUrl = avatarUrl;
+        }
+
         try {
-            await dispatch(
-                updateUserProfile({ firstName, lastName, bio, avatarUrl })
-            );
+            await dispatch(updateUserProfile(payload));
             onSave();
         } catch (err) {
             setError("Failed to update profile. Please try again.");
@@ -41,6 +59,15 @@ export default function EditProfileModal({ user, onClose, onSave }) {
                     <input
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
+                        required
+                    />
+                </label>
+                <label>
+                    Email
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </label>
