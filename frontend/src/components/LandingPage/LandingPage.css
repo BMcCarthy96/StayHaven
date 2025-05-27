@@ -362,6 +362,20 @@
     line-height: 1.5;
 }
 
+.map-preview-section {
+    margin: 40px 0 30px 0;
+    padding: 0 40px;
+}
+.map-preview-section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+.leaflet-container {
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
 /* --- ANIMATIONS --- */
 @keyframes fadeInUp {
     from {

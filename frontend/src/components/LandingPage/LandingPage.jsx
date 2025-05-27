@@ -8,6 +8,18 @@ import Slider from "react-slick";
 import CountUp from "react-countup";
 import gravatarUrl from "gravatar-url";
 import "./LandingPage.css";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix default marker icon issue with webpack/Vite
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl:
+        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
 const TESTIMONIALS = [
     {
@@ -85,6 +97,12 @@ function LandingPage() {
             spot.state.toLowerCase().includes(search.toLowerCase()) ||
             spot.country.toLowerCase().includes(search.toLowerCase())
     );
+
+    // Center the map on the first featured spot or a default location
+    const mapCenter =
+        featuredSpots.length > 0
+            ? [featuredSpots[0].lat, featuredSpots[0].lng]
+            : [40.7128, -74.006]; // Default: New York
 
     return (
         <div className="landing-root">
@@ -221,6 +239,34 @@ function LandingPage() {
                         </div>
                     ))}
                 </Slider>
+            </section>
+
+            {/* Interactive Map Preview */}
+            <section className="map-preview-section">
+                <h2>Explore Featured Spots on the Map</h2>
+                <MapContainer
+                    center={mapCenter}
+                    zoom={2}
+                    style={{
+                        height: "320px",
+                        width: "100%",
+                        borderRadius: "16px",
+                    }}
+                >
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    {featuredSpots.map((spot) => (
+                        <Marker key={spot.id} position={[spot.lat, spot.lng]}>
+                            <Popup>
+                                <strong>{spot.name}</strong>
+                                <br />
+                                {spot.city}, {spot.state}
+                            </Popup>
+                        </Marker>
+                    ))}
+                </MapContainer>
             </section>
 
             {/* Spot Cards Grid */}

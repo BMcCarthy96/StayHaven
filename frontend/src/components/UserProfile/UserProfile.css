@@ -14,6 +14,7 @@
     align-items: center;
     gap: 32px;
     margin-bottom: 24px;
+    justify-content: space-between;
 }
 
 .profile-avatar-wrapper {
@@ -162,6 +163,12 @@
 .save-btn:hover,
 .cancel-btn:hover {
     transform: translateY(-2px) scale(1.03);
+}
+
+.theme-switcher-wrapper {
+    margin-left: auto;
+    display: flex;
+    align-items: flex-start;
 }
 
 /* Responsive */

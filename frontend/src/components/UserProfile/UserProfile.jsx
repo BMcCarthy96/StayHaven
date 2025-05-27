@@ -12,6 +12,7 @@ import { fetchUserBookings } from "../../store/bookings";
 import { fetchWishlist } from "../../store/wishlist";
 import { fetchUserReviews } from "../../store/reviews";
 import { fetchSpots } from "../../store/spots";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const TABS = ["My Spots", "My Reviews", "My Bookings", "Wishlist", "Settings"];
 
@@ -118,6 +119,9 @@ function UserProfile() {
                             ? new Date(user.createdAt).toLocaleDateString()
                             : "Unknown"}
                     </div>
+                </div>
+                <div className="theme-switcher-wrapper">
+                    <ThemeSwitcher />
                 </div>
             </div>
 

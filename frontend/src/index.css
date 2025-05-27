@@ -1,2 +1,127 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
+
+:root {
+    --bg-main: #fff;
+    --bg-secondary: #f7f7f7;
+    --text-main: #222;
+    --text-secondary: #444;
+    --text-muted: #888;
+    --card-bg: #fff;
+    --input-bg: #fff;
+    --input-border: #ccc;
+    --badge-bg: #f7f7f7;
+    --badge-text: #ff6f61;
+    --tab-active: #ff6f61;
+    --tab-inactive: #888;
+    --button-bg: #ff6f61;
+    --button-text: #fff;
+    --button-hover-bg: #f84d3e;
+}
+
+.dark-theme {
+    --bg-main: #181818;
+    --bg-secondary: #232323;
+    --text-main: #f3f3f3;
+    --text-secondary: #e0e0e0;
+    --text-muted: #bbb;
+    --card-bg: #232323;
+    --input-bg: #222;
+    --input-border: #444;
+    --badge-bg: #232323;
+    --badge-text: #ffe082;
+    --tab-active: #ff6f61;
+    --tab-inactive: #bbb;
+    --button-bg: #353b48;
+    --button-text: #f3f3f3;
+    --button-hover-bg: #ff6f61;
+}
+
+body,
+html {
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.profile-root,
+.profile-header,
+.profile-tab-content,
+.profile-timeline-section,
+.profile-settings,
+.profile-placeholder,
+.profile-spot-card,
+.profile-review-card,
+.profile-booking-card,
+.profile-wishlist-card,
+.profile-timeline,
+.edit-profile-modal,
+.change-password-modal,
+.delete-account-modal {
+    background: var(--card-bg);
+    color: var(--text-main);
+}
+
+.profile-info h2,
+.profile-bio,
+.profile-joined,
+.timeline-desc,
+.timeline-date {
+    color: var(--text-main);
+}
+
+.profile-badges,
+.profile-badge {
+    background: var(--badge-bg);
+    color: var(--badge-text);
+}
+
+.profile-tab {
+    color: var(--tab-inactive);
+}
+.profile-tab.active {
+    color: var(--tab-active);
+    border-bottom: 2.5px solid var(--tab-active);
+}
+
+.profile-placeholder {
+    color: var(--text-muted);
+}
+
+.timeline-item {
+    background: var(--bg-secondary);
+    color: var(--text-main);
+}
+
+.edit-avatar-btn {
+    background: var(--bg-secondary);
+    color: var(--badge-text);
+    border: 1px solid var(--input-border);
+}
+.edit-avatar-btn:hover {
+    background: var(--button-bg);
+    color: var(--button-text);
+}
+
+.save-btn,
+.cancel-btn {
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: 1px solid var(--input-border);
+}
+.save-btn:hover,
+.cancel-btn:hover {
+    background: var(--button-hover-bg);
+    color: var(--button-text);
+}
+
+input,
+textarea {
+    background: var(--input-bg);
+    color: var(--text-main);
+    border-color: var(--input-border);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+}
