@@ -59,9 +59,11 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
     transition: background 0.2s, transform 0.2s;
 }
-.hero-cta:hover {
+.hero-cta:hover,
+.hero-cta:focus {
     background: #f84d3e;
     transform: translateY(-2px) scale(1.03);
+    outline: 2px solid #ff6f61;
 }
 
 /* --- ANIMATED SEARCH BAR --- */
@@ -125,8 +127,10 @@
     cursor: pointer;
     transition: background 0.2s;
 }
-.search-btn:hover {
+.search-btn:hover,
+.search-btn:focus {
     background: #f84d3e;
+    outline: 2px solid #ff6f61;
 }
 
 /* --- STATS SECTION --- */
@@ -175,9 +179,11 @@
     overflow: hidden;
     transition: box-shadow 0.2s, transform 0.2s;
 }
-.featured-spot-card:hover {
+.featured-spot-card:hover,
+.featured-spot-card:focus-within {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
     transform: translateY(-4px) scale(1.03);
+    outline: 2px solid #ff6f61;
 }
 .featured-spot-image {
     position: relative;
@@ -254,9 +260,11 @@
     transition: box-shadow 0.2s, transform 0.2s;
     position: relative;
 }
-.spot-card:hover {
+.spot-card:hover,
+.spot-card:focus-within {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
     transform: translateY(-4px) scale(1.03);
+    outline: 2px solid #ff6f61;
 }
 .spot-image {
     width: 100%;

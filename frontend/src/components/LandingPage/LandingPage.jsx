@@ -11,6 +11,9 @@ import "./LandingPage.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { motion } from "framer-motion";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 // Fix default marker icon issue with webpack/Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -104,10 +107,12 @@ function LandingPage() {
             ? [featuredSpots[0].lat, featuredSpots[0].lng]
             : [40.7128, -74.006]; // Default: New York
 
+    const isLoading = Object.values(spotsList).length === 0;
+
     return (
         <div className="landing-root">
             {/* Hero Section */}
-            <section className="hero-section">
+            <section className="hero-section" aria-label="Hero Section">
                 <img
                     className="hero-bg"
                     src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80"
@@ -133,6 +138,8 @@ function LandingPage() {
                     onFocus={() => setShowDropdown(true)}
                     onBlur={() => setShowDropdown(false)}
                     tabIndex={0}
+                    role="search"
+                    aria-label="Search stays"
                 >
                     <input
                         type="text"
@@ -140,17 +147,20 @@ function LandingPage() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="search-input"
+                        aria-label="Search location"
                     />
                     <div
                         className={`search-dropdown${
                             showDropdown ? " show" : ""
                         }`}
+                        aria-label="Search filters"
                     >
                         <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             className="search-date"
+                            aria-label="Select date"
                         />
                         <input
                             type="number"
@@ -159,9 +169,12 @@ function LandingPage() {
                             onChange={(e) => setGuests(Number(e.target.value))}
                             className="search-guests"
                             placeholder="Guests"
+                            aria-label="Number of guests"
                         />
                     </div>
-                    <button className="search-btn">Search</button>
+                    <button className="search-btn" aria-label="Search stays">
+                        Search
+                    </button>
                 </div>
             </section>
 
@@ -270,41 +283,70 @@ function LandingPage() {
             </section>
 
             {/* Spot Cards Grid */}
-            <section className="container">
-                {filteredSpots.map((spot) => (
-                    <Link
-                        to={`/spots/${spot.id}`}
-                        key={spot.id}
-                        className="spot-link"
-                    >
-                        <div
-                            className="spot-card"
-                            data-tooltip-id={`tooltip-${spot.id}`}
-                        >
-                            <div className="spot-image">
-                                <img src={spot.previewImage} alt={spot.name} />
-                            </div>
-                            <div className="spot-info">
-                                <p className="spot-location">
-                                    {spot.city}, {spot.state}
-                                    <span className="spot-rating">
-                                        <MdStar />{" "}
-                                        {Number(spot.avgRating) > 0
-                                            ? Number(spot.avgRating).toFixed(1)
-                                            : "New"}
-                                    </span>
-                                </p>
-                                <p className="spot-price">
-                                    $
-                                    {!isNaN(parseFloat(spot.price))
-                                        ? parseFloat(spot.price).toFixed(2)
-                                        : "N/A"}{" "}
-                                    <span>night</span>
-                                </p>
-                            </div>
-                        </div>
-                    </Link>
-                ))}
+            <section className="container" aria-label="All spots">
+                {isLoading
+                    ? Array.from({ length: 6 }).map((_, idx) => (
+                          <div className="spot-card" key={idx}>
+                              <Skeleton height={200} />
+                              <div style={{ padding: 10 }}>
+                                  <Skeleton width={120} />
+                                  <Skeleton width={80} />
+                                  <Skeleton width={60} />
+                              </div>
+                          </div>
+                      ))
+                    : filteredSpots.map((spot, idx) => (
+                          <Link
+                              to={`/spots/${spot.id}`}
+                              key={spot.id}
+                              className="spot-link"
+                              tabIndex={0}
+                          >
+                              <motion.div
+                                  className="spot-card"
+                                  data-tooltip-id={`tooltip-${spot.id}`}
+                                  initial={{ opacity: 0, y: 30 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{
+                                      duration: 0.5,
+                                      delay: idx * 0.07,
+                                  }}
+                                  whileHover={{
+                                      scale: 1.03,
+                                      boxShadow: "0 8px 32px rgba(0,0,0,0.13)",
+                                  }}
+                              >
+                                  <div className="spot-image">
+                                      <img
+                                          src={spot.previewImage}
+                                          alt={spot.name}
+                                      />
+                                  </div>
+                                  <div className="spot-info">
+                                      <p className="spot-location">
+                                          {spot.city}, {spot.state}
+                                          <span className="spot-rating">
+                                              <MdStar />{" "}
+                                              {Number(spot.avgRating) > 0
+                                                  ? Number(
+                                                        spot.avgRating
+                                                    ).toFixed(1)
+                                                  : "New"}
+                                          </span>
+                                      </p>
+                                      <p className="spot-price">
+                                          $
+                                          {!isNaN(parseFloat(spot.price))
+                                              ? parseFloat(spot.price).toFixed(
+                                                    2
+                                                )
+                                              : "N/A"}{" "}
+                                          <span>night</span>
+                                      </p>
+                                  </div>
+                              </motion.div>
+                          </Link>
+                      ))}
             </section>
 
             {/* Testimonials Carousel */}

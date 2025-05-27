@@ -92,18 +92,25 @@ function SpotDetails() {
             <button
                 className={`favorite-btn${liked ? " liked" : ""}`}
                 onClick={() => setLiked(!liked)}
-                aria-label="Favorite"
+                aria-label={
+                    liked ? "Remove from favorites" : "Add to favorites"
+                }
+                tabIndex={0}
             >
                 <FaHeart color={liked ? "#ff6f61" : "#ccc"} size={28} />
             </button>
             <button
                 className="share-btn"
                 onClick={handleShare}
-                aria-label="Share"
+                aria-label="Share this spot"
+                tabIndex={0}
             >
                 <FaShareAlt size={22} />
             </button>
-            <div className="hero-image-container">
+            <div
+                className="hero-image-container"
+                aria-label="Spot photo carousel"
+            >
                 <Slider {...sliderSettings}>
                     {images.map((img, idx) => (
                         <div key={idx}>
@@ -111,6 +118,7 @@ function SpotDetails() {
                                 className="hero-image"
                                 src={img}
                                 alt={`Spot image ${idx + 1}`}
+                                tabIndex={0}
                             />
                         </div>
                     ))}
