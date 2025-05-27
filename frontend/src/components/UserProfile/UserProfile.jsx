@@ -6,12 +6,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./UserProfile.css";
 import EditProfileModal from "./EditProfileModal";
+import ChangePasswordModal from "../ChangePasswordModal";
+import DeleteAccountModal from "../DeleteAccountModal";
 import { fetchUserBookings } from "../../store/bookings";
 import { fetchWishlist } from "../../store/wishlist";
 import { fetchUserReviews } from "../../store/reviews";
 import { fetchSpots } from "../../store/spots";
 
-const TABS = ["My Spots", "My Reviews", "My Bookings", "Wishlist"];
+const TABS = ["My Spots", "My Reviews", "My Bookings", "Wishlist", "Settings"];
 
 function UserProfile() {
     const dispatch = useDispatch();
@@ -23,6 +25,9 @@ function UserProfile() {
 
     const [activeTab, setActiveTab] = useState(TABS[0]);
     const [showEditModal, setShowEditModal] = useState(false);
+
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     // Example data for timeline and achievements
     const timeline = [
@@ -77,7 +82,7 @@ function UserProfile() {
                                   })
                                 : "https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg?semt=ais_hybrid&w=740"
                         }
-                        alt={user.firstName}
+                        alt={`${user.firstName} ${user.lastName} avatar`}
                         className="profile-avatar"
                     />
                     <button
@@ -89,25 +94,29 @@ function UserProfile() {
                     </button>
                 </div>
                 <div className="profile-info">
-                    <h2>
+                    <h2 tabIndex={0}>
                         {user.firstName} {user.lastName}
                     </h2>
-                    <div className="profile-badges">
+                    <div className="profile-badges" aria-label="Achievements">
                         {achievements.map((a, i) => (
                             <span
                                 key={i}
                                 className="profile-badge"
                                 title={a.label}
+                                aria-label={a.label}
                             >
                                 {a.icon}
                             </span>
                         ))}
                     </div>
-                    <div className="profile-bio">
+                    <div className="profile-bio" tabIndex={0}>
                         {user.bio || "No bio yet. Click edit to add one!"}
                     </div>
-                    <div className="profile-joined">
-                        Joined: {new Date(user.createdAt).toLocaleDateString()}
+                    <div className="profile-joined" tabIndex={0}>
+                        Joined:{" "}
+                        {user.createdAt
+                            ? new Date(user.createdAt).toLocaleDateString()
+                            : "Unknown"}
                     </div>
                 </div>
             </div>
@@ -236,6 +245,23 @@ function UserProfile() {
                         )}
                     </motion.div>
                 )}
+                {activeTab === "Settings" && (
+                    <div className="profile-settings">
+                        <button
+                            className="save-btn"
+                            onClick={() => setShowPasswordModal(true)}
+                        >
+                            Change Password
+                        </button>
+                        <button
+                            className="cancel-btn"
+                            onClick={() => setShowDeleteModal(true)}
+                        >
+                            Delete Account
+                        </button>
+                        {/* Add notification preferences here */}
+                    </div>
+                )}
             </div>
 
             {/* Activity Timeline */}
@@ -267,6 +293,14 @@ function UserProfile() {
                         setShowEditModal(false);
                     }}
                 />
+            )}
+            {showPasswordModal && (
+                <ChangePasswordModal
+                    onClose={() => setShowPasswordModal(false)}
+                />
+            )}
+            {showDeleteModal && (
+                <DeleteAccountModal onClose={() => setShowDeleteModal(false)} />
             )}
         </div>
     );

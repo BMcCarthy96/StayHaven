@@ -106,4 +106,42 @@ router.put("/profile", requireAuth, async (req, res) => {
     return res.json({ user: safeUser });
 });
 
+// Change password
+router.put("/change-password", requireAuth, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findByPk(req.user.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const valid = bcrypt.compareSync(
+        currentPassword,
+        user.hashedPassword.toString()
+    );
+    if (!valid) {
+        return res
+            .status(400)
+            .json({ message: "Current password is incorrect" });
+    }
+    if (!newPassword || newPassword.length < 6) {
+        return res
+            .status(400)
+            .json({ message: "New password must be at least 6 characters" });
+    }
+
+    user.hashedPassword = bcrypt.hashSync(newPassword);
+    await user.save();
+
+    return res.json({ message: "Password updated successfully" });
+});
+
+// Delete account
+router.delete("/delete", requireAuth, async (req, res) => {
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    await user.destroy();
+    res.clearCookie("token");
+    return res.json({ message: "Account deleted successfully" });
+});
+
 module.exports = router;
