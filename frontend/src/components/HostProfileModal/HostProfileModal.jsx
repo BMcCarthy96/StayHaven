@@ -1,10 +1,17 @@
+import { useSelector } from "react-redux";
 import "./HostProfileModal.css";
 
 export default function HostProfileModal({ host }) {
+    const allSpots = useSelector((state) => state.spots.allSpots || {});
     if (!host)
         return (
             <div className="host-profile-modal">No host info available.</div>
         );
+
+    const hostSpots = Object.values(allSpots).filter(
+        (spot) => spot.ownerId === host.id
+    );
+
     return (
         <div className="host-profile-modal">
             <div className="host-profile-avatar">
@@ -14,10 +21,29 @@ export default function HostProfileModal({ host }) {
                 {host.firstName} {host.lastName}
             </div>
             <div className="host-profile-email">{host.email}</div>
-            {/* Add more host info or a bio if available */}
+            <div className="host-profile-joined">
+                Joined:{" "}
+                {host.createdAt
+                    ? new Date(host.createdAt).toLocaleDateString()
+                    : "Unknown"}
+            </div>
             <div className="host-profile-bio">
                 {/* Example bio or placeholder */}
                 Superhost with excellent reviews and a passion for hospitality!
+            </div>
+            <div className="host-profile-listings">
+                <h3>Other Listings by Host</h3>
+                {hostSpots.length === 0 ? (
+                    <div>No other listings.</div>
+                ) : (
+                    <ul>
+                        {hostSpots.map((spot) => (
+                            <li key={spot.id}>
+                                <a href={`/spots/${spot.id}`}>{spot.name}</a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
         </div>
     );

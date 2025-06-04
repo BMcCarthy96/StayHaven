@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSpotDetails } from "../../store/spots";
@@ -25,6 +25,8 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { motion } from "framer-motion";
+import ReactImageLightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
 
 function SpotDetails() {
     const { spotId } = useParams();
@@ -66,6 +68,26 @@ function SpotDetails() {
         slidesToScroll: 1,
         adaptiveHeight: true,
     };
+
+    // Lightbox state
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [photoIndex, setPhotoIndex] = useState(0);
+
+    // Example nearby attractions (static for demo)
+    const nearbyAttractions = [
+        {
+            name: "Central Park",
+            lat: spotData.lat ? Number(spotData.lat) + 0.01 : 40.785091,
+            lng: spotData.lng ? Number(spotData.lng) + 0.01 : -73.968285,
+            type: "park",
+        },
+        {
+            name: "Famous Restaurant",
+            lat: spotData.lat ? Number(spotData.lat) - 0.008 : 40.761432,
+            lng: spotData.lng ? Number(spotData.lng) - 0.008 : -73.977622,
+            type: "restaurant",
+        },
+    ];
 
     if (!spotData || Object.keys(spotData).length === 0) {
         return (
@@ -119,6 +141,11 @@ function SpotDetails() {
                                 src={img}
                                 alt={`Spot image ${idx + 1}`}
                                 tabIndex={0}
+                                onClick={() => {
+                                    setPhotoIndex(idx);
+                                    setLightboxOpen(true);
+                                }}
+                                style={{ cursor: "zoom-in" }}
                             />
                         </div>
                     ))}
@@ -130,6 +157,26 @@ function SpotDetails() {
                     </div>
                 </div>
             </div>
+            {lightboxOpen && (
+                <ReactImageLightbox
+                    mainSrc={images[photoIndex]}
+                    nextSrc={images[(photoIndex + 1) % images.length]}
+                    prevSrc={
+                        images[(photoIndex + images.length - 1) % images.length]
+                    }
+                    onCloseRequest={() => setLightboxOpen(false)}
+                    onMovePrevRequest={() =>
+                        setPhotoIndex(
+                            (photoIndex + images.length - 1) % images.length
+                        )
+                    }
+                    onMoveNextRequest={() =>
+                        setPhotoIndex((photoIndex + 1) % images.length)
+                    }
+                    imageTitle={spotData.name}
+                    imageCaption={`${spotData.city}, ${spotData.state}, ${spotData.country}`}
+                />
+            )}
 
             <div className="details-booking-section">
                 <div className="spot-info-card">
@@ -212,6 +259,15 @@ function SpotDetails() {
                         zoom={14}
                     >
                         <Marker position={center} />
+                        {nearbyAttractions.map((place, idx) => (
+                            <Marker
+                                key={idx}
+                                position={{ lat: place.lat, lng: place.lng }}
+                                label={
+                                    place.type === "restaurant" ? "🍽️" : "🌳"
+                                }
+                            />
+                        ))}
                     </GoogleMap>
                 </div>
             )}
