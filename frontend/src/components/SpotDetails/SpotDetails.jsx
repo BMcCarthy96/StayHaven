@@ -27,6 +27,10 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { motion } from "framer-motion";
 import ReactImageLightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { fetchSpotBookings } from "../../store/bookings";
 
 function SpotDetails() {
     const { spotId } = useParams();
@@ -47,10 +51,27 @@ function SpotDetails() {
 
     const [liked, setLiked] = useState(false);
 
+    // Availability Calendar state
+    const [bookings, setBookings] = useState([]);
+    const [calendarRange, setCalendarRange] = useState([
+        { startDate: new Date(), endDate: new Date(), key: "selection" },
+    ]);
+
     useEffect(() => {
         dispatch(fetchSpotDetails(spotId));
         dispatch(fetchReviewsForSpot(spotId));
+        dispatch(fetchSpotBookings(spotId)).then(setBookings);
     }, [dispatch, spotId]);
+
+    // Get array of all booked date ranges
+    const bookedRanges = bookings.map((b) => ({
+        start: new Date(b.startDate),
+        end: new Date(b.endDate),
+    }));
+
+    // Helper to check if a date is booked
+    const isDateBooked = (date) =>
+        bookedRanges.some(({ start, end }) => date >= start && date <= end);
 
     // Google Maps
     const { isLoaded: mapLoaded } = useJsApiLoader({
@@ -177,6 +198,35 @@ function SpotDetails() {
                     imageCaption={`${spotData.city}, ${spotData.state}, ${spotData.country}`}
                 />
             )}
+
+            {/* Availability Calendar */}
+            <div className="availability-calendar" style={{ margin: "32px" }}>
+                <h3>Availability</h3>
+                <DateRange
+                    ranges={calendarRange}
+                    onChange={(item) => setCalendarRange([item.selection])}
+                    minDate={new Date()}
+                    disabledDates={[].concat(
+                        ...bookedRanges.map(({ start, end }) => {
+                            const dates = [];
+                            let d = new Date(start);
+                            while (d <= end) {
+                                dates.push(new Date(d));
+                                d.setDate(d.getDate() + 1);
+                            }
+                            return dates;
+                        })
+                    )}
+                />
+                {isDateBooked(calendarRange[0].startDate) && (
+                    <div
+                        className="calendar-warning"
+                        style={{ color: "red", marginTop: 8 }}
+                    >
+                        The selected start date is already booked!
+                    </div>
+                )}
+            </div>
 
             <div className="details-booking-section">
                 <div className="spot-info-card">
