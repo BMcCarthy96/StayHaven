@@ -133,14 +133,17 @@ function LandingPage() {
                     <p className="hero-tagline">
                         Discover unique homes and experiences around the world.
                     </p>
-                    <button
+                    <motion.button
                         className="hero-cta"
                         onClick={() =>
                             window.scrollTo({ top: 600, behavior: "smooth" })
                         }
+                        aria-label="Explore stays"
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
                     >
                         Explore Stays
-                    </button>
+                    </motion.button>
                 </div>
                 {/* Animated Search Bar */}
                 <div
@@ -224,6 +227,7 @@ function LandingPage() {
                                     <img
                                         src={spot.previewImage}
                                         alt={spot.name}
+                                        loading="lazy"
                                     />
                                     {spot.avgRating >= 4.8 && (
                                         <span className="badge superhost">
@@ -351,6 +355,7 @@ function LandingPage() {
                                           <img
                                               src={spot.previewImage}
                                               alt={spot.name}
+                                              loading="lazy"
                                           />
                                       </div>
                                       <div className="spot-info">
@@ -375,7 +380,7 @@ function LandingPage() {
                                               <span>night</span>
                                           </p>
                                       </div>
-                                      <button
+                                      <motion.button
                                           className={`favorite-btn${
                                               isWishlisted ? " liked" : ""
                                           }`}
@@ -394,6 +399,8 @@ function LandingPage() {
                                               border: "none",
                                               zIndex: 2,
                                           }}
+                                          whileTap={{ scale: 0.9 }}
+                                          whileHover={{ scale: 1.1 }}
                                       >
                                           <FaHeart
                                               color={
@@ -403,7 +410,7 @@ function LandingPage() {
                                               }
                                               size={22}
                                           />
-                                      </button>
+                                      </motion.button>
                                   </motion.div>
                               </Link>
                           );
@@ -423,6 +430,7 @@ function LandingPage() {
                                         default: "retro",
                                     })}
                                     alt={t.name}
+                                    loading="lazy"
                                 />
                             </div>
                             <div className="testimonial-content">

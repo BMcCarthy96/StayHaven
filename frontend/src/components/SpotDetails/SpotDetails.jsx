@@ -68,7 +68,8 @@ function SpotDetails() {
     const handleWishlist = (e) => {
         if (!loggedInUser) {
             e.preventDefault();
-            return alert("Please log in to use wishlist!");
+            alert("Please log in to use wishlist!");
+            return;
         }
         e.preventDefault();
         if (isWishlisted) {
@@ -158,45 +159,56 @@ function SpotDetails() {
     };
 
     return (
-        <div className="spot-wrapper">
-            <button
+        <div className="spot-wrapper" role="main">
+            <motion.button
                 className={`favorite-btn${isWishlisted ? " liked" : ""}`}
                 onClick={handleWishlist}
                 aria-label={
                     isWishlisted ? "Remove from wishlist" : "Add to wishlist"
                 }
                 tabIndex={0}
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.1 }}
             >
                 <FaHeart color={isWishlisted ? "#ff6f61" : "#ccc"} size={28} />
-            </button>
-            <button
+            </motion.button>
+            <motion.button
                 className="share-btn"
                 onClick={handleShare}
                 aria-label="Share this spot"
                 tabIndex={0}
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.1 }}
             >
                 <FaShareAlt size={22} />
-            </button>
+            </motion.button>
             <div
                 className="hero-image-container"
                 aria-label="Spot photo carousel"
+                tabIndex={0}
+                role="region"
             >
                 <Slider {...sliderSettings}>
-                    {images.map((img, idx) => (
-                        <div key={idx}>
-                            <img
-                                className="hero-image"
-                                src={img}
-                                alt={`Spot image ${idx + 1}`}
-                                tabIndex={0}
-                                onClick={() => {
-                                    setPhotoIndex(idx);
-                                    setLightboxOpen(true);
-                                }}
-                                style={{ cursor: "zoom-in" }}
-                            />
-                        </div>
-                    ))}
+                    {images.length === 0 ? (
+                        <Skeleton height={340} />
+                    ) : (
+                        images.map((img, idx) => (
+                            <div key={idx}>
+                                <img
+                                    className="hero-image"
+                                    src={img}
+                                    alt={`Spot image ${idx + 1}`}
+                                    tabIndex={0}
+                                    loading="lazy"
+                                    onClick={() => {
+                                        setPhotoIndex(idx);
+                                        setLightboxOpen(true);
+                                    }}
+                                    style={{ cursor: "zoom-in" }}
+                                />
+                            </div>
+                        ))
+                    )}
                 </Slider>
                 <div className="hero-overlay">
                     <h1 className="hero-title">{spotData.name}</h1>
@@ -227,7 +239,10 @@ function SpotDetails() {
             )}
 
             {/* Availability Calendar */}
-            <div className="availability-calendar" style={{ margin: "32px" }}>
+            <section
+                className="availability-calendar"
+                style={{ margin: "32px" }}
+            >
                 <h3>Availability</h3>
                 <DateRange
                     ranges={calendarRange}
@@ -244,19 +259,29 @@ function SpotDetails() {
                             return dates;
                         })
                     )}
+                    aria-label="Availability calendar"
                 />
                 {isDateBooked(calendarRange[0].startDate) && (
                     <div
                         className="calendar-warning"
                         style={{ color: "red", marginTop: 8 }}
+                        role="alert"
                     >
                         The selected start date is already booked!
                     </div>
                 )}
-            </div>
+            </section>
 
-            <div className="details-booking-section">
-                <div className="spot-info-card">
+            <section
+                className="details-booking-section"
+                aria-label="Spot details and booking"
+            >
+                <motion.div
+                    className="spot-info-card"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
                     <div className="host-row">
                         <OpenModalButton
                             buttonText={
@@ -265,6 +290,7 @@ function SpotDetails() {
                             modalComponent={
                                 <HostProfileModal host={spotData.Owner} />
                             }
+                            aria-label="View host profile"
                         />
                         <span className="spot-host">
                             Hosted by {spotData.Owner?.firstName}{" "}
@@ -273,23 +299,44 @@ function SpotDetails() {
                     </div>
                     <p className="spot-description">{spotData.description}</p>
                     <div className="amenities-row">
-                        <span className="amenity">
+                        <span
+                            className="amenity"
+                            tabIndex={0}
+                            aria-label="2 Beds"
+                        >
                             <FaBed /> 2 Beds
                         </span>
-                        <span className="amenity">
+                        <span
+                            className="amenity"
+                            tabIndex={0}
+                            aria-label="1 Bath"
+                        >
                             <FaBath /> 1 Bath
                         </span>
-                        <span className="amenity">
+                        <span
+                            className="amenity"
+                            tabIndex={0}
+                            aria-label="Wifi"
+                        >
                             <FaWifi /> Wifi
                         </span>
-                        <span className="amenity">
+                        <span
+                            className="amenity"
+                            tabIndex={0}
+                            aria-label="No Smoking"
+                        >
                             <FaSmokingBan /> No Smoking
                         </span>
                         {/* Add more amenities as needed */}
                     </div>
-                </div>
+                </motion.div>
 
-                <div className="booking-card">
+                <motion.div
+                    className="booking-card"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
                     <div className="booking-header">
                         <span className="booking-price">
                             $
@@ -315,17 +362,24 @@ function SpotDetails() {
                             </span>
                         )}
                     </div>
-                    <button
+                    <motion.button
                         className="booking-button"
                         onClick={() => alert("Feature coming soon")}
+                        aria-label="Reserve this spot"
+                        tabIndex={0}
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
                     >
                         Reserve
-                    </button>
-                </div>
-            </div>
+                    </motion.button>
+                </motion.div>
+            </section>
 
             {mapLoaded && (
-                <div style={{ margin: "32px" }}>
+                <section
+                    style={{ margin: "32px" }}
+                    aria-label="Map of spot and attractions"
+                >
                     <GoogleMap
                         mapContainerStyle={{
                             width: "100%",
@@ -346,12 +400,12 @@ function SpotDetails() {
                             />
                         ))}
                     </GoogleMap>
-                </div>
+                </section>
             )}
 
             <hr className="section-divider" />
 
-            <div className="reviews-section">
+            <section className="reviews-section" aria-label="Spot reviews">
                 <div className="review-header">
                     <h3>
                         <MdOutlineStar />{" "}
@@ -378,6 +432,7 @@ function SpotDetails() {
                                 <CreateReviewModal spotId={spotId} />
                             }
                             className="post-review-button"
+                            aria-label="Post your review"
                         />
                     )}
                 </div>
@@ -416,6 +471,11 @@ function SpotDetails() {
                                           duration: 0.5,
                                           delay: idx * 0.1,
                                       }}
+                                      tabIndex={0}
+                                      role="article"
+                                      aria-label={`Review by ${
+                                          review.User?.firstName || "user"
+                                      }`}
                                   >
                                       <div className="review-header">
                                           <div className="review-avatar">
@@ -427,6 +487,7 @@ function SpotDetails() {
                                                           width: "100%",
                                                           borderRadius: "50%",
                                                       }}
+                                                      loading="lazy"
                                                   />
                                               ) : review.User?.firstName ? (
                                                   review.User.firstName[0].toUpperCase()
@@ -443,7 +504,10 @@ function SpotDetails() {
                                                       {formattedDate}
                                                   </span>
                                               </div>
-                                              <div className="review-stars">
+                                              <div
+                                                  className="review-stars"
+                                                  aria-label={`Rated ${review.stars} stars`}
+                                              >
                                                   {[...Array(5)].map((_, i) => (
                                                       <MdOutlineStar
                                                           key={i}
@@ -480,6 +544,7 @@ function SpotDetails() {
                                                       />
                                                   }
                                                   className="update-modal"
+                                                  aria-label="Update review"
                                               />
                                               <OpenModalButton
                                                   buttonText="Delete"
@@ -490,6 +555,7 @@ function SpotDetails() {
                                                       />
                                                   }
                                                   className="delete-modal"
+                                                  aria-label="Delete review"
                                               />
                                           </div>
                                       )}
@@ -497,7 +563,7 @@ function SpotDetails() {
                               );
                           })
                     : !isOwner && <p>Be the first to post a review!</p>}
-            </div>
+            </section>
         </div>
     );
 }

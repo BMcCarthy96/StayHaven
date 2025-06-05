@@ -1,11 +1,19 @@
 import { useSelector } from "react-redux";
 import "./HostProfileModal.css";
+import { motion } from "framer-motion";
 
-export default function HostProfileModal({ host }) {
+export default function HostProfileModal({ host, onClose }) {
     const allSpots = useSelector((state) => state.spots.allSpots || {});
     if (!host)
         return (
-            <div className="host-profile-modal">No host info available.</div>
+            <div
+                className="host-profile-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="host-profile-title"
+            >
+                No host info available.
+            </div>
         );
 
     const hostSpots = Object.values(allSpots).filter(
@@ -13,7 +21,13 @@ export default function HostProfileModal({ host }) {
     );
 
     return (
-        <div className="host-profile-modal">
+        <div
+            className="host-profile-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="host-profile-title"
+        >
+            <h2 id="host-profile-title">Host Profile</h2>
             <div className="host-profile-avatar">
                 {host.firstName ? host.firstName[0].toUpperCase() : "?"}
             </div>
@@ -45,6 +59,15 @@ export default function HostProfileModal({ host }) {
                     </ul>
                 )}
             </div>
+            <motion.button
+                className="close-btn"
+                onClick={onClose}
+                aria-label="Close host profile"
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.03 }}
+            >
+                Close
+            </motion.button>
         </div>
     );
 }

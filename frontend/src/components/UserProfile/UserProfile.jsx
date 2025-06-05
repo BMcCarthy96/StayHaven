@@ -85,6 +85,7 @@ function UserProfile() {
                         }
                         alt={`${user.firstName} ${user.lastName} avatar`}
                         className="profile-avatar"
+                        loading="lazy"
                     />
                     <button
                         className="edit-avatar-btn"
@@ -263,7 +264,6 @@ function UserProfile() {
                         >
                             Delete Account
                         </button>
-                        {/* Add notification preferences here */}
                     </div>
                 )}
             </div>

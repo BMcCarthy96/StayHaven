@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/session";
 import "./ChangePasswordModal.css";
+import { motion } from "framer-motion";
 
 export default function ChangePasswordModal({ onClose }) {
     const dispatch = useDispatch();
@@ -42,8 +43,13 @@ export default function ChangePasswordModal({ onClose }) {
     };
 
     return (
-        <div className="change-password-modal">
-            <h2>Change Password</h2>
+        <div
+            className="change-password-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="change-password-title"
+        >
+            <h2 id="change-password-title">Change Password</h2>
             <form onSubmit={handleSubmit}>
                 <label>
                     Current Password
@@ -52,6 +58,8 @@ export default function ChangePasswordModal({ onClose }) {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         required
+                        aria-label="Current Password"
+                        tabIndex={0}
                     />
                 </label>
                 <label>
@@ -62,6 +70,8 @@ export default function ChangePasswordModal({ onClose }) {
                         onChange={(e) => setNewPassword(e.target.value)}
                         required
                         minLength={6}
+                        aria-label="New Password"
+                        tabIndex={0}
                     />
                 </label>
                 <label>
@@ -72,21 +82,32 @@ export default function ChangePasswordModal({ onClose }) {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                         minLength={6}
+                        aria-label="Confirm New Password"
+                        tabIndex={0}
                     />
                 </label>
                 {error && <div className="error-msg">{error}</div>}
                 {success && <div className="success-msg">{success}</div>}
                 <div className="modal-actions">
-                    <button type="submit" className="save-btn">
+                    <motion.button
+                        type="submit"
+                        className="save-btn"
+                        aria-label="Change Password"
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
+                    >
                         Change Password
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                         type="button"
                         className="cancel-btn"
+                        aria-label="Cancel"
                         onClick={onClose}
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
                     >
                         Cancel
-                    </button>
+                    </motion.button>
                 </div>
             </form>
         </div>
