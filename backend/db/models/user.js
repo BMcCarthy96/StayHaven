@@ -19,6 +19,13 @@ module.exports = (sequelize, DataTypes) => {
                 as: "Owner",
                 onDelete: "CASCADE",
             });
+
+            User.belongsToMany(models.Spot, {
+                through: "Wishlist",
+                as: "WishlistedSpots",
+                foreignKey: "userId",
+                otherKey: "spotId",
+            });
         }
     }
     User.init(

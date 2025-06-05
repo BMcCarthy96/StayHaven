@@ -24,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
                 onDelete: "CASCADE",
                 hooks: true,
             });
+            Spot.belongsToMany(models.User, {
+                through: "Wishlist",
+                as: "UsersWhoWishlisted",
+                foreignKey: "spotId",
+                otherKey: "userId",
+            });
         }
     }
 

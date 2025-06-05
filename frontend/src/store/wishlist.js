@@ -12,6 +12,16 @@ export const fetchWishlist = () => async (dispatch) => {
     dispatch(loadWishlist(data.Spots));
 };
 
+export const addToWishlist = (spotId) => async (dispatch) => {
+    await csrfFetch(`/api/wishlist/${spotId}`, { method: "POST" });
+    dispatch(fetchWishlist());
+};
+
+export const removeFromWishlist = (spotId) => async (dispatch) => {
+    await csrfFetch(`/api/wishlist/${spotId}`, { method: "DELETE" });
+    dispatch(fetchWishlist());
+};
+
 const initialState = { spots: [] };
 
 export default function wishlistReducer(state = initialState, action) {

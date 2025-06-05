@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSpotDetails } from "../../store/spots";
+import { fetchSpotDetails, fetchSpots } from "../../store/spots";
 import "./SpotDetails.css";
 import { MdOutlineStar } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
@@ -31,6 +31,11 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { fetchSpotBookings } from "../../store/bookings";
+import {
+    fetchWishlist,
+    addToWishlist,
+    removeFromWishlist,
+} from "../../store/wishlist";
 
 function SpotDetails() {
     const { spotId } = useParams();
@@ -49,7 +54,29 @@ function SpotDetails() {
         (review) => review.User?.id === loggedInUser?.id
     );
 
-    const [liked, setLiked] = useState(false);
+    // Wishlist logic
+    const wishlist = useSelector((state) => state.wishlist.spots || []);
+    const isWishlisted = wishlist.some((s) => s.id === spotData.id);
+
+    useEffect(() => {
+        dispatch(fetchSpots());
+        if (loggedInUser) {
+            dispatch(fetchWishlist());
+        }
+    }, [dispatch, loggedInUser]);
+
+    const handleWishlist = (e) => {
+        if (!loggedInUser) {
+            e.preventDefault();
+            return alert("Please log in to use wishlist!");
+        }
+        e.preventDefault();
+        if (isWishlisted) {
+            dispatch(removeFromWishlist(spotData.id));
+        } else {
+            dispatch(addToWishlist(spotData.id));
+        }
+    };
 
     // Availability Calendar state
     const [bookings, setBookings] = useState([]);
@@ -133,14 +160,14 @@ function SpotDetails() {
     return (
         <div className="spot-wrapper">
             <button
-                className={`favorite-btn${liked ? " liked" : ""}`}
-                onClick={() => setLiked(!liked)}
+                className={`favorite-btn${isWishlisted ? " liked" : ""}`}
+                onClick={handleWishlist}
                 aria-label={
-                    liked ? "Remove from favorites" : "Add to favorites"
+                    isWishlisted ? "Remove from wishlist" : "Add to wishlist"
                 }
                 tabIndex={0}
             >
-                <FaHeart color={liked ? "#ff6f61" : "#ccc"} size={28} />
+                <FaHeart color={isWishlisted ? "#ff6f61" : "#ccc"} size={28} />
             </button>
             <button
                 className="share-btn"

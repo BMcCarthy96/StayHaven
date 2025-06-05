@@ -1,9 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchSpots } from "../../store/spots";
+import {
+    fetchWishlist,
+    addToWishlist,
+    removeFromWishlist,
+} from "../../store/wishlist";
 import { Link } from "react-router-dom";
 import { MdStar } from "react-icons/md";
-import { FaCrown, FaFire, FaUser } from "react-icons/fa";
+import { FaCrown, FaFire, FaUser, FaHeart } from "react-icons/fa";
 import Slider from "react-slick";
 import CountUp from "react-countup";
 import gravatarUrl from "gravatar-url";
@@ -47,6 +52,8 @@ const TESTIMONIALS = [
 
 function LandingPage() {
     const dispatch = useDispatch();
+    const wishlist = useSelector((state) => state.wishlist.spots || []);
+    const loggedInUser = useSelector((state) => state.session.user);
     const spotsList = useSelector((state) => state.spots.allSpots);
     const [search, setSearch] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
@@ -55,7 +62,10 @@ function LandingPage() {
 
     useEffect(() => {
         dispatch(fetchSpots());
-    }, [dispatch]);
+        if (loggedInUser) {
+            dispatch(fetchWishlist());
+        }
+    }, [dispatch, loggedInUser]);
 
     // Featured spots: top 5 by avgRating
     const featuredSpots = Object.values(spotsList)
@@ -295,58 +305,109 @@ function LandingPage() {
                               </div>
                           </div>
                       ))
-                    : filteredSpots.map((spot, idx) => (
-                          <Link
-                              to={`/spots/${spot.id}`}
-                              key={spot.id}
-                              className="spot-link"
-                              tabIndex={0}
-                          >
-                              <motion.div
-                                  className="spot-card"
-                                  data-tooltip-id={`tooltip-${spot.id}`}
-                                  initial={{ opacity: 0, y: 30 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{
-                                      duration: 0.5,
-                                      delay: idx * 0.07,
-                                  }}
-                                  whileHover={{
-                                      scale: 1.03,
-                                      boxShadow: "0 8px 32px rgba(0,0,0,0.13)",
-                                  }}
+                    : filteredSpots.map((spot, idx) => {
+                          const isWishlisted = wishlist.some(
+                              (s) => s.id === spot.id
+                          );
+
+                          const handleWishlist = (e) => {
+                              if (!loggedInUser) {
+                                  e.preventDefault();
+                                  return alert(
+                                      "Please log in to use wishlist!"
+                                  );
+                              }
+                              e.preventDefault();
+                              if (isWishlisted) {
+                                  dispatch(removeFromWishlist(spot.id));
+                              } else {
+                                  dispatch(addToWishlist(spot.id));
+                              }
+                          };
+
+                          return (
+                              <Link
+                                  to={`/spots/${spot.id}`}
+                                  key={spot.id}
+                                  className="spot-link"
+                                  tabIndex={0}
                               >
-                                  <div className="spot-image">
-                                      <img
-                                          src={spot.previewImage}
-                                          alt={spot.name}
-                                      />
-                                  </div>
-                                  <div className="spot-info">
-                                      <p className="spot-location">
-                                          {spot.city}, {spot.state}
-                                          <span className="spot-rating">
-                                              <MdStar />{" "}
-                                              {Number(spot.avgRating) > 0
-                                                  ? Number(
-                                                        spot.avgRating
-                                                    ).toFixed(1)
-                                                  : "New"}
-                                          </span>
-                                      </p>
-                                      <p className="spot-price">
-                                          $
-                                          {!isNaN(parseFloat(spot.price))
-                                              ? parseFloat(spot.price).toFixed(
-                                                    2
-                                                )
-                                              : "N/A"}{" "}
-                                          <span>night</span>
-                                      </p>
-                                  </div>
-                              </motion.div>
-                          </Link>
-                      ))}
+                                  <motion.div
+                                      className="spot-card"
+                                      data-tooltip-id={`tooltip-${spot.id}`}
+                                      initial={{ opacity: 0, y: 30 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{
+                                          duration: 0.5,
+                                          delay: idx * 0.07,
+                                      }}
+                                      whileHover={{
+                                          scale: 1.03,
+                                          boxShadow:
+                                              "0 8px 32px rgba(0,0,0,0.13)",
+                                      }}
+                                  >
+                                      <div className="spot-image">
+                                          <img
+                                              src={spot.previewImage}
+                                              alt={spot.name}
+                                          />
+                                      </div>
+                                      <div className="spot-info">
+                                          <p className="spot-location">
+                                              {spot.city}, {spot.state}
+                                              <span className="spot-rating">
+                                                  <MdStar />{" "}
+                                                  {Number(spot.avgRating) > 0
+                                                      ? Number(
+                                                            spot.avgRating
+                                                        ).toFixed(1)
+                                                      : "New"}
+                                              </span>
+                                          </p>
+                                          <p className="spot-price">
+                                              $
+                                              {!isNaN(parseFloat(spot.price))
+                                                  ? parseFloat(
+                                                        spot.price
+                                                    ).toFixed(2)
+                                                  : "N/A"}{" "}
+                                              <span>night</span>
+                                          </p>
+                                      </div>
+                                      <button
+                                          className={`favorite-btn${
+                                              isWishlisted ? " liked" : ""
+                                          }`}
+                                          onClick={handleWishlist}
+                                          aria-label={
+                                              isWishlisted
+                                                  ? "Remove from wishlist"
+                                                  : "Add to wishlist"
+                                          }
+                                          tabIndex={0}
+                                          style={{
+                                              position: "absolute",
+                                              top: 12,
+                                              right: 12,
+                                              background: "none",
+                                              border: "none",
+                                              zIndex: 2,
+                                          }}
+                                      >
+                                          <FaHeart
+                                              color={
+                                                  isWishlisted
+                                                      ? "#ff6f61"
+                                                      : "#ccc"
+                                              }
+                                              size={22}
+                                          />
+                                      </button>
+                                  </motion.div>
+                              </Link>
+                          );
+                      })}
             </section>
 
             {/* Testimonials Carousel */}
