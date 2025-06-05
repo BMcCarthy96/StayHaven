@@ -13,6 +13,8 @@ import { fetchWishlist } from "../../store/wishlist";
 import { fetchUserReviews } from "../../store/reviews";
 import { fetchSpots } from "../../store/spots";
 import ThemeSwitcher from "./ThemeSwitcher";
+// import Skeleton from "react-loading-skeleton";
+// import "react-loading-skeleton/dist/skeleton.css";
 
 const TABS = ["My Spots", "My Reviews", "My Bookings", "Wishlist", "Settings"];
 
@@ -26,7 +28,6 @@ function UserProfile() {
 
     const [activeTab, setActiveTab] = useState(TABS[0]);
     const [showEditModal, setShowEditModal] = useState(false);
-
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -68,7 +69,7 @@ function UserProfile() {
     );
 
     return (
-        <div className="profile-root">
+        <div className="profile-root" role="main">
             <ToastContainer position="top-right" autoClose={3000} />
             <div className="profile-header">
                 <div className="profile-avatar-wrapper">
@@ -87,13 +88,15 @@ function UserProfile() {
                         className="profile-avatar"
                         loading="lazy"
                     />
-                    <button
+                    <motion.button
                         className="edit-avatar-btn"
                         aria-label="Edit Profile"
                         onClick={() => setShowEditModal(true)}
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
                     >
                         ✏️
-                    </button>
+                    </motion.button>
                 </div>
                 <div className="profile-info">
                     <h2 tabIndex={0}>
@@ -129,7 +132,7 @@ function UserProfile() {
             {/* Tabs */}
             <div className="profile-tabs" role="tablist">
                 {TABS.map((tab) => (
-                    <button
+                    <motion.button
                         key={tab}
                         className={`profile-tab${
                             activeTab === tab ? " active" : ""
@@ -138,9 +141,11 @@ function UserProfile() {
                         role="tab"
                         aria-selected={activeTab === tab}
                         tabIndex={activeTab === tab ? 0 : -1}
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
                     >
                         {tab}
-                    </button>
+                    </motion.button>
                 ))}
             </div>
 
@@ -252,18 +257,24 @@ function UserProfile() {
                 )}
                 {activeTab === "Settings" && (
                     <div className="profile-settings">
-                        <button
+                        <motion.button
                             className="save-btn"
                             onClick={() => setShowPasswordModal(true)}
+                            aria-label="Change Password"
+                            whileTap={{ scale: 0.97 }}
+                            whileHover={{ scale: 1.03 }}
                         >
                             Change Password
-                        </button>
-                        <button
+                        </motion.button>
+                        <motion.button
                             className="cancel-btn"
                             onClick={() => setShowDeleteModal(true)}
+                            aria-label="Delete Account"
+                            whileTap={{ scale: 0.97 }}
+                            whileHover={{ scale: 1.03 }}
                         >
                             Delete Account
-                        </button>
+                        </motion.button>
                     </div>
                 )}
             </div>
@@ -279,6 +290,8 @@ function UserProfile() {
                             initial={{ opacity: 0, x: -30 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.1 }}
+                            tabIndex={0}
+                            aria-label={item.desc}
                         >
                             <span className="timeline-date">{item.date}</span>
                             <span className="timeline-desc">{item.desc}</span>

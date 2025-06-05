@@ -185,35 +185,65 @@ function LandingPage() {
                             aria-label="Number of guests"
                         />
                     </div>
-                    <button className="search-btn" aria-label="Search stays">
+                    <motion.button
+                        className="search-btn"
+                        aria-label="Search stays"
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
+                    >
                         Search
-                    </button>
+                    </motion.button>
                 </div>
             </section>
 
             {/* Animated Stats */}
-            <section className="stats-section">
-                <div className="stat-card">
-                    <FaFire className="stat-icon" />
-                    <div>
-                        <CountUp end={stats.spots} duration={2} />
-                        <div className="stat-label">Spots</div>
-                    </div>
-                </div>
-                <div className="stat-card">
-                    <FaUser className="stat-icon" />
-                    <div>
-                        <CountUp end={stats.users} duration={2} />
-                        <div className="stat-label">Users</div>
-                    </div>
-                </div>
-                <div className="stat-card">
-                    <FaCrown className="stat-icon" />
-                    <div>
-                        <CountUp end={stats.bookings} duration={2} />
-                        <div className="stat-label">Bookings</div>
-                    </div>
-                </div>
+            <section className="stats-section" aria-label="Site statistics">
+                {isLoading ? (
+                    <>
+                        <Skeleton height={80} width={180} />
+                        <Skeleton height={80} width={180} />
+                        <Skeleton height={80} width={180} />
+                    </>
+                ) : (
+                    <>
+                        <motion.div
+                            className="stat-card"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                        >
+                            <FaFire className="stat-icon" />
+                            <div>
+                                <CountUp end={stats.spots} duration={2} />
+                                <div className="stat-label">Spots</div>
+                            </div>
+                        </motion.div>
+                        <motion.div
+                            className="stat-card"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                            <FaUser className="stat-icon" />
+                            <div>
+                                <CountUp end={stats.users} duration={2} />
+                                <div className="stat-label">Users</div>
+                            </div>
+                        </motion.div>
+                        <motion.div
+                            className="stat-card"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                        >
+                            <FaCrown className="stat-icon" />
+                            <div>
+                                <CountUp end={stats.bookings} duration={2} />
+                                <div className="stat-label">Bookings</div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
             </section>
 
             {/* Featured Spots Carousel */}
@@ -418,43 +448,87 @@ function LandingPage() {
             </section>
 
             {/* Testimonials Carousel */}
-            <section className="testimonials-section">
+            <section
+                className="testimonials-section"
+                aria-label="Guest testimonials"
+            >
                 <h2>What Our Guests Say</h2>
-                <Slider {...testimonialSettings}>
-                    {TESTIMONIALS.map((t, idx) => (
-                        <div key={idx} className="testimonial-card">
-                            <div className="testimonial-avatar">
-                                <img
-                                    src={gravatarUrl(t.email, {
-                                        size: 60,
-                                        default: "retro",
-                                    })}
-                                    alt={t.name}
-                                    loading="lazy"
-                                />
-                            </div>
-                            <div className="testimonial-content">
-                                <div className="testimonial-name">{t.name}</div>
-                                <div className="testimonial-stars">
-                                    {[...Array(5)].map((_, i) => (
-                                        <MdStar
-                                            key={i}
-                                            style={{
-                                                color:
+                {isLoading ? (
+                    <Skeleton height={180} count={1} />
+                ) : (
+                    <Slider
+                        {...testimonialSettings}
+                        nextArrow={
+                            <motion.button
+                                className="carousel-arrow next"
+                                aria-label="Next testimonial"
+                                tabIndex={0}
+                                whileTap={{ scale: 0.97 }}
+                                whileHover={{ scale: 1.03 }}
+                            >
+                                &rarr;
+                            </motion.button>
+                        }
+                        prevArrow={
+                            <motion.button
+                                className="carousel-arrow prev"
+                                aria-label="Previous testimonial"
+                                tabIndex={0}
+                                whileTap={{ scale: 0.97 }}
+                                whileHover={{ scale: 1.03 }}
+                            >
+                                &larr;
+                            </motion.button>
+                        }
+                    >
+                        {TESTIMONIALS.map((t, idx) => (
+                            <motion.div
+                                key={idx}
+                                className="testimonial-card"
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                            >
+                                <div className="testimonial-avatar">
+                                    <img
+                                        src={gravatarUrl(t.email, {
+                                            size: 60,
+                                            default: "retro",
+                                        })}
+                                        alt={t.name}
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <div className="testimonial-content">
+                                    <div className="testimonial-name">
+                                        {t.name}
+                                    </div>
+                                    <div className="testimonial-stars">
+                                        {[...Array(5)].map((_, i) => (
+                                            <MdStar
+                                                key={i}
+                                                style={{
+                                                    color:
+                                                        i < t.stars
+                                                            ? "#FFB400"
+                                                            : "#e4e5e9",
+                                                }}
+                                                aria-label={
                                                     i < t.stars
-                                                        ? "#FFB400"
-                                                        : "#e4e5e9",
-                                            }}
-                                        />
-                                    ))}
+                                                        ? "Filled star"
+                                                        : "Empty star"
+                                                }
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="testimonial-text">
+                                        {t.review}
+                                    </div>
                                 </div>
-                                <div className="testimonial-text">
-                                    {t.review}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </Slider>
+                            </motion.div>
+                        ))}
+                    </Slider>
+                )}
             </section>
         </div>
     );

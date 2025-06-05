@@ -160,6 +160,7 @@ function SpotDetails() {
 
     return (
         <div className="spot-wrapper" role="main">
+            {/* Wishlist and Share Buttons */}
             <motion.button
                 className={`favorite-btn${isWishlisted ? " liked" : ""}`}
                 onClick={handleWishlist}
@@ -182,6 +183,8 @@ function SpotDetails() {
             >
                 <FaShareAlt size={22} />
             </motion.button>
+
+            {/* Hero Image & Carousel */}
             <div
                 className="hero-image-container"
                 aria-label="Spot photo carousel"
@@ -303,6 +306,7 @@ function SpotDetails() {
                             className="amenity"
                             tabIndex={0}
                             aria-label="2 Beds"
+                            data-tooltip-id="amenity-beds"
                         >
                             <FaBed /> 2 Beds
                         </span>
@@ -310,6 +314,7 @@ function SpotDetails() {
                             className="amenity"
                             tabIndex={0}
                             aria-label="1 Bath"
+                            data-tooltip-id="amenity-bath"
                         >
                             <FaBath /> 1 Bath
                         </span>
@@ -317,6 +322,7 @@ function SpotDetails() {
                             className="amenity"
                             tabIndex={0}
                             aria-label="Wifi"
+                            data-tooltip-id="amenity-wifi"
                         >
                             <FaWifi /> Wifi
                         </span>
@@ -324,6 +330,7 @@ function SpotDetails() {
                             className="amenity"
                             tabIndex={0}
                             aria-label="No Smoking"
+                            data-tooltip-id="amenity-nosmoking"
                         >
                             <FaSmokingBan /> No Smoking
                         </span>
