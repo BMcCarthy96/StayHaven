@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 // import { FaUserCircle } from "react-icons/fa";
+import { FaUser, FaListAlt, FaRegStar } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
@@ -84,6 +85,12 @@ function ProfileButton({ user }) {
                         <div className="manage-div">
                             <div>
                                 <Link to="/profile" className="manage-link">
+                                    <FaUser
+                                        style={{
+                                            marginRight: "8px",
+                                            verticalAlign: "middle",
+                                        }}
+                                    />
                                     Profile
                                 </Link>
                             </div>
@@ -92,6 +99,12 @@ function ProfileButton({ user }) {
                                     to="/api/spots/current"
                                     className="manage-link"
                                 >
+                                    <FaListAlt
+                                        style={{
+                                            marginRight: "8px",
+                                            verticalAlign: "middle",
+                                        }}
+                                    />
                                     Manage Spots
                                 </Link>
                             </div>
@@ -100,6 +113,12 @@ function ProfileButton({ user }) {
                                     to="/api/reviews/current"
                                     className="manage-link"
                                 >
+                                    <FaRegStar
+                                        style={{
+                                            marginRight: "8px",
+                                            verticalAlign: "middle",
+                                        }}
+                                    />
                                     Manage Reviews
                                 </Link>
                             </div>

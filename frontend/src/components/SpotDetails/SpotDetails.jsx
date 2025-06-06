@@ -239,7 +239,7 @@ function SpotDetails() {
                 <FaShareAlt size={22} />
             </motion.button>
             {/* Share Options */}
-            <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
+            <div style={{ display: "flex", gap: 0, margin: "0px" }}>
                 <FacebookShareButton
                     url={window.location.href}
                     aria-label="Share on Facebook"

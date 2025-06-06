@@ -300,6 +300,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
 }
 .booking-button:hover {
     background-color: #f84d3e;
