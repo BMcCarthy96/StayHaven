@@ -257,7 +257,10 @@ function UserProfile() {
                     <div className="profile-settings">
                         <motion.button
                             className="save-btn"
-                            onClick={() => setShowPasswordModal(true)}
+                            onClick={() => {
+                                setShowPasswordModal(true);
+                                setShowDeleteModal(false);
+                            }}
                             aria-label="Change Password"
                             whileTap={{ scale: 0.97 }}
                             whileHover={{ scale: 1.03 }}
@@ -266,7 +269,10 @@ function UserProfile() {
                         </motion.button>
                         <motion.button
                             className="cancel-btn"
-                            onClick={() => setShowDeleteModal(true)}
+                            onClick={() => {
+                                setShowDeleteModal(true);
+                                setShowPasswordModal(false);
+                            }}
                             aria-label="Delete Account"
                             whileTap={{ scale: 0.97 }}
                             whileHover={{ scale: 1.03 }}

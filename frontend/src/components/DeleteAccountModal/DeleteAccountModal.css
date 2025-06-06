@@ -1,10 +1,11 @@
 .delete-account-modal {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
-    padding: 32px 28px 24px 28px;
-    min-width: 320px;
-    max-width: 400px;
+    background: linear-gradient(135deg, #fff 60%, #ffe5e0 100%);
+    border-radius: 22px;
+    box-shadow: 0 8px 40px rgba(255, 111, 97, 0.18),
+        0 2px 8px rgba(0, 0, 0, 0.07);
+    padding: 38px 36px 32px 36px;
+    min-width: 340px;
+    max-width: 420px;
     text-align: center;
     margin: 0 auto;
     position: fixed;
@@ -12,13 +13,72 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1001;
+    font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
+    /* animation: fadeInUp 0.6s; */
 }
+
+/* @keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} */
+
+.delete-account-modal h2 {
+    color: #ff6f61;
+    font-size: 2rem;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
 .delete-account-modal p {
     margin: 18px 0;
+    color: #b36b5e;
+    font-size: 1.08rem;
 }
+
 .modal-actions {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     justify-content: center;
-    margin-top: 16px;
+    margin-top: 18px;
+}
+
+.save-btn {
+    background: linear-gradient(90deg, #ff6f61 60%, #fbbf24 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 700;
+    font-size: 1.08rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 8px rgba(255, 111, 97, 0.09);
+}
+.save-btn:hover {
+    background: linear-gradient(90deg, #fbbf24 60%, #ff6f61 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+}
+.cancel-btn {
+    background: #eee;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 700;
+    font-size: 1.08rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.cancel-btn:hover {
+    background: #ccc;
+    color: #222;
+    transform: translateY(-2px) scale(1.03);
 }
