@@ -13,8 +13,6 @@ import { fetchWishlist } from "../../store/wishlist";
 import { fetchUserReviews } from "../../store/reviews";
 import { fetchSpots } from "../../store/spots";
 import ThemeSwitcher from "./ThemeSwitcher";
-// import Skeleton from "react-loading-skeleton";
-// import "react-loading-skeleton/dist/skeleton.css";
 
 const TABS = ["My Spots", "My Reviews", "My Bookings", "Wishlist", "Settings"];
 

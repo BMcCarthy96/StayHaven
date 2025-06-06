@@ -24,7 +24,7 @@ import gravatarUrl from "gravatar-url";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ReactImageLightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { DateRange } from "react-date-range";
@@ -156,11 +156,29 @@ function SpotDetails() {
 
     const allSpots = useSelector((state) => state.spots.allSpots || {});
 
+    // Memoize relatedSpots to avoid unnecessary rerenders
+    const relatedSpots = useMemo(
+        () =>
+            Object.values(allSpots).filter(
+                (s) => s.id !== spotData.id && s.city === spotData.city
+            ),
+        [allSpots, spotData.id, spotData.city]
+    );
+
+    // Booking form animation and validation
+    const [showBooking, setShowBooking] = useState(false);
+    const [bookingError, setBookingError] = useState("");
+
     if (!spotData || Object.keys(spotData).length === 0) {
+        // Progressive loading: skeletons for all main sections
         return (
             <div style={{ padding: 32 }}>
                 <Skeleton height={340} />
                 <Skeleton count={5} />
+                <div style={{ marginTop: 32 }}>
+                    <Skeleton height={40} width={200} />
+                    <Skeleton height={120} />
+                </div>
             </div>
         );
     }
@@ -176,10 +194,24 @@ function SpotDetails() {
         alert("Link copied to clipboard!");
     };
 
-    // Related spots (example: same city)
-    const relatedSpots = Object.values(allSpots).filter(
-        (s) => s.id !== spotData.id && s.city === spotData.city
-    );
+    const handleBookingOpen = () => setShowBooking((prev) => !prev);
+
+    const handleReserve = () => {
+        // Example validation: check if dates are valid
+        if (
+            isDateBooked(calendarRange[0].startDate) ||
+            isDateBooked(calendarRange[0].endDate)
+        ) {
+            setBookingError("Selected dates are already booked.");
+            return;
+        }
+        if (calendarRange[0].endDate <= calendarRange[0].startDate) {
+            setBookingError("End date must be after start date.");
+            return;
+        }
+        setBookingError("");
+        alert("Booking feature coming soon!");
+    };
 
     return (
         <div className="spot-wrapper" role="main">
@@ -380,7 +412,13 @@ function SpotDetails() {
                                 <span className="host-badge">SUPERHOST</span>
                             }
                             modalComponent={
-                                <HostProfileModal host={spotData.Owner} />
+                                <HostProfileModal
+                                    host={spotData.Owner}
+                                    bio={spotData.Owner?.bio}
+                                    badges={spotData.Owner?.badges}
+                                    email={spotData.Owner?.email}
+                                    joinDate={spotData.Owner?.createdAt}
+                                />
                             }
                             aria-label="View host profile"
                         />
@@ -435,7 +473,7 @@ function SpotDetails() {
                     </div>
                 </motion.div>
 
-                {/* Booking Card with price breakdown */}
+                {/* Booking Card with animation and validation */}
                 <motion.div
                     className="booking-card"
                     initial={{ opacity: 0, y: 30 }}
@@ -467,48 +505,95 @@ function SpotDetails() {
                             </span>
                         )}
                     </div>
-                    {/* Example price breakdown */}
-                    <div className="price-breakdown">
-                        <div>
-                            <span>Subtotal:</span>
-                            <span>
-                                $
-                                {(
-                                    ((calendarRange[0].endDate -
-                                        calendarRange[0].startDate) /
-                                        (1000 * 60 * 60 * 24)) *
-                                    spotData.price
-                                ).toFixed(2)}
-                            </span>
-                        </div>
-                        <div>
-                            <span>Cleaning Fee:</span>
-                            <span>$50.00</span>
-                        </div>
-                        <div>
-                            <span>Total:</span>
-                            <span>
-                                $
-                                {(
-                                    ((calendarRange[0].endDate -
-                                        calendarRange[0].startDate) /
-                                        (1000 * 60 * 60 * 24)) *
-                                        spotData.price +
-                                    50
-                                ).toFixed(2)}
-                            </span>
-                        </div>
-                    </div>
                     <motion.button
-                        className="booking-button"
-                        onClick={() => alert("Feature coming soon")}
-                        aria-label="Reserve this spot"
-                        tabIndex={0}
+                        className="booking-toggle-btn"
+                        onClick={handleBookingOpen}
+                        aria-label={
+                            showBooking
+                                ? "Hide booking form"
+                                : "Show booking form"
+                        }
                         whileTap={{ scale: 0.97 }}
                         whileHover={{ scale: 1.03 }}
+                        style={{
+                            marginBottom: 12,
+                            background: "#eee",
+                            color: "#444",
+                            border: "none",
+                            borderRadius: 8,
+                            padding: "8px 14px",
+                            cursor: "pointer",
+                        }}
                     >
-                        Reserve
+                        {showBooking ? "Hide Booking" : "Book Now"}
                     </motion.button>
+                    <AnimatePresence>
+                        {showBooking && (
+                            <motion.div
+                                key="booking-form"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <div className="price-breakdown">
+                                    <div>
+                                        <span>Subtotal:</span>
+                                        <span>
+                                            $
+                                            {(
+                                                ((calendarRange[0].endDate -
+                                                    calendarRange[0]
+                                                        .startDate) /
+                                                    (1000 * 60 * 60 * 24)) *
+                                                spotData.price
+                                            ).toFixed(2)}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span>Cleaning Fee:</span>
+                                        <span>$50.00</span>
+                                    </div>
+                                    <div>
+                                        <span>Total:</span>
+                                        <span>
+                                            $
+                                            {(
+                                                ((calendarRange[0].endDate -
+                                                    calendarRange[0]
+                                                        .startDate) /
+                                                    (1000 * 60 * 60 * 24)) *
+                                                    spotData.price +
+                                                50
+                                            ).toFixed(2)}
+                                        </span>
+                                    </div>
+                                </div>
+                                {bookingError && (
+                                    <div
+                                        style={{
+                                            color: "red",
+                                            marginBottom: 8,
+                                            fontWeight: 500,
+                                        }}
+                                        role="alert"
+                                    >
+                                        {bookingError}
+                                    </div>
+                                )}
+                                <motion.button
+                                    className="booking-button"
+                                    onClick={handleReserve}
+                                    aria-label="Reserve this spot"
+                                    tabIndex={0}
+                                    whileTap={{ scale: 0.97 }}
+                                    whileHover={{ scale: 1.03 }}
+                                >
+                                    Reserve
+                                </motion.button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
             </section>
 

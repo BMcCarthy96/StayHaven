@@ -1,8 +1,16 @@
 import { useSelector } from "react-redux";
+import { useModal } from "../../context/Modal";
 import "./HostProfileModal.css";
 import { motion } from "framer-motion";
 
-export default function HostProfileModal({ host, onClose }) {
+export default function HostProfileModal({
+    host,
+    bio,
+    badges,
+    email,
+    joinDate,
+}) {
+    const { closeModal } = useModal();
     const allSpots = useSelector((state) => state.spots.allSpots || {});
     if (!host)
         return (
@@ -34,17 +42,29 @@ export default function HostProfileModal({ host, onClose }) {
             <div className="host-profile-name">
                 {host.firstName} {host.lastName}
             </div>
-            <div className="host-profile-email">{host.email}</div>
+            <div className="host-profile-email">{email || host.email}</div>
             <div className="host-profile-joined">
                 Joined:{" "}
-                {host.createdAt
+                {joinDate
+                    ? new Date(joinDate).toLocaleDateString()
+                    : host.createdAt
                     ? new Date(host.createdAt).toLocaleDateString()
                     : "Unknown"}
             </div>
             <div className="host-profile-bio">
-                {/* Example bio or placeholder */}
-                Superhost with excellent reviews and a passion for hospitality!
+                {bio ||
+                    host.bio ||
+                    "Superhost with excellent reviews and a passion for hospitality!"}
             </div>
+            {badges && (
+                <div className="host-profile-badges">
+                    {badges.map((badge, i) => (
+                        <span key={i} className="host-badge">
+                            {badge}
+                        </span>
+                    ))}
+                </div>
+            )}
             <div className="host-profile-listings">
                 <h3>Other Listings by Host</h3>
                 {hostSpots.length === 0 ? (
@@ -61,7 +81,7 @@ export default function HostProfileModal({ host, onClose }) {
             </div>
             <motion.button
                 className="close-btn"
-                onClick={onClose}
+                onClick={closeModal}
                 aria-label="Close host profile"
                 whileTap={{ scale: 0.97 }}
                 whileHover={{ scale: 1.03 }}
