@@ -36,6 +36,12 @@ import {
     addToWishlist,
     removeFromWishlist,
 } from "../../store/wishlist";
+import { Tooltip } from "react-tooltip";
+import {
+    FacebookShareButton,
+    TwitterShareButton,
+    EmailShareButton,
+} from "react-share";
 
 function SpotDetails() {
     const { spotId } = useParams();
@@ -108,6 +114,10 @@ function SpotDetails() {
 
     // Carousel images
     const images = spotData.SpotImages?.map((img) => img.url) || [];
+    const galleryImages =
+        spotData.SpotImages?.filter((img) => !img.preview).map(
+            (img) => img.url
+        ) || [];
 
     const sliderSettings = {
         dots: true,
@@ -121,6 +131,12 @@ function SpotDetails() {
     // Lightbox state
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [photoIndex, setPhotoIndex] = useState(0);
+
+    // Star breakdown for reviews
+    const starCounts = [5, 4, 3, 2, 1].map(
+        (star) => reviews.filter((r) => r.stars === star).length
+    );
+    const [starFilter, setStarFilter] = useState(null);
 
     // Example nearby attractions (static for demo)
     const nearbyAttractions = [
@@ -137,6 +153,8 @@ function SpotDetails() {
             type: "restaurant",
         },
     ];
+
+    const allSpots = useSelector((state) => state.spots.allSpots || {});
 
     if (!spotData || Object.keys(spotData).length === 0) {
         return (
@@ -157,6 +175,11 @@ function SpotDetails() {
         navigator.clipboard.writeText(window.location.href);
         alert("Link copied to clipboard!");
     };
+
+    // Related spots (example: same city)
+    const relatedSpots = Object.values(allSpots).filter(
+        (s) => s.id !== spotData.id && s.city === spotData.city
+    );
 
     return (
         <div className="spot-wrapper" role="main">
@@ -183,6 +206,33 @@ function SpotDetails() {
             >
                 <FaShareAlt size={22} />
             </motion.button>
+            {/* Share Options */}
+            <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
+                <FacebookShareButton
+                    url={window.location.href}
+                    aria-label="Share on Facebook"
+                >
+                    <span role="img" aria-label="Facebook">
+                        📘
+                    </span>
+                </FacebookShareButton>
+                <TwitterShareButton
+                    url={window.location.href}
+                    aria-label="Share on Twitter"
+                >
+                    <span role="img" aria-label="Twitter">
+                        🐦
+                    </span>
+                </TwitterShareButton>
+                <EmailShareButton
+                    url={window.location.href}
+                    aria-label="Share via Email"
+                >
+                    <span role="img" aria-label="Email">
+                        ✉️
+                    </span>
+                </EmailShareButton>
+            </div>
 
             {/* Hero Image & Carousel */}
             <div
@@ -220,26 +270,65 @@ function SpotDetails() {
                     </div>
                 </div>
             </div>
-            {lightboxOpen && (
-                <ReactImageLightbox
-                    mainSrc={images[photoIndex]}
-                    nextSrc={images[(photoIndex + 1) % images.length]}
-                    prevSrc={
-                        images[(photoIndex + images.length - 1) % images.length]
-                    }
-                    onCloseRequest={() => setLightboxOpen(false)}
-                    onMovePrevRequest={() =>
-                        setPhotoIndex(
-                            (photoIndex + images.length - 1) % images.length
-                        )
-                    }
-                    onMoveNextRequest={() =>
-                        setPhotoIndex((photoIndex + 1) % images.length)
-                    }
-                    imageTitle={spotData.name}
-                    imageCaption={`${spotData.city}, ${spotData.state}, ${spotData.country}`}
-                />
+            {/* Gallery Section */}
+            {galleryImages.length > 0 && (
+                <div className="gallery-section" aria-label="Gallery images">
+                    {galleryImages.map((img, idx) => (
+                        <div className="gallery-image" key={idx}>
+                            <img
+                                src={img}
+                                alt={`Gallery image ${idx + 1}`}
+                                loading="lazy"
+                                tabIndex={0}
+                                style={{ cursor: "zoom-in" }}
+                                onClick={() => {
+                                    setPhotoIndex(images.length + idx);
+                                    setLightboxOpen(true);
+                                }}
+                            />
+                        </div>
+                    ))}
+                </div>
             )}
+            {lightboxOpen &&
+                (images.length > 0 || galleryImages.length > 0) && (
+                    <ReactImageLightbox
+                        mainSrc={[...images, ...galleryImages][photoIndex]}
+                        nextSrc={
+                            [...images, ...galleryImages][
+                                (photoIndex + 1) %
+                                    (images.length + galleryImages.length)
+                            ]
+                        }
+                        prevSrc={
+                            [...images, ...galleryImages][
+                                (photoIndex +
+                                    images.length +
+                                    galleryImages.length -
+                                    1) %
+                                    (images.length + galleryImages.length)
+                            ]
+                        }
+                        onCloseRequest={() => setLightboxOpen(false)}
+                        onMovePrevRequest={() =>
+                            setPhotoIndex(
+                                (photoIndex +
+                                    images.length +
+                                    galleryImages.length -
+                                    1) %
+                                    (images.length + galleryImages.length)
+                            )
+                        }
+                        onMoveNextRequest={() =>
+                            setPhotoIndex(
+                                (photoIndex + 1) %
+                                    (images.length + galleryImages.length)
+                            )
+                        }
+                        imageTitle={spotData.name}
+                        imageCaption={`${spotData.city}, ${spotData.state}, ${spotData.country}`}
+                    />
+                )}
 
             {/* Availability Calendar */}
             <section
@@ -307,6 +396,7 @@ function SpotDetails() {
                             tabIndex={0}
                             aria-label="2 Beds"
                             data-tooltip-id="amenity-beds"
+                            data-tooltip-content="2 Beds"
                         >
                             <FaBed /> 2 Beds
                         </span>
@@ -315,6 +405,7 @@ function SpotDetails() {
                             tabIndex={0}
                             aria-label="1 Bath"
                             data-tooltip-id="amenity-bath"
+                            data-tooltip-content="1 Bath"
                         >
                             <FaBath /> 1 Bath
                         </span>
@@ -323,6 +414,7 @@ function SpotDetails() {
                             tabIndex={0}
                             aria-label="Wifi"
                             data-tooltip-id="amenity-wifi"
+                            data-tooltip-content="Wifi"
                         >
                             <FaWifi /> Wifi
                         </span>
@@ -331,13 +423,19 @@ function SpotDetails() {
                             tabIndex={0}
                             aria-label="No Smoking"
                             data-tooltip-id="amenity-nosmoking"
+                            data-tooltip-content="No Smoking"
                         >
                             <FaSmokingBan /> No Smoking
                         </span>
                         {/* Add more amenities as needed */}
+                        <Tooltip id="amenity-beds" />
+                        <Tooltip id="amenity-bath" />
+                        <Tooltip id="amenity-wifi" />
+                        <Tooltip id="amenity-nosmoking" />
                     </div>
                 </motion.div>
 
+                {/* Booking Card with price breakdown */}
                 <motion.div
                     className="booking-card"
                     initial={{ opacity: 0, y: 30 }}
@@ -368,6 +466,38 @@ function SpotDetails() {
                                     : "Reviews"}
                             </span>
                         )}
+                    </div>
+                    {/* Example price breakdown */}
+                    <div className="price-breakdown">
+                        <div>
+                            <span>Subtotal:</span>
+                            <span>
+                                $
+                                {(
+                                    ((calendarRange[0].endDate -
+                                        calendarRange[0].startDate) /
+                                        (1000 * 60 * 60 * 24)) *
+                                    spotData.price
+                                ).toFixed(2)}
+                            </span>
+                        </div>
+                        <div>
+                            <span>Cleaning Fee:</span>
+                            <span>$50.00</span>
+                        </div>
+                        <div>
+                            <span>Total:</span>
+                            <span>
+                                $
+                                {(
+                                    ((calendarRange[0].endDate -
+                                        calendarRange[0].startDate) /
+                                        (1000 * 60 * 60 * 24)) *
+                                        spotData.price +
+                                    50
+                                ).toFixed(2)}
+                            </span>
+                        </div>
                     </div>
                     <motion.button
                         className="booking-button"
@@ -412,6 +542,7 @@ function SpotDetails() {
 
             <hr className="section-divider" />
 
+            {/* Animated Reviews: Star Breakdown & Filter */}
             <section className="reviews-section" aria-label="Spot reviews">
                 <div className="review-header">
                     <h3>
@@ -430,7 +561,30 @@ function SpotDetails() {
                         </h3>
                     )}
                 </div>
-
+                {/* Star breakdown bar */}
+                <div
+                    className="star-breakdown-bar"
+                    style={{ margin: "16px 0" }}
+                >
+                    {[5, 4, 3, 2, 1].map((star, i) => (
+                        <motion.button
+                            key={star}
+                            className={`star-filter-btn${
+                                starFilter === star ? " active" : ""
+                            }`}
+                            aria-label={`Filter by ${star} star reviews`}
+                            onClick={() =>
+                                setStarFilter(starFilter === star ? null : star)
+                            }
+                            whileTap={{ scale: 0.97 }}
+                            whileHover={{ scale: 1.03 }}
+                        >
+                            {star}{" "}
+                            <MdOutlineStar style={{ color: "#FFB400" }} /> (
+                            {starCounts[i]})
+                        </motion.button>
+                    ))}
+                </div>
                 <div className="post-review-div">
                     {loggedInUser && !isOwner && !hasReviewed && (
                         <OpenModalButton
@@ -443,9 +597,10 @@ function SpotDetails() {
                         />
                     )}
                 </div>
-
+                {/* Reviews List */}
                 {reviews && reviews.length > 0
                     ? reviews
+                          .filter((r) => !starFilter || r.stars === starFilter)
                           .sort(
                               (a, b) =>
                                   new Date(b.createdAt) - new Date(a.createdAt)
@@ -571,6 +726,49 @@ function SpotDetails() {
                           })
                     : !isOwner && <p>Be the first to post a review!</p>}
             </section>
+
+            {/* Related Spots Carousel */}
+            {relatedSpots.length > 0 && (
+                <section
+                    className="related-spots-section"
+                    aria-label="Related spots"
+                >
+                    <h3>Related Spots</h3>
+                    <Slider
+                        dots
+                        infinite
+                        speed={500}
+                        slidesToShow={3}
+                        slidesToScroll={1}
+                        responsive={[
+                            { breakpoint: 900, settings: { slidesToShow: 2 } },
+                            { breakpoint: 600, settings: { slidesToShow: 1 } },
+                        ]}
+                    >
+                        {relatedSpots.map((spot) => (
+                            <div key={spot.id} className="related-spot-card">
+                                <img
+                                    src={spot.previewImage}
+                                    alt={spot.name}
+                                    loading="lazy"
+                                    style={{
+                                        width: "100%",
+                                        height: 120,
+                                        objectFit: "cover",
+                                        borderRadius: 8,
+                                    }}
+                                />
+                                <div>
+                                    <strong>{spot.name}</strong>
+                                    <div>
+                                        {spot.city}, {spot.state}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </Slider>
+                </section>
+            )}
         </div>
     );
 }
