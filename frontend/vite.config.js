@@ -11,11 +11,6 @@ export default defineConfig(({ mode }) => ({
             failOnError: mode === "production",
         }),
     ],
-    define: {
-        global: "window",
-        "process.env": {},
-        globalThis: "window",
-    },
     server: {
         proxy: {
             "/api": "http://localhost:8000",

@@ -25,8 +25,8 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { motion, AnimatePresence } from "framer-motion";
-import ReactImageLightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -322,45 +322,17 @@ function SpotDetails() {
                     ))}
                 </div>
             )}
-            {lightboxOpen &&
-                (images.length > 0 || galleryImages.length > 0) && (
-                    <ReactImageLightbox
-                        mainSrc={[...images, ...galleryImages][photoIndex]}
-                        nextSrc={
-                            [...images, ...galleryImages][
-                                (photoIndex + 1) %
-                                    (images.length + galleryImages.length)
-                            ]
-                        }
-                        prevSrc={
-                            [...images, ...galleryImages][
-                                (photoIndex +
-                                    images.length +
-                                    galleryImages.length -
-                                    1) %
-                                    (images.length + galleryImages.length)
-                            ]
-                        }
-                        onCloseRequest={() => setLightboxOpen(false)}
-                        onMovePrevRequest={() =>
-                            setPhotoIndex(
-                                (photoIndex +
-                                    images.length +
-                                    galleryImages.length -
-                                    1) %
-                                    (images.length + galleryImages.length)
-                            )
-                        }
-                        onMoveNextRequest={() =>
-                            setPhotoIndex(
-                                (photoIndex + 1) %
-                                    (images.length + galleryImages.length)
-                            )
-                        }
-                        imageTitle={spotData.name}
-                        imageCaption={`${spotData.city}, ${spotData.state}, ${spotData.country}`}
-                    />
-                )}
+            {lightboxOpen && (
+                <Lightbox
+                    open={lightboxOpen}
+                    close={() => setLightboxOpen(false)}
+                    slides={[...images, ...galleryImages].map((src) => ({
+                        src,
+                    }))}
+                    index={photoIndex}
+                    on={{ view: ({ index }) => setPhotoIndex(index) }}
+                />
+            )}
 
             {/* Availability Calendar */}
             <section
