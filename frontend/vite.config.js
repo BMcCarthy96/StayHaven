@@ -12,7 +12,9 @@ export default defineConfig(({ mode }) => ({
         }),
     ],
     define: {
-        global: "window", // Polyfill global for browser
+        global: "window",
+        "process.env": {},
+        globalThis: "window",
     },
     server: {
         proxy: {
