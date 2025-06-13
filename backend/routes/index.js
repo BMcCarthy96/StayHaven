@@ -39,9 +39,4 @@ if (process.env.NODE_ENV !== "production") {
     });
 }
 
-// // Root route for '/'
-// router.get("/", (req, res) => {
-//     res.send("Welcome to the root of the API");
-// });
-
 module.exports = router;
