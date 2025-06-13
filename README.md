@@ -244,8 +244,8 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 **Brandon McCarthy**
 [GitHub](https://github.com/BMcCarthy96)
-[LinkedIn](https://www.linkedin.com/in/brandon-mccarthy/)
-Email: brandon.mccarthy96@gmail.com
+[LinkedIn](https://www.linkedin.com/in/brandon-mccarthy96-586646141/)
+Email: bmac96.dev@gmail.com
 
 ---
 
