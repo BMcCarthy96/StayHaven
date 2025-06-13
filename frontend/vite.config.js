@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => ({
             failOnError: mode === "production",
         }),
     ],
+    define: {
+        global: "window", // Polyfill global for browser
+    },
     server: {
         proxy: {
             "/api": "http://localhost:8000",
