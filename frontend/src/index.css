@@ -1,6 +1,37 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 
+/* Slick's default arrows are a plain white glyph with no background --
+   invisible against light-mode surfaces. Give them a solid, theme-stable
+   circle so they stay visible on any background, light or dark. */
+.slick-prev,
+.slick-next {
+    width: 34px;
+    height: 34px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+.slick-prev:hover,
+.slick-prev:focus,
+.slick-next:hover,
+.slick-next:focus {
+    background: var(--color-primary-dark);
+}
+.slick-prev:before,
+.slick-next:before {
+    font-size: 16px;
+    color: #fff;
+    opacity: 1;
+}
+.slick-prev {
+    left: 8px;
+}
+.slick-next {
+    right: 8px;
+}
+
 :root {
     /* Brand — deep teal primary + warm terracotta accent */
     --color-primary: #1f6f63;
