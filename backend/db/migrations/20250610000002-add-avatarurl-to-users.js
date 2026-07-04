@@ -1,15 +1,22 @@
 "use strict";
 
+let options = {};
+if (process.env.NODE_ENV === "production") {
+    options.schema = process.env.SCHEMA;
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.addColumn("Users", "avatarUrl", {
+        const table = { tableName: "Users", ...options };
+        await queryInterface.addColumn(table, "avatarUrl", {
             type: Sequelize.STRING,
             allowNull: true,
         });
     },
 
     async down(queryInterface) {
-        await queryInterface.removeColumn("Users", "avatarUrl");
+        const table = { tableName: "Users", ...options };
+        await queryInterface.removeColumn(table, "avatarUrl");
     },
 };

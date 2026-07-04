@@ -1,29 +1,35 @@
 "use strict";
 
+let options = {};
+if (process.env.NODE_ENV === "production") {
+    options.schema = process.env.SCHEMA;
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.addColumn("Spots", "bedrooms", {
+        const table = { tableName: "Spots", ...options };
+        await queryInterface.addColumn(table, "bedrooms", {
             type: Sequelize.INTEGER,
             allowNull: false,
             defaultValue: 1,
         });
-        await queryInterface.addColumn("Spots", "bathrooms", {
+        await queryInterface.addColumn(table, "bathrooms", {
             type: Sequelize.DECIMAL(3, 1),
             allowNull: false,
             defaultValue: 1,
         });
-        await queryInterface.addColumn("Spots", "beds", {
+        await queryInterface.addColumn(table, "beds", {
             type: Sequelize.INTEGER,
             allowNull: false,
             defaultValue: 1,
         });
-        await queryInterface.addColumn("Spots", "guestCapacity", {
+        await queryInterface.addColumn(table, "guestCapacity", {
             type: Sequelize.INTEGER,
             allowNull: false,
             defaultValue: 2,
         });
-        await queryInterface.addColumn("Spots", "amenities", {
+        await queryInterface.addColumn(table, "amenities", {
             type: Sequelize.JSON,
             allowNull: false,
             defaultValue: [],
@@ -31,10 +37,11 @@ module.exports = {
     },
 
     async down(queryInterface) {
-        await queryInterface.removeColumn("Spots", "bedrooms");
-        await queryInterface.removeColumn("Spots", "bathrooms");
-        await queryInterface.removeColumn("Spots", "beds");
-        await queryInterface.removeColumn("Spots", "guestCapacity");
-        await queryInterface.removeColumn("Spots", "amenities");
+        const table = { tableName: "Spots", ...options };
+        await queryInterface.removeColumn(table, "bedrooms");
+        await queryInterface.removeColumn(table, "bathrooms");
+        await queryInterface.removeColumn(table, "beds");
+        await queryInterface.removeColumn(table, "guestCapacity");
+        await queryInterface.removeColumn(table, "amenities");
     },
 };
