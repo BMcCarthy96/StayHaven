@@ -94,6 +94,47 @@ module.exports = (sequelize, DataTypes) => {
                     min: 0,
                 },
             },
+            bedrooms: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 1,
+                validate: {
+                    min: 0,
+                    max: 20,
+                },
+            },
+            bathrooms: {
+                type: DataTypes.DECIMAL(3, 1),
+                allowNull: false,
+                defaultValue: 1,
+                validate: {
+                    min: 0,
+                    max: 20,
+                },
+            },
+            beds: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 1,
+                validate: {
+                    min: 1,
+                    max: 30,
+                },
+            },
+            guestCapacity: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 2,
+                validate: {
+                    min: 1,
+                    max: 50,
+                },
+            },
+            amenities: {
+                type: DataTypes.JSON,
+                allowNull: false,
+                defaultValue: [],
+            },
             createdAt: {
                 type: DataTypes.DATE,
             },

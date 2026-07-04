@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 // import { FaUserCircle } from "react-icons/fa";
-import { FaUser, FaListAlt, FaRegStar } from "react-icons/fa";
+import {
+    FaUser,
+    FaListAlt,
+    FaRegStar,
+    FaRegHeart,
+    FaSuitcaseRolling,
+} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
@@ -95,8 +101,30 @@ function ProfileButton({ user }) {
                                 </Link>
                             </div>
                             <div>
+                                <Link to="/wishlist" className="manage-link">
+                                    <FaRegHeart
+                                        style={{
+                                            marginRight: "8px",
+                                            verticalAlign: "middle",
+                                        }}
+                                    />
+                                    Wishlist
+                                </Link>
+                            </div>
+                            <div>
+                                <Link to="/trips" className="manage-link">
+                                    <FaSuitcaseRolling
+                                        style={{
+                                            marginRight: "8px",
+                                            verticalAlign: "middle",
+                                        }}
+                                    />
+                                    My Trips
+                                </Link>
+                            </div>
+                            <div>
                                 <Link
-                                    to="/api/spots/current"
+                                    to="/host/spots"
                                     className="manage-link"
                                 >
                                     <FaListAlt
@@ -110,7 +138,7 @@ function ProfileButton({ user }) {
                             </div>
                             <div>
                                 <Link
-                                    to="/api/reviews/current"
+                                    to="/host/reviews"
                                     className="manage-link"
                                 >
                                     <FaRegStar

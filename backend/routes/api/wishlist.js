@@ -1,7 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const { requireAuth } = require("../../utils/auth");
-const { Spot, User } = require("../../db/models");
+const { Spot, User, SpotImage, Review } = require("../../db/models");
+
+const calculateAvgStarRating = async (spotId) => {
+    const reviews = await Review.findAll({ where: { spotId } });
+    const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
+    return reviews.length
+        ? parseFloat((totalStars / reviews.length).toFixed(1))
+        : 0;
+};
+
+const getPreviewImage = async (spotId) => {
+    const image = await SpotImage.findOne({ where: { spotId } });
+    return image ? image.url : "No preview image available";
+};
 
 // Get current user's wishlist
 router.get("/current", requireAuth, async (req, res) => {
@@ -21,13 +34,26 @@ router.get("/current", requireAuth, async (req, res) => {
                 "name",
                 "description",
                 "price",
+                "bedrooms",
+                "bathrooms",
+                "beds",
+                "guestCapacity",
                 "createdAt",
                 "updatedAt",
             ],
         },
     });
     if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ Spots: user.WishlistedSpots });
+
+    const spotsWithDetails = await Promise.all(
+        user.WishlistedSpots.map(async (spot) => ({
+            ...spot.toJSON(),
+            avgRating: await calculateAvgStarRating(spot.id),
+            previewImage: await getPreviewImage(spot.id),
+        }))
+    );
+
+    res.json({ Spots: spotsWithDetails });
 });
 
 // Add a spot to wishlist

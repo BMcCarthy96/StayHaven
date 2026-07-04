@@ -1,0 +1,18 @@
+.wishlist-page {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-5) var(--space-6);
+}
+
+.wishlist-page h1 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    margin-bottom: var(--space-5);
+    color: var(--color-ink-900);
+}
+
+@media (max-width: 600px) {
+    .wishlist-page {
+        padding: var(--space-4) var(--space-3);
+    }
+}

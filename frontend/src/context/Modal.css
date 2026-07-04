@@ -16,11 +16,14 @@
     right: 0;
     left: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(20, 24, 27, 0.6);
     z-index: 9998;
 }
 
 #modal-content {
-    position: absolute;
+    position: relative;
     z-index: 10000;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: var(--radius-lg);
 }

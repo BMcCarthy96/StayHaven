@@ -1,11 +1,11 @@
 .profile-root {
     max-width: 900px;
     margin: 40px auto;
-    background: var(--profile-bg, #fff);
+    background: var(--color-surface);
     border-radius: 18px;
     box-shadow: 0 6px 32px rgba(0, 0, 0, 0.09);
     padding: 32px 24px 40px 24px;
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-body);
     transition: background 0.3s;
 }
 
@@ -27,25 +27,25 @@
     height: 110px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.13);
-    border: 4px solid #ff6f61;
+    box-shadow: var(--shadow-md);
+    border: 4px solid var(--color-accent);
 }
 
 .edit-avatar-btn {
     position: absolute;
     bottom: 8px;
     right: 8px;
-    background: #fff;
+    background: var(--color-surface);
     border: none;
     border-radius: 50%;
     font-size: 1.2rem;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+    box-shadow: var(--shadow-sm);
     transition: background 0.2s;
 }
 .edit-avatar-btn:hover {
-    background: #ff6f61;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-surface);
 }
 
 .profile-info h2 {
@@ -53,35 +53,33 @@
     font-weight: 700;
     margin-bottom: 6px;
 }
-.profile-badges {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-.profile-badge {
-    font-size: 1.3rem;
-    background: #f7f7f7;
-    border-radius: 8px;
-    padding: 2px 10px;
-    color: #ff6f61;
-    font-weight: 700;
-    box-shadow: 0 1px 4px rgba(255, 111, 97, 0.08);
-}
 .profile-bio {
     font-size: 1.08rem;
-    color: #444;
+    color: var(--color-ink-700);
     margin-bottom: 8px;
+}
+.profile-bio-edit-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.profile-bio-edit-link:hover {
+    color: var(--color-primary-dark);
 }
 .profile-joined {
     font-size: 0.98rem;
-    color: #888;
+    color: var(--color-ink-500);
 }
 
 .profile-tabs {
     display: flex;
     gap: 12px;
     margin-bottom: 18px;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid var(--color-border);
 }
 .profile-tab {
     background: none;
@@ -90,122 +88,120 @@
     font-weight: 600;
     padding: 10px 18px;
     cursor: pointer;
-    color: #888;
+    color: var(--color-ink-500);
     border-bottom: 2px solid transparent;
     transition: color 0.2s, border-bottom 0.2s;
 }
 .profile-tab.active {
-    color: #ff6f61;
-    border-bottom: 2.5px solid #ff6f61;
+    color: var(--color-accent);
+    border-bottom: 2.5px solid var(--color-accent);
 }
 
 .profile-tab-content {
     margin-top: 18px;
 }
 
-/* Card styles for tab content */
-.profile-spot-card,
-.profile-review-card,
-.profile-booking-card,
-.profile-wishlist-card {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(255, 111, 97, 0.09);
-    padding: 18px 22px 14px 22px;
-    margin-bottom: 22px;
-    transition: box-shadow 0.2s, transform 0.2s;
+/* List styles for Reviews/Bookings tab content */
+.profile-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 14px;
 }
 
-.profile-spot-card:last-child,
-.profile-review-card:last-child,
-.profile-booking-card:last-child,
-.profile-wishlist-card:last-child {
-    margin-bottom: 0;
+.profile-review-card,
+.profile-booking-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.profile-review-card:hover,
+.profile-booking-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
-.profile-spot-card strong,
-.profile-review-card strong,
-.profile-booking-card strong,
-.profile-wishlist-card strong {
-    font-size: 1.1rem;
-    color: #ff6f61;
+.profile-list-thumb {
+    flex-shrink: 0;
+    width: 96px;
+    height: 76px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.profile-list-body {
+    flex: 1;
+    min-width: 0;
+}
+.profile-list-body strong {
+    font-size: 1.05rem;
+    color: var(--color-ink-900);
     font-weight: 700;
 }
 
-.profile-spot-card > div,
-.profile-review-card > div,
-.profile-booking-card > div,
-.profile-wishlist-card > div {
-    margin-bottom: 4px;
+.profile-review-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.profile-review-stars {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.profile-review-stars svg {
+    font-size: 15px;
+}
+.profile-review-text {
+    margin: 4px 0 0;
+    color: var(--color-ink-700);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.profile-review-card {
-    border-left: 4px solid #fbbf24;
-}
-.profile-booking-card {
-    border-left: 4px solid #4ade80;
-}
-.profile-wishlist-card {
-    border-left: 4px solid #ff6f61;
+.profile-booking-dates {
+    margin: 4px 0 0;
+    color: var(--color-ink-500);
+    font-size: 0.92rem;
 }
 
 .profile-placeholder {
-    color: #aaa;
+    color: var(--color-ink-500);
     font-size: 1.1rem;
     padding: 32px 0;
     text-align: center;
 }
 
-.profile-timeline-section {
-    margin-top: 24px;
-}
-.profile-timeline-section h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-.profile-timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.timeline-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: #f7f7f7;
-    border-radius: 8px;
-    padding: 10px 18px;
-    font-size: 1rem;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-    animation: fadeInUp 0.5s;
-}
-.timeline-booking {
-    border-left: 4px solid #4ade80;
-}
-.timeline-review {
-    border-left: 4px solid #fbbf24;
-}
-.timeline-spot {
-    border-left: 4px solid #ff6f61;
-}
-.timeline-date {
+.profile-view-all-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--color-primary);
     font-weight: 600;
-    color: #888;
-    min-width: 90px;
+    font-size: 0.95rem;
+    text-decoration: none;
 }
-.timeline-desc {
-    color: #333;
+.profile-view-all-link:hover {
+    text-decoration: underline;
 }
 
 .profile-loading {
     text-align: center;
     padding: 80px 0;
     font-size: 1.3rem;
-    color: #888;
+    color: var(--color-ink-500);
 }
 
 .save-btn,
@@ -215,12 +211,6 @@
 .save-btn:hover,
 .cancel-btn:hover {
     transform: translateY(-2px) scale(1.03);
-}
-
-.theme-switcher-wrapper {
-    margin-left: auto;
-    display: flex;
-    align-items: flex-start;
 }
 
 /* Responsive */
@@ -233,10 +223,13 @@
     .profile-root {
         padding: 16px 4px 24px 4px;
     }
-    .profile-spot-card,
     .profile-review-card,
-    .profile-booking-card,
-    .profile-wishlist-card {
-        padding: 12px 8px 10px 12px;
+    .profile-booking-card {
+        padding: 10px;
+        gap: 12px;
+    }
+    .profile-list-thumb {
+        width: 72px;
+        height: 60px;
     }
 }

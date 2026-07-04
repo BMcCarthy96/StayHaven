@@ -12,7 +12,7 @@
 .no-reviews-message {
     text-align: center;
     font-size: 18px;
-    color: #555;
+    color: var(--color-ink-700);
 }
 
 .reviews-list {
@@ -23,9 +23,9 @@
 
 .review-item {
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: var(--color-surface-subtle);
 }
 
 .review-header {
@@ -39,13 +39,13 @@
 
 .review-header span {
     font-size: 14px;
-    color: gray;
+    color: var(--color-ink-700);
     margin-top: 2px;
 }
 
 .review-content {
     font-size: 14px;
-    color: #333;
+    color: var(--color-ink-900);
     margin-bottom: 10px;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .edit-button {
-    background-color: #9AAB89;
+    background-color: var(--color-primary);
     color: white;
     padding: 7px 15px;
     border: none;
@@ -64,11 +64,11 @@
 }
 
 .edit-button:hover {
-    background-color: #354A26;
+    background-color: var(--color-primary-dark);
 }
 
 .delete-button {
-    background-color: #D9534F;
+    background-color: var(--color-danger);
     color: white;
     padding: 7px 15px;
     border: none;
@@ -77,5 +77,5 @@
 }
 
 .delete-button:hover {
-    background-color: #A94442;
+    filter: brightness(0.88);
 }

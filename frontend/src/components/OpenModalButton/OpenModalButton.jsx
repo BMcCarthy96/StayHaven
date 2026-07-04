@@ -4,7 +4,8 @@ function OpenModalButton({
   modalComponent,
   buttonText,
   onButtonClick,
-  onModalClose
+  onModalClose,
+  ...rest
 }) {
   const { setModalContent, setOnModalClose } = useModal();
 
@@ -14,7 +15,11 @@ function OpenModalButton({
     if (typeof onButtonClick === "function") onButtonClick();
   };
 
-  return <button onClick={onClick}>{buttonText}</button>;
+  return (
+    <button onClick={onClick} {...rest}>
+      {buttonText}
+    </button>
+  );
 }
 
 export default OpenModalButton;

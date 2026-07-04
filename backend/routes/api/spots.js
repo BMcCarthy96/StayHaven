@@ -8,6 +8,7 @@ const {
     Booking,
     SpotImage,
     ReviewImage,
+    sequelize,
 } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const { check, validationResult } = require("express-validator");
@@ -28,9 +29,9 @@ const validateQueryParams = (req, res, next) => {
         },
         {
             value: size,
-            condition: isNaN(size) || size < 1 || size > 20,
+            condition: isNaN(size) || size < 1 || size > 100,
             key: "size",
-            message: "Size must be between 1 and 20",
+            message: "Size must be between 1 and 100",
         },
         {
             value: minLat,
@@ -136,13 +137,17 @@ const formatDateTime = (date) => {
 router.get("/", validateQueryParams, async (req, res) => {
     let {
         page = 1,
-        size = 20,
+        size = 50,
         minLat,
         maxLat,
         minLng,
         maxLng,
         minPrice,
         maxPrice,
+        guests,
+        location,
+        checkIn,
+        checkOut,
     } = req.query;
     const filters = {};
 
@@ -154,6 +159,29 @@ router.get("/", validateQueryParams, async (req, res) => {
         filters.price = { ...filters.price, [Op.gte]: parseFloat(minPrice) };
     if (maxPrice)
         filters.price = { ...filters.price, [Op.lte]: parseFloat(maxPrice) };
+    if (guests) filters.guestCapacity = { [Op.gte]: parseFloat(guests) };
+    if (location) {
+        const term = `%${String(location).toLowerCase()}%`;
+        filters[Op.or] = ["city", "state", "country", "name"].map((field) =>
+            sequelize.where(sequelize.fn("LOWER", sequelize.col(field)), {
+                [Op.like]: term,
+            })
+        );
+    }
+
+    if (checkIn && checkOut) {
+        const conflictingBookings = await Booking.findAll({
+            where: {
+                startDate: { [Op.lt]: checkOut },
+                endDate: { [Op.gt]: checkIn },
+            },
+            attributes: ["spotId"],
+        });
+        const bookedSpotIds = conflictingBookings.map((b) => b.spotId);
+        if (bookedSpotIds.length) {
+            filters.id = { [Op.notIn]: bookedSpotIds };
+        }
+    }
 
     const spots = await Spot.findAll({
         where: filters,
@@ -171,6 +199,10 @@ router.get("/", validateQueryParams, async (req, res) => {
             "name",
             "description",
             "price",
+            "bedrooms",
+            "bathrooms",
+            "beds",
+            "guestCapacity",
             "createdAt",
             "updatedAt",
         ],
@@ -240,6 +272,11 @@ router.post("/", requireAuth, async (req, res) => {
         name,
         description,
         price,
+        bedrooms,
+        bathrooms,
+        beds,
+        guestCapacity,
+        amenities,
     } = req.body;
 
     if (
@@ -278,6 +315,11 @@ router.post("/", requireAuth, async (req, res) => {
         name,
         description,
         price,
+        ...(bedrooms !== undefined && { bedrooms }),
+        ...(bathrooms !== undefined && { bathrooms }),
+        ...(beds !== undefined && { beds }),
+        ...(guestCapacity !== undefined && { guestCapacity }),
+        ...(amenities !== undefined && { amenities }),
     });
 
     return res.status(201).json(newSpot);
@@ -314,6 +356,11 @@ router.put("/:id", requireAuth, async (req, res) => {
         name,
         description,
         price,
+        bedrooms,
+        bathrooms,
+        beds,
+        guestCapacity,
+        amenities,
     } = req.body;
     const spot = await Spot.findByPk(req.params.id);
 
@@ -359,6 +406,11 @@ router.put("/:id", requireAuth, async (req, res) => {
         name,
         description,
         price,
+        ...(bedrooms !== undefined && { bedrooms }),
+        ...(bathrooms !== undefined && { bathrooms }),
+        ...(beds !== undefined && { beds }),
+        ...(guestCapacity !== undefined && { guestCapacity }),
+        ...(amenities !== undefined && { amenities }),
     });
 
     return res.json(updated);

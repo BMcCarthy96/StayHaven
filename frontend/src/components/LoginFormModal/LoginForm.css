@@ -1,112 +1,114 @@
 .login-modal-container {
-    border: 2px solid black;
-    border-radius: 12px;
-    width: 350px;
-    background-color: #f9f9f9;
-    padding: 20px;
+    border-radius: var(--radius-lg);
+    width: 380px;
+    max-width: 90vw;
+    background-color: var(--color-surface);
+    padding: var(--space-6) var(--space-5);
     text-align: center;
 }
 
-h1 {
+.login-modal-container h1 {
     text-align: center;
-    font-size: 40px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: var(--space-5);
+    color: var(--color-ink-900);
 }
 
 .error-container {
-    color: #d9534f;
-    margin-bottom: 10px;
+    color: var(--color-danger);
+    margin-bottom: var(--space-3);
     text-align: center;
+    font-size: 0.9rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.form-field label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-ink-700);
 }
 
 .login-modal-container input {
     width: 100%;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border: 2px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
+    padding: 11px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    background: var(--color-surface);
+    color: var(--color-ink-900);
     box-sizing: border-box;
+    transition: border-color 0.15s ease;
 }
 
 .login-modal-container input:focus {
-    border-color: black;
+    border-color: var(--color-primary);
     outline: none;
 }
 
-.login-button,
-.demo-user-button {
+.login-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
-}
-
-.login-button {
     width: 100%;
     padding: 12px 15px;
-    background-color: #ff6f61;
+    background-color: var(--color-primary);
     border: none;
-    border-radius: 6px;
-    color: white;
-    font-size: 16px;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
 }
 
 .login-button:disabled {
-    background-color: #ccc;
+    background-color: var(--color-border);
+    color: var(--color-ink-500);
     cursor: not-allowed;
 }
 
-.login-button:hover {
-    background-color: #f84d3e;
+.login-button:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
 }
 
 .demo-user-div {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: var(--space-4);
 }
 
-.demo-user-button {
-    width: 100%;
-    padding: 12px 15px;
-    background-color: white;
-    color: #ff6f61;
-    font-size: 16px;
-    cursor: pointer;
+.demo-user-link {
+    background: none;
     border: none;
-    border-radius: 6px;
+    color: var(--color-ink-500);
+    font-size: 0.85rem;
+    cursor: pointer;
     text-decoration: underline;
+    padding: 4px;
 }
 
-.demo-user-button:hover {
-    color: grey;
+.demo-user-link:hover {
+    color: var(--color-primary);
 }
 
 #login-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.email,
-.password {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: var(--space-3);
 }
 
 .log-in-button-div {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 10px;
-}
-
-.demo-user-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
 }

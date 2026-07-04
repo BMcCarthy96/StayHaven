@@ -2,64 +2,96 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-  }
+}
 
-  .navbar {
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #FF6F61; /* Coral */
-    padding: 15px 0;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    padding: 14px var(--space-6);
     position: sticky;
     top: 0;
     width: 100%;
     z-index: 1000;
-  }
+}
 
-  .nav-left {
+.nav-left {
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
+    gap: var(--space-2);
+}
 
-  .home-logo {
+.home-logo {
     text-decoration: none;
-    padding-left: 10px;
-  }
+    display: flex;
+    align-items: center;
+}
 
-  .title {
+.title {
+    font-family: var(--font-heading);
     font-size: 22px;
-    font-weight: bold;
-    color: white;
+    font-weight: 700;
+    color: var(--color-primary);
     text-decoration: none;
-  }
+}
 
-  .nav-right {
+.nav-right {
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
+    gap: var(--space-4);
+}
 
-  .new-spot-link .create-link {
+.new-spot-link .create-link {
     background: none;
-    color: white;
+    color: var(--text-main);
     text-decoration: none;
-    margin-right: 10px;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 400;
-    font-size: large;
-  }
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    transition: background 0.15s ease;
+}
 
-  @media (max-width: 768px) {
+.new-spot-link .create-link:hover {
+    background: var(--color-surface-subtle);
+}
+
+.theme-toggle-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--text-main);
+    transition: background 0.15s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--color-surface-subtle);
+}
+
+@media (max-width: 768px) {
     .navbar {
-      padding: 10px 15px;
+        padding: 10px var(--space-4);
     }
     .title {
-      font-size: 18px;
+        font-size: 18px;
     }
     .home-logo svg {
-      width: 30px;
-      height: 30px;
+        width: 28px;
+        height: 28px;
     }
-  }
+    .new-spot-link .create-link {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+}

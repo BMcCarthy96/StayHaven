@@ -59,24 +59,26 @@ function LoginFormModal() {
             )}
 
             <form onSubmit={handleSubmit} id="login-form">
-                <div className="email">
+                <div className="form-field">
+                    <label htmlFor="login-credential">Username or Email</label>
                     <input
+                        id="login-credential"
                         type="text"
                         value={credential}
-                        placeholder="Username or Email"
+                        placeholder="Username or email"
                         onChange={(e) => setCredential(e.target.value)}
-                        aria-label="Username or Email"
                         tabIndex={0}
                     />
                 </div>
 
-                <div className="password">
+                <div className="form-field">
+                    <label htmlFor="login-password">Password</label>
                     <input
+                        id="login-password"
                         type="password"
                         value={password}
                         placeholder="Password"
                         onChange={(e) => setPassword(e.target.value)}
-                        aria-label="Password"
                         tabIndex={0}
                     />
                 </div>
@@ -96,24 +98,22 @@ function LoginFormModal() {
             </form>
 
             <div className="demo-user-div">
-                <motion.button
+                <button
                     type="button"
-                    className="demo-user-button"
-                    aria-label="Demo User"
+                    className="demo-user-link"
+                    aria-label="Log in as demo user"
                     onClick={() => {
-                        setCredential("FakeUser1");
-                        setPassword("password2");
+                        setCredential("Demo-lition");
+                        setPassword("password");
                         setTimeout(() => {
                             document
                                 .getElementById("login-form")
                                 .requestSubmit();
                         }, 0);
                     }}
-                    whileTap={{ scale: 0.97 }}
-                    whileHover={{ scale: 1.03 }}
                 >
-                    Demo User
-                </motion.button>
+                    Continue as demo user
+                </button>
             </div>
         </div>
     );

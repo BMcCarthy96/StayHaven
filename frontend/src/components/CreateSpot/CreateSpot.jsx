@@ -6,6 +6,7 @@ import { createSpot, updateSpot, fetchSpotDetails } from "../../store/spots";
 import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { AMENITIES } from "../../constants/amenities";
 
 function CreateSpot() {
     const dispatch = useDispatch();
@@ -28,7 +29,12 @@ function CreateSpot() {
         description: "",
         latitude: "",
         longitude: "",
+        bedrooms: "1",
+        bathrooms: "1",
+        beds: "1",
+        guestCapacity: "2",
     });
+    const [amenities, setAmenities] = useState([]);
 
     const [previewImage, setPreviewImage] = useState("");
     const [otherImages, setOtherImages] = useState(["", "", "", ""]);
@@ -57,7 +63,12 @@ function CreateSpot() {
                 description: existingSpot.description || "",
                 latitude: existingSpot.lat || "",
                 longitude: existingSpot.lng || "",
+                bedrooms: existingSpot.bedrooms ?? "1",
+                bathrooms: existingSpot.bathrooms ?? "1",
+                beds: existingSpot.beds ?? "1",
+                guestCapacity: existingSpot.guestCapacity ?? "2",
             });
+            setAmenities(existingSpot.amenities || []);
             setPreviewImage(existingSpot.SpotImages?.[0]?.url || "");
             setOtherImages(
                 existingSpot.SpotImages?.slice(1).map((img) => img.url) || [
@@ -78,6 +89,14 @@ function CreateSpot() {
         const updatedImages = [...otherImages];
         updatedImages[index] = value;
         setOtherImages(updatedImages);
+    };
+
+    const toggleAmenity = (amenity) => {
+        setAmenities((prev) =>
+            prev.includes(amenity)
+                ? prev.filter((a) => a !== amenity)
+                : [...prev, amenity]
+        );
     };
 
     const validateFields = () => {
@@ -117,6 +136,11 @@ function CreateSpot() {
             price: parseFloat(spotData.price),
             lat: spotData.latitude ? parseFloat(spotData.latitude) : null,
             lng: spotData.longitude ? parseFloat(spotData.longitude) : null,
+            bedrooms: parseInt(spotData.bedrooms, 10) || 1,
+            bathrooms: parseFloat(spotData.bathrooms) || 1,
+            beds: parseInt(spotData.beds, 10) || 1,
+            guestCapacity: parseInt(spotData.guestCapacity, 10) || 2,
+            amenities,
         };
         const imageUrls = [
             previewImage,
@@ -250,6 +274,73 @@ function CreateSpot() {
                 {errors.price && (
                     <span className="error-message">{errors.price}</span>
                 )}
+
+                <h2>Share the Basics</h2>
+                <div className="spot-basics-row">
+                    <label>
+                        Bedrooms
+                        <input
+                            name="bedrooms"
+                            type="number"
+                            min="0"
+                            max="20"
+                            value={spotData.bedrooms}
+                            onChange={handleChange}
+                            aria-label="Bedrooms"
+                        />
+                    </label>
+                    <label>
+                        Bathrooms
+                        <input
+                            name="bathrooms"
+                            type="number"
+                            min="0"
+                            max="20"
+                            step="0.5"
+                            value={spotData.bathrooms}
+                            onChange={handleChange}
+                            aria-label="Bathrooms"
+                        />
+                    </label>
+                    <label>
+                        Beds
+                        <input
+                            name="beds"
+                            type="number"
+                            min="1"
+                            max="30"
+                            value={spotData.beds}
+                            onChange={handleChange}
+                            aria-label="Beds"
+                        />
+                    </label>
+                    <label>
+                        Guests
+                        <input
+                            name="guestCapacity"
+                            type="number"
+                            min="1"
+                            max="50"
+                            value={spotData.guestCapacity}
+                            onChange={handleChange}
+                            aria-label="Guest capacity"
+                        />
+                    </label>
+                </div>
+
+                <h2>Amenities</h2>
+                <div className="amenities-checkbox-grid">
+                    {AMENITIES.map((amenity) => (
+                        <label key={amenity} className="amenity-checkbox">
+                            <input
+                                type="checkbox"
+                                checked={amenities.includes(amenity)}
+                                onChange={() => toggleAmenity(amenity)}
+                            />
+                            {amenity}
+                        </label>
+                    ))}
+                </div>
 
                 <h2>Showcase Your Spot with Photos</h2>
                 <label>

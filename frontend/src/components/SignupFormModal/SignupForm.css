@@ -1,82 +1,95 @@
 .sign-up-container {
-    width: 500px;
-    min-height: 550px;
-    border: 2px solid black;
-    border-radius: 12px;
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 0px 25px 0px 25px;
+    width: 440px;
+    max-width: 90vw;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+    padding: var(--space-6) var(--space-5);
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    z-index: 1001;
+    gap: var(--space-4);
 }
 
 .sign-up-container h1 {
-    font-size: 40px;
-    font-weight: bold;
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
     text-align: center;
+    color: var(--color-ink-900);
     margin: 0;
 }
 
 .form-div {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: var(--space-3);
     width: 100%;
 }
 
-input {
-    height: 35px;
-    padding: 12px 15px;
-    font-size: 16px;
-    border: 2px solid #ccc;
-    border-radius: 6px;
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.form-field label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-ink-700);
+}
+
+.sign-up-container input {
+    padding: 11px 14px;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-ink-900);
     outline: none;
     width: 100%;
     box-sizing: border-box;
+    transition: border-color 0.15s ease;
 }
 
-input:focus {
-    border-color: black;
+.sign-up-container input:focus {
+    border-color: var(--color-primary);
     outline: none;
+}
+
+.sign-up-container input::placeholder {
+    color: var(--color-ink-500);
 }
 
 .sign-up-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 55px;
     width: 100%;
-    background-color: #FF6F61;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 8px;
+    padding: 12px;
+    background-color: var(--color-primary);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     text-align: center;
 }
 
-.sign-up-button:hover {
-    background-color: #f84d3e;
+.sign-up-button:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
 }
 
 .sign-up-button:disabled {
-    background-color: #D3D3D3;
-    color: #A9A9A9;
+    background-color: var(--color-border);
+    color: var(--color-ink-500);
     cursor: not-allowed;
 }
 
 .error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 5px;
+    color: var(--color-danger);
+    font-size: 0.85rem;
+    margin: 4px 0 0;
     text-align: left;
-}
-
-input::placeholder {
-    font-size: 16px;
-    color: #aaa;
 }

@@ -1,0 +1,22 @@
+"use strict";
+
+const AMENITIES = [
+    "WiFi",
+    "Kitchen",
+    "Free parking",
+    "Air conditioning",
+    "Heating",
+    "Washer",
+    "Dryer",
+    "Dedicated workspace",
+    "TV",
+    "Pool",
+    "Hot tub",
+    "Fireplace",
+    "Pet friendly",
+    "Beach access",
+    "Mountain view",
+    "Gym access",
+];
+
+module.exports = { AMENITIES };

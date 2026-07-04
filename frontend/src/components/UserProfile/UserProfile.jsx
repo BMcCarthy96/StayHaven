@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import gravatarUrl from "gravatar-url";
 import { motion } from "framer-motion";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import { MdOutlineStar } from "react-icons/md";
 import "./UserProfile.css";
 import EditProfileModal from "./EditProfileModal";
 import ChangePasswordModal from "../ChangePasswordModal";
@@ -12,9 +13,10 @@ import { fetchUserBookings } from "../../store/bookings";
 import { fetchWishlist } from "../../store/wishlist";
 import { fetchUserReviews } from "../../store/reviews";
 import { fetchSpots } from "../../store/spots";
-import ThemeSwitcher from "./ThemeSwitcher";
+import SpotCard from "../SpotCard/SpotCard";
 
 const TABS = ["My Spots", "My Reviews", "My Bookings", "Wishlist", "Settings"];
+const PREVIEW_COUNT = 3;
 
 function UserProfile() {
     const dispatch = useDispatch();
@@ -28,22 +30,6 @@ function UserProfile() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-    // Example data for timeline and achievements
-    const timeline = [
-        { type: "booking", date: "2024-05-01", desc: "Booked 'Cozy Cabin'" },
-        {
-            type: "review",
-            date: "2024-05-03",
-            desc: "Reviewed 'Ocean View Loft'",
-        },
-        { type: "spot", date: "2024-05-10", desc: "Listed 'Urban Retreat'" },
-    ];
-    const achievements = [
-        { label: "First Booking", icon: "🏅" },
-        { label: "Superhost", icon: "🌟" },
-        { label: "10+ Reviews", icon: "💬" },
-    ];
 
     useEffect(() => {
         if (user) {
@@ -68,7 +54,6 @@ function UserProfile() {
 
     return (
         <div className="profile-root" role="main">
-            <ToastContainer position="top-right" autoClose={3000} />
             <div className="profile-header">
                 <div className="profile-avatar-wrapper">
                     <img
@@ -100,20 +85,18 @@ function UserProfile() {
                     <h2 tabIndex={0}>
                         {user.firstName} {user.lastName}
                     </h2>
-                    <div className="profile-badges" aria-label="Achievements">
-                        {achievements.map((a, i) => (
-                            <span
-                                key={i}
-                                className="profile-badge"
-                                title={a.label}
-                                aria-label={a.label}
+                    <div className="profile-bio">
+                        {user.bio ? (
+                            <span tabIndex={0}>{user.bio}</span>
+                        ) : (
+                            <button
+                                type="button"
+                                className="profile-bio-edit-link"
+                                onClick={() => setShowEditModal(true)}
                             >
-                                {a.icon}
-                            </span>
-                        ))}
-                    </div>
-                    <div className="profile-bio" tabIndex={0}>
-                        {user.bio || "No bio yet. Click edit to add one!"}
+                                No bio yet. Click here to add one!
+                            </button>
+                        )}
                     </div>
                     <div className="profile-joined" tabIndex={0}>
                         Joined:{" "}
@@ -121,9 +104,6 @@ function UserProfile() {
                             ? new Date(user.createdAt).toLocaleDateString()
                             : "Unknown"}
                     </div>
-                </div>
-                <div className="theme-switcher-wrapper">
-                    <ThemeSwitcher />
                 </div>
             </div>
 
@@ -159,19 +139,11 @@ function UserProfile() {
                                 Your listed spots will appear here.
                             </div>
                         ) : (
-                            mySpots.map((spot) => (
-                                <div
-                                    key={spot.id}
-                                    className="profile-spot-card"
-                                >
-                                    <div>
-                                        <strong>{spot.name}</strong>
-                                        <div>
-                                            {spot.city}, {spot.state}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
+                            <div className="spot-grid">
+                                {mySpots.map((spot) => (
+                                    <SpotCard key={spot.id} spot={spot} />
+                                ))}
+                            </div>
                         )}
                     </motion.div>
                 )}
@@ -185,18 +157,54 @@ function UserProfile() {
                                 Your reviews will appear here.
                             </div>
                         ) : (
-                            Object.values(userReviews).map((review) => (
-                                <div
-                                    key={review.id}
-                                    className="profile-review-card"
-                                >
-                                    <div>
-                                        <strong>{review.Spot?.name}</strong>
-                                        <div>{review.review}</div>
-                                        <div>Stars: {review.stars}</div>
-                                    </div>
-                                </div>
-                            ))
+                            <div className="profile-list">
+                                {Object.values(userReviews)
+                                    .sort(
+                                        (a, b) =>
+                                            new Date(b.createdAt) -
+                                            new Date(a.createdAt)
+                                    )
+                                    .map((review) => (
+                                        <Link
+                                            to={`/spots/${review.spotId}`}
+                                            key={review.id}
+                                            className="profile-review-card"
+                                        >
+                                            <img
+                                                src={review.Spot?.previewImage}
+                                                alt={review.Spot?.name}
+                                                className="profile-list-thumb"
+                                                loading="lazy"
+                                            />
+                                            <div className="profile-list-body">
+                                                <div className="profile-review-top">
+                                                    <strong>
+                                                        {review.Spot?.name}
+                                                    </strong>
+                                                    <span className="profile-review-stars">
+                                                        {[...Array(5)].map(
+                                                            (_, i) => (
+                                                                <MdOutlineStar
+                                                                    key={i}
+                                                                    style={{
+                                                                        color:
+                                                                            i <
+                                                                            review.stars
+                                                                                ? "var(--color-rating)"
+                                                                                : "var(--color-border)",
+                                                                    }}
+                                                                />
+                                                            )
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                <p className="profile-review-text">
+                                                    {review.review}
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                            </div>
                         )}
                     </motion.div>
                 )}
@@ -210,20 +218,42 @@ function UserProfile() {
                                 Your bookings will appear here.
                             </div>
                         ) : (
-                            bookings.map((booking) => (
-                                <div
-                                    key={booking.id}
-                                    className="profile-booking-card"
-                                >
-                                    <div>
-                                        <strong>{booking.Spot?.name}</strong>
-                                        <div>
-                                            {booking.startDate} -{" "}
-                                            {booking.endDate}
-                                        </div>
-                                    </div>
+                            <>
+                                <div className="profile-list">
+                                    {bookings
+                                        .slice(0, PREVIEW_COUNT)
+                                        .map((booking) => (
+                                            <Link
+                                                to={`/spots/${booking.spotId}`}
+                                                key={booking.id}
+                                                className="profile-booking-card"
+                                            >
+                                                <img
+                                                    src={
+                                                        booking.Spot
+                                                            ?.previewImage
+                                                    }
+                                                    alt={booking.Spot?.name}
+                                                    className="profile-list-thumb"
+                                                    loading="lazy"
+                                                />
+                                                <div className="profile-list-body">
+                                                    <strong>
+                                                        {booking.Spot?.name}
+                                                    </strong>
+                                                    <p className="profile-booking-dates">
+                                                        {booking.startDate}
+                                                        {" – "}
+                                                        {booking.endDate}
+                                                    </p>
+                                                </div>
+                                            </Link>
+                                        ))}
                                 </div>
-                            ))
+                                <Link to="/trips" className="profile-view-all-link">
+                                    View all trips &rarr;
+                                </Link>
+                            </>
                         )}
                     </motion.div>
                 )}
@@ -237,19 +267,19 @@ function UserProfile() {
                                 Your wishlist will appear here.
                             </div>
                         ) : (
-                            wishlist.map((spot) => (
-                                <div
-                                    key={spot.id}
-                                    className="profile-wishlist-card"
-                                >
-                                    <div>
-                                        <strong>{spot.name}</strong>
-                                        <div>
-                                            {spot.city}, {spot.state}
-                                        </div>
-                                    </div>
+                            <>
+                                <div className="spot-grid">
+                                    {wishlist.slice(0, PREVIEW_COUNT).map((spot) => (
+                                        <SpotCard key={spot.id} spot={spot} />
+                                    ))}
                                 </div>
-                            ))
+                                <Link
+                                    to="/wishlist"
+                                    className="profile-view-all-link"
+                                >
+                                    View full wishlist &rarr;
+                                </Link>
+                            </>
                         )}
                     </motion.div>
                 )}
@@ -281,27 +311,6 @@ function UserProfile() {
                         </motion.button>
                     </div>
                 )}
-            </div>
-
-            {/* Activity Timeline */}
-            <div className="profile-timeline-section">
-                <h3>Activity Timeline</h3>
-                <div className="profile-timeline">
-                    {timeline.map((item, idx) => (
-                        <motion.div
-                            key={idx}
-                            className={`timeline-item timeline-${item.type}`}
-                            initial={{ opacity: 0, x: -30 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                            tabIndex={0}
-                            aria-label={item.desc}
-                        >
-                            <span className="timeline-date">{item.date}</span>
-                            <span className="timeline-desc">{item.desc}</span>
-                        </motion.div>
-                    ))}
-                </div>
             </div>
 
             {/* Edit Profile Modal */}

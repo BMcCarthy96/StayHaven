@@ -1,31 +1,35 @@
 .profile-button {
     display: flex;
     align-items: center;
+    gap: 8px;
     background: none;
-    border: 1px solid white;
-    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
     cursor: pointer;
-    color: #eeeaea;
+    color: var(--color-ink-700);
     font-size: 24px;
+    padding: 4px 8px;
     position: relative;
+    transition: border-color 0.15s ease;
 }
 
 .profile-button:hover {
-    color: #b2b2b2;
+    border-color: var(--color-ink-500);
 }
 
 .profile-dropdown {
     position: absolute;
     right: 0;
-    top: 20px;
-    background-color: #f1f4f0;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12);
-    border-radius: 10px;
-    padding: 12px 0;
-    width: 220px;
+    top: calc(100% + 8px);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    padding: 8px 0;
+    width: 240px;
     z-index: 1000;
-    border: 3px solid black;
+    border: 1px solid var(--color-border);
     list-style: none;
+    margin: 0;
 }
 
 .profile-dropdown.hidden {
@@ -33,57 +37,74 @@
 }
 
 .profile-dropdown li {
-    padding: 12px 20px;
+    padding: 4px 8px;
     cursor: pointer;
     text-align: left;
     font-size: 14px;
 }
 
 .profile-dropdown li:hover {
-    background-color: #e5ede4;
+    background-color: var(--color-surface-subtle);
 }
 
 .options {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    text-align: center;
-    padding: 10px 0;
+    gap: 2px;
+    text-align: left;
+    padding: 8px 20px 12px;
+    color: var(--color-ink-900);
+}
+
+.options div:last-child {
+    color: var(--color-ink-500);
+    font-size: 0.85rem;
+}
+
+.profile-dropdown hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 4px 0;
+}
+
+.manage-div {
+    padding: 4px 0;
 }
 
 .manage-link {
+    display: block;
     text-decoration: none;
-    color: #333;
-    padding: 8px 0;
+    color: var(--color-ink-900);
+    padding: 10px 20px;
+    font-size: 0.95rem;
 }
 
 .manage-link:hover {
-    background-color: #ff6f61;
-    color: white;
-    border-radius: 5px;
+    background-color: var(--color-surface-subtle);
 }
 
 .logout-button-div {
     display: flex;
     justify-content: center;
+    padding: 8px 16px 4px;
 }
 
 .logout-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #ff6f61;
-    color: white;
+    background-color: var(--color-primary);
+    color: #fff;
     border: none;
-    border-radius: 20px;
-    height: 35px;
-    width: 90px;
+    border-radius: var(--radius-md);
+    height: 36px;
+    width: 100%;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
 }
 
 .logout-button:hover {
-    background-color: #f84d3e;
+    background-color: var(--color-primary-dark);
 }

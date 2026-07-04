@@ -3,18 +3,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: var(--color-surface);
     padding: 20px;
     border-radius: 8px;
     text-align: center;
     width: 400px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .h4-container {
     margin: 10px 0;
     font-size: 16px;
-    color: #555;
+    color: var(--color-ink-700);
     width: 90%;
 }
 
@@ -42,19 +42,19 @@
 }
 
 .yes {
-    background-color: #FF6F61;
+    background-color: var(--color-danger);
     color: white;
 }
 
 .yes:hover {
-    background-color: #f84d3e;
+    filter: brightness(0.88);
 }
 
 .no {
-    background-color: darkgray;
+    background-color: var(--color-ink-500);
     color: white;
 }
 
 .no:hover {
-    background-color: grey;
+    background-color: var(--color-ink-700);
 }

@@ -2,45 +2,137 @@
 @import "slick-carousel/slick/slick-theme.css";
 
 :root {
-    --bg-main: #fff;
-    --bg-secondary: #f7f7f7;
-    --text-main: #222;
-    --text-secondary: #444;
-    --text-muted: #888;
-    --card-bg: #fff;
-    --input-bg: #fff;
-    --input-border: #ccc;
-    --badge-bg: #f7f7f7;
-    --badge-text: #ff6f61;
-    --tab-active: #ff6f61;
-    --tab-inactive: #888;
-    --button-bg: #ff6f61;
+    /* Brand — deep teal primary + warm terracotta accent */
+    --color-primary: #1f6f63;
+    --color-primary-dark: #175349;
+    --color-primary-light: #e6f0ee;
+    --color-accent: #e8734a;
+    --color-accent-dark: #cf5e39;
+    --color-rating: #f5a623;
+
+    /* Warm-neutral surfaces */
+    --color-ink-900: #14181b;
+    --color-ink-700: #3c4247;
+    --color-ink-500: #6b7280;
+    --color-border: #e3e1dd;
+    --color-bg: #faf9f7;
+    --color-surface: #ffffff;
+    --color-surface-subtle: #f3f4f1;
+
+    --color-success: #1f8a5f;
+    --color-danger: #d64545;
+    --color-warning: #f5a623;
+    --color-info: #2f80ed;
+
+    /* Spacing / radius / shadow scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+
+    --shadow-sm: 0 1px 2px rgba(20, 24, 27, 0.06);
+    --shadow-md: 0 4px 12px rgba(20, 24, 27, 0.08);
+    --shadow-lg: 0 12px 32px rgba(20, 24, 27, 0.14);
+
+    --container-max: 1200px;
+    --font-body: "Inter", system-ui, -apple-system, sans-serif;
+    --font-heading: "Poppins", "Inter", system-ui, sans-serif;
+
+    /* Aliases — keep old variable names working during migration */
+    --bg-main: var(--color-bg);
+    --bg-secondary: var(--color-surface-subtle);
+    --text-main: var(--color-ink-900);
+    --text-secondary: var(--color-ink-700);
+    --text-muted: var(--color-ink-500);
+    --card-bg: var(--color-surface);
+    --input-bg: var(--color-surface);
+    --input-border: var(--color-border);
+    --badge-bg: var(--color-surface-subtle);
+    --badge-text: var(--color-accent);
+    --tab-active: var(--color-primary);
+    --tab-inactive: var(--color-ink-500);
+    --button-bg: var(--color-primary);
     --button-text: #fff;
-    --button-hover-bg: #f84d3e;
+    --button-hover-bg: var(--color-primary-dark);
 }
 
 .dark-theme {
-    --bg-main: #181818;
-    --bg-secondary: #232323;
-    --text-main: #f3f3f3;
-    --text-secondary: #e0e0e0;
-    --text-muted: #bbb;
-    --card-bg: #232323;
-    --input-bg: #222;
-    --input-border: #444;
-    --badge-bg: #232323;
-    --badge-text: #ffe082;
-    --tab-active: #ff6f61;
-    --tab-inactive: #bbb;
-    --button-bg: #353b48;
-    --button-text: #f3f3f3;
-    --button-hover-bg: #ff6f61;
+    --color-primary: #35a697;
+    --color-primary-dark: #2a8377;
+    --color-primary-light: #16302c;
+    --color-accent: #f0895f;
+    --color-accent-dark: #d97748;
+    --color-rating: #f5c04d;
+
+    --color-ink-900: #f3f4f1;
+    --color-ink-700: #c9cdd1;
+    --color-ink-500: #9aa1a8;
+    --color-border: #2c3237;
+    --color-bg: #14181b;
+    --color-surface: #1d2226;
+    --color-surface-subtle: #232a2e;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.32);
+    --shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.45);
+
+    --bg-main: var(--color-bg);
+    --bg-secondary: var(--color-surface-subtle);
+    --text-main: var(--color-ink-900);
+    --text-secondary: var(--color-ink-700);
+    --text-muted: var(--color-ink-500);
+    --card-bg: var(--color-surface);
+    --input-bg: var(--color-surface);
+    --input-border: var(--color-border);
+    --badge-bg: var(--color-surface-subtle);
+    --badge-text: var(--color-accent);
+    --tab-active: var(--color-primary);
+    --tab-inactive: var(--color-ink-500);
+    --button-bg: var(--color-primary);
+    --button-text: #fff;
+    --button-hover-bg: var(--color-primary-dark);
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body,
 html {
     background: var(--bg-main);
     color: var(--text-main);
+    font-family: var(--font-body);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
 }
 
 .profile-root,

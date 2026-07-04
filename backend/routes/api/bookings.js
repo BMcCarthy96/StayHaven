@@ -63,7 +63,7 @@ router.get("/current", requireAuth, async (req, res) => {
     });
 
     if (!bookings.length) {
-        return res.status(200).json({ message: "No bookings yet" });
+        return res.status(200).json({ Bookings: [] });
     }
 
     const bookingsWithDetails = await Promise.all(

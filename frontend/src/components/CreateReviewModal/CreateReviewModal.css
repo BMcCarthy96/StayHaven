@@ -1,7 +1,7 @@
 .review-modal-container {
     border-radius: 10px;
     width: 400px;
-    background: #fff;
+    background: var(--color-surface);
     padding: 20px;
 }
 
@@ -16,7 +16,7 @@
 .review-error-container {
     display: flex;
     justify-content: center;
-    color: red;
+    color: var(--color-danger);
     font-size: 14px;
     margin-bottom: 10px;
 }
@@ -31,7 +31,7 @@
     width: 100%;
     max-width: 350px;
     height: 80px;
-    border: 2px solid #b0b0b0;
+    border: 2px solid var(--color-ink-500);
     border-radius: 6px;
     padding: 8px;
     resize: none;
@@ -40,7 +40,7 @@
 }
 
 .text:focus {
-    border-color: #d98d9a;
+    border-color: var(--color-accent);
 }
 
 .stars-div {
@@ -57,14 +57,14 @@
 }
 
 .filled-star {
-    color: #ffc107;
+    color: var(--color-rating);
     cursor: pointer;
     font-size: 24px;
     /* transition: color 0.2s ease-in-out; */
 }
 
 .empty-star {
-    color: #e4e5e9;
+    color: var(--color-border);
     cursor: pointer;
     font-size: 24px;
     /* transition: color 0.2s ease-in-out; */
@@ -72,7 +72,7 @@
 
 .filled-star:hover,
 .empty-star:hover {
-    color: #ff9f00;
+    color: var(--color-rating);
 }
 
 .button-div {
@@ -83,25 +83,25 @@
 
 .submit-review-button {
     height: 35px;
-    background-color: #d98d9a;
+    background-color: var(--color-accent);
     color: white;
     padding: 8px 18px;
     border: none;
     border-radius: 6px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
     cursor: pointer;
     font-size: 14px;
 }
 
 .submit-review-button:hover {
-    background-color: #c07485;
+    background-color: var(--color-accent-dark);
 }
 
 .submit-review-button:disabled {
-    background-color: #b0b0b0;
+    background-color: var(--color-ink-500);
     cursor: not-allowed;
 }
 
 .submit-review-button:disabled:hover {
-    background-color: #b0b0b0;
+    background-color: var(--color-ink-500);
 }

@@ -1,5 +1,6 @@
 import { useRef, useState, useContext, createContext } from 'react';
 import ReactDOM from 'react-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import './Modal.css';
 
 const ModalContext = createContext();
@@ -40,16 +41,34 @@ export function ModalProvider({ children }) {
 
 export function Modal() {
   const { modalRef, modalContent, closeModal } = useContext(ModalContext);
-  // If there is no div referenced by the modalRef or modalContent is not a
-  // truthy value, render nothing:
-  if (!modalRef || !modalRef.current || !modalContent) return null;
+  // If there is no div referenced by the modalRef, render nothing:
+  if (!modalRef || !modalRef.current) return null;
 
   // Render the following component to the div referenced by the modalRef
   return ReactDOM.createPortal(
-    <div id="modal">
-      <div id="modal-background" onClick={closeModal} />
-      <div id="modal-content">{modalContent}</div>
-    </div>,
+    <AnimatePresence>
+      {modalContent && (
+        <div id="modal">
+          <motion.div
+            id="modal-background"
+            onClick={closeModal}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+          />
+          <motion.div
+            id="modal-content"
+            initial={{ opacity: 0, scale: 0.96, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            {modalContent}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>,
     modalRef.current
   );
 }

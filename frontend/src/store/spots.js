@@ -6,10 +6,16 @@ const LOAD_SPOT_DETAILS = "spots/LOAD_SPOT_DETAILS";
 const ADD_SPOT = "spots/ADD_SPOT";
 const EDIT_SPOT = "spots/EDIT_SPOT";
 const REMOVE_SPOT = "spots/REMOVE_SPOT";
+const LOAD_SEARCH_RESULTS = "spots/LOAD_SEARCH_RESULTS";
 
 // Action Creators
 const loadSpots = (spots) => ({
     type: LOAD_SPOTS,
+    spots,
+});
+
+const loadSearchResults = (spots) => ({
+    type: LOAD_SEARCH_RESULTS,
     spots,
 });
 
@@ -44,6 +50,23 @@ export const fetchSpots = () => async (dispatch) => {
             return acc;
         }, {});
         dispatch(loadSpots(normalizedSpots));
+    }
+};
+
+export const searchSpots = (filters = {}) => async (dispatch) => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            params.set(key, value);
+        }
+    });
+
+    const response = await csrfFetch(`/api/spots?${params.toString()}`);
+
+    if (response.ok) {
+        const { Spots } = await response.json();
+        dispatch(loadSearchResults(Spots));
+        return Spots;
     }
 };
 
@@ -116,6 +139,7 @@ export const deleteSpot = (spotId) => async (dispatch) => {
 const initialState = {
     allSpots: {},
     spotDetails: {},
+    searchResults: [],
 };
 
 // Reducer
@@ -123,6 +147,9 @@ const spotsReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_SPOTS:
             return { ...state, allSpots: { ...action.spots } };
+
+        case LOAD_SEARCH_RESULTS:
+            return { ...state, searchResults: action.spots };
 
         case LOAD_SPOT_DETAILS:
             return {

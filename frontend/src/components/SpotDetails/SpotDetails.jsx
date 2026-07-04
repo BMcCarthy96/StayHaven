@@ -3,16 +3,10 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSpotDetails, fetchSpots } from "../../store/spots";
 import "./SpotDetails.css";
-import { MdOutlineStar } from "react-icons/md";
+import { MdOutlineStar, MdOutlineBedroomParent } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
-import {
-    FaHeart,
-    FaShareAlt,
-    FaWifi,
-    FaBed,
-    FaBath,
-    FaSmokingBan,
-} from "react-icons/fa";
+import { FaHeart, FaShareAlt, FaBed, FaBath, FaUser } from "react-icons/fa";
+import { getAmenityIcon } from "../../constants/amenityIcons";
 import { fetchReviewsForSpot } from "../../store/reviews";
 import OpenModalButton from "../OpenModalButton/OpenModalButton.jsx";
 import CreateReviewModal from "../CreateReviewModal/CreateReviewModal.jsx";
@@ -30,18 +24,13 @@ import "yet-another-react-lightbox/styles.css";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { fetchSpotBookings } from "../../store/bookings";
+import { fetchSpotBookings, createBooking } from "../../store/bookings";
 import {
     fetchWishlist,
     addToWishlist,
     removeFromWishlist,
 } from "../../store/wishlist";
-import { Tooltip } from "react-tooltip";
-import {
-    FacebookShareButton,
-    TwitterShareButton,
-    EmailShareButton,
-} from "react-share";
+import { toast } from "react-toastify";
 
 function SpotDetails() {
     const { spotId } = useParams();
@@ -72,12 +61,11 @@ function SpotDetails() {
     }, [dispatch, loggedInUser]);
 
     const handleWishlist = (e) => {
+        e.preventDefault();
         if (!loggedInUser) {
-            e.preventDefault();
-            alert("Please log in to use wishlist!");
+            toast.info("Log in to save spots to your wishlist.");
             return;
         }
-        e.preventDefault();
         if (isWishlisted) {
             dispatch(removeFromWishlist(spotData.id));
         } else {
@@ -108,8 +96,9 @@ function SpotDetails() {
         bookedRanges.some(({ start, end }) => date >= start && date <= end);
 
     // Google Maps
+    const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
     const { isLoaded: mapLoaded } = useJsApiLoader({
-        googleMapsApiKey: "AIzaSyCHx89b489Ou8emoXAOgYMSfAkf8UJ1Wng",
+        googleMapsApiKey,
     });
 
     // Carousel images
@@ -138,32 +127,27 @@ function SpotDetails() {
     );
     const [starFilter, setStarFilter] = useState(null);
 
-    // Example nearby attractions (static for demo)
-    const nearbyAttractions = [
-        {
-            name: "Central Park",
-            lat: spotData.lat ? Number(spotData.lat) + 0.01 : 40.785091,
-            lng: spotData.lng ? Number(spotData.lng) + 0.01 : -73.968285,
-            type: "park",
-        },
-        {
-            name: "Famous Restaurant",
-            lat: spotData.lat ? Number(spotData.lat) - 0.008 : 40.761432,
-            lng: spotData.lng ? Number(spotData.lng) - 0.008 : -73.977622,
-            type: "restaurant",
-        },
-    ];
-
     const allSpots = useSelector((state) => state.spots.allSpots || {});
 
-    // Memoize relatedSpots to avoid unnecessary rerenders
-    const relatedSpots = useMemo(
-        () =>
-            Object.values(allSpots).filter(
-                (s) => s.id !== spotData.id && s.city === spotData.city
-            ),
-        [allSpots, spotData.id, spotData.city]
-    );
+    // Memoize relatedSpots to avoid unnecessary rerenders.
+    // Most cities only have 1-2 listings, so same-city alone rarely fills a
+    // carousel — fall back to same-state, then any other spot, to guarantee
+    // enough distinct results.
+    const relatedSpots = useMemo(() => {
+        const others = Object.values(allSpots).filter(
+            (s) => s.id !== spotData.id
+        );
+        const sameCity = others.filter((s) => s.city === spotData.city);
+        const sameState = others.filter(
+            (s) => s.city !== spotData.city && s.state === spotData.state
+        );
+        const rest = others.filter(
+            (s) => s.city !== spotData.city && s.state !== spotData.state
+        );
+        return [...sameCity, ...sameState, ...rest].slice(0, 6);
+    }, [allSpots, spotData.id, spotData.city, spotData.state]);
+
+    const relatedSlidesToShow = Math.min(3, relatedSpots.length);
 
     // Booking form animation and validation
     const [showBooking, setShowBooking] = useState(false);
@@ -191,13 +175,14 @@ function SpotDetails() {
     // Share button handler
     const handleShare = () => {
         navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
+        toast.success("Link copied to clipboard!");
     };
 
     const handleBookingOpen = () => setShowBooking((prev) => !prev);
 
-    const handleReserve = () => {
-        // Example validation: check if dates are valid
+    const formatDate = (date) => date.toISOString().split("T")[0];
+
+    const handleReserve = async () => {
         if (
             isDateBooked(calendarRange[0].startDate) ||
             isDateBooked(calendarRange[0].endDate)
@@ -210,7 +195,26 @@ function SpotDetails() {
             return;
         }
         setBookingError("");
-        alert("Booking feature coming soon!");
+
+        try {
+            await dispatch(
+                createBooking(spotId, {
+                    startDate: formatDate(calendarRange[0].startDate),
+                    endDate: formatDate(calendarRange[0].endDate),
+                })
+            );
+            toast.success("Your stay is booked! Check My Trips for details.");
+            setShowBooking(false);
+            dispatch(fetchSpotBookings(spotId)).then(setBookings);
+        } catch (err) {
+            const data = typeof err?.json === "function" ? await err.json() : {};
+            const message =
+                data?.errors?.startDate ||
+                data?.errors?.endDate ||
+                data?.message ||
+                "Something went wrong booking this stay.";
+            setBookingError(message);
+        }
     };
 
     return (
@@ -226,7 +230,14 @@ function SpotDetails() {
                 whileTap={{ scale: 0.9 }}
                 whileHover={{ scale: 1.1 }}
             >
-                <FaHeart color={isWishlisted ? "#ff6f61" : "#ccc"} size={28} />
+                <FaHeart
+                    color={
+                        isWishlisted
+                            ? "var(--color-accent)"
+                            : "var(--color-border)"
+                    }
+                    size={28}
+                />
             </motion.button>
             <motion.button
                 className="share-btn"
@@ -238,33 +249,6 @@ function SpotDetails() {
             >
                 <FaShareAlt size={22} />
             </motion.button>
-            {/* Share Options */}
-            <div style={{ display: "flex", gap: 0, margin: "0px" }}>
-                <FacebookShareButton
-                    url={window.location.href}
-                    aria-label="Share on Facebook"
-                >
-                    <span role="img" aria-label="Facebook">
-                        📘
-                    </span>
-                </FacebookShareButton>
-                <TwitterShareButton
-                    url={window.location.href}
-                    aria-label="Share on Twitter"
-                >
-                    <span role="img" aria-label="Twitter">
-                        🐦
-                    </span>
-                </TwitterShareButton>
-                <EmailShareButton
-                    url={window.location.href}
-                    aria-label="Share via Email"
-                >
-                    <span role="img" aria-label="Email">
-                        ✉️
-                    </span>
-                </EmailShareButton>
-            </div>
 
             {/* Hero Image & Carousel */}
             <div
@@ -335,11 +319,11 @@ function SpotDetails() {
             )}
 
             {/* Availability Calendar */}
-            <section
-                className="availability-calendar"
-                style={{ margin: "32px" }}
-            >
+            <section className="availability-calendar">
                 <h3>Availability</h3>
+                <p className="availability-hint">
+                    Select your check-in and check-out dates to see what&apos;s open.
+                </p>
                 <DateRange
                     ranges={calendarRange}
                     onChange={(item) => setCalendarRange([item.selection])}
@@ -358,11 +342,7 @@ function SpotDetails() {
                     aria-label="Availability calendar"
                 />
                 {isDateBooked(calendarRange[0].startDate) && (
-                    <div
-                        className="calendar-warning"
-                        style={{ color: "red", marginTop: 8 }}
-                        role="alert"
-                    >
+                    <div className="calendar-warning" role="alert">
                         The selected start date is already booked!
                     </div>
                 )}
@@ -401,48 +381,38 @@ function SpotDetails() {
                     </div>
                     <p className="spot-description">{spotData.description}</p>
                     <div className="amenities-row">
-                        <span
-                            className="amenity"
-                            tabIndex={0}
-                            aria-label="2 Beds"
-                            data-tooltip-id="amenity-beds"
-                            data-tooltip-content="2 Beds"
-                        >
-                            <FaBed /> 2 Beds
+                        <span className="amenity" tabIndex={0}>
+                            <FaUser /> {spotData.guestCapacity ?? 2} guests
                         </span>
-                        <span
-                            className="amenity"
-                            tabIndex={0}
-                            aria-label="1 Bath"
-                            data-tooltip-id="amenity-bath"
-                            data-tooltip-content="1 Bath"
-                        >
-                            <FaBath /> 1 Bath
+                        <span className="amenity" tabIndex={0}>
+                            <MdOutlineBedroomParent /> {spotData.bedrooms ?? 1} bedrooms
                         </span>
-                        <span
-                            className="amenity"
-                            tabIndex={0}
-                            aria-label="Wifi"
-                            data-tooltip-id="amenity-wifi"
-                            data-tooltip-content="Wifi"
-                        >
-                            <FaWifi /> Wifi
+                        <span className="amenity" tabIndex={0}>
+                            <FaBed /> {spotData.beds ?? 1} beds
                         </span>
-                        <span
-                            className="amenity"
-                            tabIndex={0}
-                            aria-label="No Smoking"
-                            data-tooltip-id="amenity-nosmoking"
-                            data-tooltip-content="No Smoking"
-                        >
-                            <FaSmokingBan /> No Smoking
+                        <span className="amenity" tabIndex={0}>
+                            <FaBath /> {spotData.bathrooms ?? 1} baths
                         </span>
-                        {/* Add more amenities as needed */}
-                        <Tooltip id="amenity-beds" />
-                        <Tooltip id="amenity-bath" />
-                        <Tooltip id="amenity-wifi" />
-                        <Tooltip id="amenity-nosmoking" />
                     </div>
+                    {spotData.amenities?.length > 0 && (
+                        <>
+                            <h3 className="amenities-heading">What this place offers</h3>
+                            <div className="amenities-row">
+                                {spotData.amenities.map((amenity) => {
+                                    const Icon = getAmenityIcon(amenity);
+                                    return (
+                                        <span
+                                            className="amenity"
+                                            tabIndex={0}
+                                            key={amenity}
+                                        >
+                                            <Icon /> {amenity}
+                                        </span>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
                 </motion.div>
 
                 {/* Booking Card with animation and validation */}
@@ -477,103 +447,104 @@ function SpotDetails() {
                             </span>
                         )}
                     </div>
-                    <motion.button
-                        className="booking-toggle-btn"
-                        onClick={handleBookingOpen}
-                        aria-label={
-                            showBooking
-                                ? "Hide booking form"
-                                : "Show booking form"
-                        }
-                        whileTap={{ scale: 0.97 }}
-                        whileHover={{ scale: 1.03 }}
-                        style={{
-                            marginBottom: 12,
-                            background: "#eee",
-                            color: "#444",
-                            border: "none",
-                            borderRadius: 8,
-                            padding: "8px 14px",
-                            cursor: "pointer",
-                        }}
-                    >
-                        {showBooking ? "Hide Booking" : "Book Now"}
-                    </motion.button>
-                    <AnimatePresence>
-                        {showBooking && (
-                            <motion.div
-                                key="booking-form"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 20 }}
-                                transition={{ duration: 0.3 }}
+                    {isOwner ? (
+                        <p className="owner-booking-note">
+                            This is your listing — you can&apos;t book your own spot.
+                        </p>
+                    ) : (
+                        <>
+                            <motion.button
+                                className="booking-toggle-btn"
+                                onClick={handleBookingOpen}
+                                aria-label={
+                                    showBooking
+                                        ? "Hide booking form"
+                                        : "Show booking form"
+                                }
+                                whileTap={{ scale: 0.97 }}
+                                whileHover={{ scale: 1.03 }}
                             >
-                                <div className="price-breakdown">
-                                    <div>
-                                        <span>Subtotal:</span>
-                                        <span>
-                                            $
-                                            {(
-                                                ((calendarRange[0].endDate -
-                                                    calendarRange[0]
-                                                        .startDate) /
-                                                    (1000 * 60 * 60 * 24)) *
-                                                spotData.price
-                                            ).toFixed(2)}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span>Cleaning Fee:</span>
-                                        <span>$50.00</span>
-                                    </div>
-                                    <div>
-                                        <span>Total:</span>
-                                        <span>
-                                            $
-                                            {(
-                                                ((calendarRange[0].endDate -
-                                                    calendarRange[0]
-                                                        .startDate) /
-                                                    (1000 * 60 * 60 * 24)) *
-                                                    spotData.price +
-                                                50
-                                            ).toFixed(2)}
-                                        </span>
-                                    </div>
-                                </div>
-                                {bookingError && (
-                                    <div
-                                        style={{
-                                            color: "red",
-                                            marginBottom: 8,
-                                            fontWeight: 500,
-                                        }}
-                                        role="alert"
+                                {showBooking ? "Hide Booking" : "Book Now"}
+                            </motion.button>
+                            <AnimatePresence>
+                                {showBooking && (
+                                    <motion.div
+                                        key="booking-form"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 20 }}
+                                        transition={{ duration: 0.3 }}
                                     >
-                                        {bookingError}
-                                    </div>
+                                        <div className="price-breakdown">
+                                            <div>
+                                                <span>Subtotal:</span>
+                                                <span>
+                                                    $
+                                                    {(
+                                                        ((calendarRange[0]
+                                                            .endDate -
+                                                            calendarRange[0]
+                                                                .startDate) /
+                                                            (1000 *
+                                                                60 *
+                                                                60 *
+                                                                24)) *
+                                                        spotData.price
+                                                    ).toFixed(2)}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span>Cleaning Fee:</span>
+                                                <span>$50.00</span>
+                                            </div>
+                                            <div>
+                                                <span>Total:</span>
+                                                <span>
+                                                    $
+                                                    {(
+                                                        ((calendarRange[0]
+                                                            .endDate -
+                                                            calendarRange[0]
+                                                                .startDate) /
+                                                            (1000 *
+                                                                60 *
+                                                                60 *
+                                                                24)) *
+                                                            spotData.price +
+                                                        50
+                                                    ).toFixed(2)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {bookingError && (
+                                            <div
+                                                className="booking-error"
+                                                role="alert"
+                                            >
+                                                {bookingError}
+                                            </div>
+                                        )}
+                                        <motion.button
+                                            className="booking-button"
+                                            onClick={handleReserve}
+                                            aria-label="Reserve this spot"
+                                            tabIndex={0}
+                                            whileTap={{ scale: 0.97 }}
+                                            whileHover={{ scale: 1.03 }}
+                                        >
+                                            Reserve
+                                        </motion.button>
+                                    </motion.div>
                                 )}
-                                <motion.button
-                                    className="booking-button"
-                                    onClick={handleReserve}
-                                    aria-label="Reserve this spot"
-                                    tabIndex={0}
-                                    whileTap={{ scale: 0.97 }}
-                                    whileHover={{ scale: 1.03 }}
-                                >
-                                    Reserve
-                                </motion.button>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                            </AnimatePresence>
+                        </>
+                    )}
                 </motion.div>
             </section>
 
-            {mapLoaded && (
-                <section
-                    style={{ margin: "32px" }}
-                    aria-label="Map of spot and attractions"
-                >
+            <section className="google-map" aria-label="Spot location">
+                <h3 className="map-heading">Where you&apos;ll be</h3>
+                {googleMapsApiKey && mapLoaded ? (
                     <GoogleMap
                         mapContainerStyle={{
                             width: "100%",
@@ -584,18 +555,24 @@ function SpotDetails() {
                         zoom={14}
                     >
                         <Marker position={center} />
-                        {nearbyAttractions.map((place, idx) => (
-                            <Marker
-                                key={idx}
-                                position={{ lat: place.lat, lng: place.lng }}
-                                label={
-                                    place.type === "restaurant" ? "🍽️" : "🌳"
-                                }
-                            />
-                        ))}
                     </GoogleMap>
-                </section>
-            )}
+                ) : (
+                    <div className="map-fallback">
+                        <p className="map-fallback-address">
+                            {spotData.address}
+                        </p>
+                        <p className="map-fallback-location">
+                            {spotData.city}, {spotData.state}, {spotData.country}
+                        </p>
+                        {!googleMapsApiKey && (
+                            <p className="map-fallback-note">
+                                Map preview unavailable — no Google Maps API key
+                                configured.
+                            </p>
+                        )}
+                    </div>
+                )}
+            </section>
 
             <hr className="section-divider" />
 
@@ -637,8 +614,8 @@ function SpotDetails() {
                             whileHover={{ scale: 1.03 }}
                         >
                             {star}{" "}
-                            <MdOutlineStar style={{ color: "#FFB400" }} /> (
-                            {starCounts[i]})
+                            <MdOutlineStar style={{ color: "var(--color-rating)" }} />{" "}
+                            ({starCounts[i]})
                         </motion.button>
                     ))}
                 </div>
@@ -734,8 +711,8 @@ function SpotDetails() {
                                                               color:
                                                                   i <
                                                                   review.stars
-                                                                      ? "#FFB400"
-                                                                      : "#e4e5e9",
+                                                                      ? "var(--color-rating)"
+                                                                      : "var(--color-border)",
                                                           }}
                                                       />
                                                   ))}
@@ -762,7 +739,7 @@ function SpotDetails() {
                                                           pageType="spot"
                                                       />
                                                   }
-                                                  className="update-modal"
+                                                  className="review-update-btn"
                                                   aria-label="Update review"
                                               />
                                               <OpenModalButton
@@ -773,7 +750,7 @@ function SpotDetails() {
                                                           spotId={spotId}
                                                       />
                                                   }
-                                                  className="delete-modal"
+                                                  className="review-delete-btn"
                                                   aria-label="Delete review"
                                               />
                                           </div>
@@ -792,13 +769,18 @@ function SpotDetails() {
                 >
                     <h3>Related Spots</h3>
                     <Slider
-                        dots
-                        infinite
+                        dots={relatedSpots.length > relatedSlidesToShow}
+                        infinite={relatedSpots.length > relatedSlidesToShow}
                         speed={500}
-                        slidesToShow={3}
+                        slidesToShow={relatedSlidesToShow}
                         slidesToScroll={1}
                         responsive={[
-                            { breakpoint: 900, settings: { slidesToShow: 2 } },
+                            {
+                                breakpoint: 900,
+                                settings: {
+                                    slidesToShow: Math.min(2, relatedSlidesToShow),
+                                },
+                            },
                             { breakpoint: 600, settings: { slidesToShow: 1 } },
                         ]}
                     >

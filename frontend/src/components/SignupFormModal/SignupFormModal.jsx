@@ -73,83 +73,105 @@ function SignupFormModal() {
         <div className="sign-up-container">
             <h1>Sign Up</h1>
             <form onSubmit={handleSubmit} className="form-div">
-                <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="First Name"
-                    required
-                    aria-label="First Name"
-                    tabIndex={0}
-                />
-                {errors.firstName && (
-                    <p className="error-message">{errors.firstName}</p>
-                )}
+                <div className="form-field">
+                    <label htmlFor="signup-firstName">First Name</label>
+                    <input
+                        id="signup-firstName"
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="First name"
+                        required
+                        tabIndex={0}
+                    />
+                    {errors.firstName && (
+                        <p className="error-message">{errors.firstName}</p>
+                    )}
+                </div>
 
-                <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Last Name"
-                    required
-                    aria-label="Last Name"
-                    tabIndex={0}
-                />
-                {errors.lastName && (
-                    <p className="error-message">{errors.lastName}</p>
-                )}
+                <div className="form-field">
+                    <label htmlFor="signup-lastName">Last Name</label>
+                    <input
+                        id="signup-lastName"
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Last name"
+                        required
+                        tabIndex={0}
+                    />
+                    {errors.lastName && (
+                        <p className="error-message">{errors.lastName}</p>
+                    )}
+                </div>
 
-                <input
-                    type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
-                    required
-                    aria-label="Email"
-                    tabIndex={0}
-                />
-                {errors.email && (
-                    <p className="error-message">{errors.email}</p>
-                )}
+                <div className="form-field">
+                    <label htmlFor="signup-email">Email</label>
+                    <input
+                        id="signup-email"
+                        type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        required
+                        tabIndex={0}
+                    />
+                    {errors.email && (
+                        <p className="error-message">{errors.email}</p>
+                    )}
+                </div>
 
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
-                    required
-                    aria-label="Username"
-                    tabIndex={0}
-                />
-                {errors.username && (
-                    <p className="error-message">{errors.username}</p>
-                )}
+                <div className="form-field">
+                    <label htmlFor="signup-username">Username</label>
+                    <input
+                        id="signup-username"
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Username"
+                        required
+                        tabIndex={0}
+                    />
+                    {errors.username && (
+                        <p className="error-message">{errors.username}</p>
+                    )}
+                </div>
 
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    required
-                    aria-label="Password"
-                    tabIndex={0}
-                />
-                {errors.password && (
-                    <p className="error-message">{errors.password}</p>
-                )}
+                <div className="form-field">
+                    <label htmlFor="signup-password">Password</label>
+                    <input
+                        id="signup-password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        required
+                        tabIndex={0}
+                    />
+                    {errors.password && (
+                        <p className="error-message">{errors.password}</p>
+                    )}
+                </div>
 
-                <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm Password"
-                    required
-                    aria-label="Confirm Password"
-                    tabIndex={0}
-                />
-                {errors.confirmPassword && (
-                    <p className="error-message">{errors.confirmPassword}</p>
-                )}
+                <div className="form-field">
+                    <label htmlFor="signup-confirmPassword">
+                        Confirm Password
+                    </label>
+                    <input
+                        id="signup-confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm password"
+                        required
+                        tabIndex={0}
+                    />
+                    {errors.confirmPassword && (
+                        <p className="error-message">
+                            {errors.confirmPassword}
+                        </p>
+                    )}
+                </div>
 
                 <motion.button
                     type="submit"

@@ -28,17 +28,22 @@ StayHaven is a full-stack Airbnb-style booking platform where users can browse, 
 ## Features
 
 -   User authentication (sign up, login, logout)
--   Browse and search spots with filters
--   View detailed spot pages with image galleries and maps
--   Book spots with date selection and availability calendar
+-   Real search by location, guest count, and date availability, with a dedicated shareable results page
+-   Browse ~26 realistic listings (apartments, houses, cabins, lofts, villas, cottages) across 18 cities worldwide
+-   View detailed spot pages with image galleries, amenities, and an interactive map
+-   Book spots with date selection and a live availability calendar
 -   Leave reviews and ratings for spots
 -   Manage your own spots, bookings, and reviews
--   Wishlist spots for future reference
+-   Wishlist spots and view them on a dedicated Wishlist page
+-   View upcoming and past bookings on a dedicated My Trips page, with cancellation
+-   Site-wide dark mode
 -   Responsive and accessible UI
 
 ---
 
 ## Screenshots
+
+> **Note:** The screenshots below predate the visual redesign (new design system, realistic listings, redone search/booking/wishlist/trips flows) and need to be retaken against the current UI.
 
 ![Landing Page](images/LandingPage1_SH.png)
 [![Landing Page 2](images/LandingPage2_SH.png)]
@@ -53,8 +58,8 @@ StayHaven is a full-stack Airbnb-style booking platform where users can browse, 
 
 ## Tech Stack
 
--   **Frontend:** React, Redux, Vite, Framer Motion, React Date Range, Google Maps API
--   **Backend:** Node.js, Express, Sequelize, PostgreSQL
+-   **Frontend:** React, Redux, Vite, Framer Motion, React Date Range, Leaflet, Google Maps API
+-   **Backend:** Node.js, Express, Sequelize (SQLite in development, PostgreSQL in production)
 -   **Authentication:** JWT, bcrypt
 -   **Deployment:** Render.com
 
@@ -64,9 +69,9 @@ StayHaven is a full-stack Airbnb-style booking platform where users can browse, 
 
 ### Prerequisites
 
--   [Node.js](https://nodejs.org/) (v18+ recommended)
+-   [Node.js](https://nodejs.org/) (v20+ recommended)
 -   [npm](https://www.npmjs.com/)
--   [PostgreSQL](https://www.postgresql.org/)
+-   PostgreSQL is only required in production — local development uses a file-based SQLite database, no separate install needed.
 
 ### Installation
 
@@ -86,7 +91,7 @@ StayHaven is a full-stack Airbnb-style booking platform where users can browse, 
 
 ### Environment Variables
 
-Create a `.env` file in the `backend/` directory with the following:
+Copy `backend/.env.example` to `backend/.env` and fill in your own values:
 
 ```
 NODE_ENV=development
@@ -97,7 +102,15 @@ SCHEMA=dbSchema
 DB_FILE=./db/dev.db
 ```
 
-For production, configure your environment variables on Render or your hosting provider.
+Copy `frontend/.env.example` to `frontend/.env`:
+
+```
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+```
+
+Get a key from the [Google Cloud Console](https://console.cloud.google.com/google/maps-apis) (enable the Maps JavaScript API, and restrict the key to your domain). Without this key, the app still runs fully — the spot details page falls back to a static address block instead of an interactive map.
+
+For production, configure both sets of environment variables on Render or your hosting provider. Since Vite bakes `VITE_*` variables in at build time, `VITE_GOOGLE_MAPS_API_KEY` must be set as a **build-time** environment variable, not just a runtime one.
 
 ### Database Setup
 
@@ -130,13 +143,21 @@ For production, configure your environment variables on Render or your hosting p
 
 **Production Build:**
 
--   Build frontend and serve with backend:
+-   From the repo root, this builds the frontend and prepares the backend:
     ```sh
-    cd frontend
     npm run build
-    cd ../backend
     npm start
     ```
+    The backend serves the built frontend from `frontend/dist` in production. `frontend/dist` is not committed to the repo — it's built fresh on every deploy, so Render's build command must be `npm run build` at the repo root (not just the backend's).
+
+### Demo Account
+
+To explore the app without signing up, log in with:
+
+-   **Username:** `Demo-lition`
+-   **Password:** `password`
+
+(Also available as a one-click "Continue as demo user" link on the login form.)
 
 ---
 
@@ -183,8 +204,8 @@ See below for key endpoints. All endpoints return JSON.
 
 ### Spots
 
--   `GET /api/spots` — Get all spots (with filters)
--   `GET /api/spots/:spotId` — Get spot details
+-   `GET /api/spots` — Get all spots, filterable by `location`, `guests`, `checkIn`/`checkOut`, `minPrice`/`maxPrice`, `minLat`/`maxLat`/`minLng`/`maxLng`, `page`/`size`
+-   `GET /api/spots/:spotId` — Get spot details (includes amenities, reviews, images)
 -   `POST /api/spots` — Create a spot
 -   `PUT /api/spots/:spotId` — Edit a spot
 -   `DELETE /api/spots/:spotId` — Delete a spot
@@ -208,7 +229,7 @@ See below for key endpoints. All endpoints return JSON.
 
 ### Wishlists
 
--   `GET /api/wishlist` — Get user's wishlist
+-   `GET /api/wishlist/current` — Get current user's wishlist
 -   `POST /api/wishlist/:spotId` — Add spot to wishlist
 -   `DELETE /api/wishlist/:spotId` — Remove spot from wishlist
 

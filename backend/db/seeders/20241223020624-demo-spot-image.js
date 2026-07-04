@@ -5,358 +5,182 @@ if (process.env.NODE_ENV === "production") {
     options.schema = process.env.SCHEMA;
 }
 
-/** @type {import('sequelize-cli').Migration} */
+// Every ID below was verified with a live HTTP HEAD/GET request (200 OK)
+// against images.unsplash.com before being committed, and was sourced from a
+// category-specific Unsplash search (e.g. "modern-apartment-interior") so the
+// photo's subject matches its assigned property type.
+const IMAGE_POOLS = {
+    apartment: [
+        "1594873604892-b599f847e859",
+        "1628592102751-ba83b0314276",
+        "1666282167632-c613fbeb163c",
+        "1662454419716-c4c504728811",
+        "1642976975710-1d8890dbf5ab",
+        "1738168279272-c08d6dd22002",
+        "1614622350812-96b09c78af77",
+        "1663756915304-40b7eda63e41",
+        "1603072845032-7b5bd641a82a",
+        "1520106392146-ef585c111254",
+        "1738168246881-40f35f8aba0a",
+        "1682184805271-11671b7ecf4c",
+        "1667584523543-d1d9cc828a15",
+        "1647082550285-119acfd169f2",
+    ],
+    house: [
+        "1580587771525-78b9dba3b914",
+        "1600596542815-ffad4c1539a9",
+        "1721815693498-cc28507c0ba2",
+        "1628012209120-d9db7abf7eab",
+        "1613977257363-707ba9348227",
+        "1627141234469-24711efb373c",
+        "1513584684374-8bab748fbf90",
+        "1628744448840-55bdb2497bd4",
+        "1512917774080-9991f1c4c750",
+        "1523217582562-09d0def993a6",
+        "1706808849777-96e0d7be3bb7",
+        "1722421492323-eaf9c401befe",
+        "1691425700585-c108acad6467",
+        "1582268611958-ebfd161ef9cf",
+    ],
+    cabin: [
+        "1631630259742-c0f0b17c6c10",
+        "1698933787134-af2d451985c7",
+        "1727706572437-4fcda0cbd66f",
+        "1680703486830-1b5af60635d7",
+        "1631941150945-837cb81fc7e2",
+        "1631941392209-70cad44ecfb7",
+        "1592990379716-aec6e89a6a69",
+        "1697807713040-b5fb60d6f012",
+        "1664369058082-ee8e36028106",
+        "1680962884378-b69a04b9969c",
+        "1712669869857-c9c0c098d024",
+        "1698933787104-3f91cf25909c",
+        "1670914120781-4b7c8512fc41",
+        "1622066737704-c5d990e137fb",
+        "1551927411-95e412943b58",
+    ],
+    loft: [
+        "1505873242700-f289a29e1e0f",
+        "1617817643768-8855fc457e3a",
+        "1741099443106-ee5b6d0c8552",
+        "1677273423327-163d81aa9e68",
+        "1767706508383-097054618007",
+        "1619989753008-0191bbaf23a6",
+        "1553661763-1bbb4b5cf599",
+        "1556889380-6e8394ddd7ad",
+        "1560440021-33f9b867899d",
+        "1650137938625-11576502aecd",
+        "1598279249829-5291d4935abb",
+        "1585425802917-d1aff35497c9",
+        "1672082497059-1e6c0209eeeb",
+        "1554782647-42840d3c766f",
+        "1619989652700-9984844cb0ea",
+    ],
+    villa: [
+        "1613490493576-7fde63acd811",
+        "1531971589569-0d9370cbe1e5",
+        "1613977257365-aaae5a9817ff",
+        "1505843513577-22bb7d21e455",
+        "1706808849780-7a04fbac83ef",
+        "1613977257592-4871e5fcd7c4",
+        "1544984243-ec57ea16fe25",
+        "1593714604578-d9e41b00c6c6",
+        "1591474200742-8e512e6f98f8",
+        "1564013799919-ab600027ffc6",
+        "1580587771525-78b9dba3b914",
+        "1512917774080-9991f1c4c750",
+        "1613977257363-707ba9348227",
+        "1600596542815-ffad4c1539a9",
+        "1582268611958-ebfd161ef9cf",
+    ],
+    cottage: [
+        "1699209148987-99772195bf9c",
+        "1699209148943-acacf2821f33",
+        "1776219243449-a71b7f5c1332",
+        "1699210025833-07318c121bf0",
+        "1690796033775-c924f7dfe5d1",
+        "1771526163842-c82e771ec0e7",
+        "1772465971062-032970cf7a50",
+        "1773606381942-2be573da521d",
+        "1613310271953-b18bf33195fd",
+        "1777863073599-b83bacea860e",
+        "1777962822462-ec69821a2e59",
+        "1767710924293-29fba5e3854b",
+        "1779660243751-55c986c3d8fc",
+        "1783002933053-d169d7d23243",
+        "1766777323830-6ed16e01fecf",
+    ],
+};
+
+// Category for spotId 1-26, in seeding order (must match demo-spot.js).
+const SPOT_CATEGORIES = [
+    "loft", // 1 Downtown Austin Loft
+    "cottage", // 2 Hill Country Cottage
+    "cabin", // 3 Blue Ridge Cabin Retreat
+    "loft", // 4 River Arts District Loft
+    "cabin", // 5 Lakefront A-Frame Cabin
+    "house", // 6 Craftsman Bungalow near Hawthorne
+    "apartment", // 7 Pearl District Modern Apartment
+    "house", // 8 Historic Downtown Charleston House
+    "house", // 9 Adobe Casita Retreat
+    "villa", // 10 Cliffside Villa Overlooking the Pacific
+    "apartment", // 11 Music Row Apartment
+    "house", // 12 East Nashville Bungalow
+    "cabin", // 13 Flatirons Mountain Cabin
+    "cottage", // 14 Lake Champlain Cottage
+    "apartment", // 15 Alfama District Apartment
+    "house", // 16 Traditional Kyoto Machiya House
+    "villa", // 17 Lakefront Villa with Mountain Views
+    "loft", // 18 LoDo Industrial Loft
+    "house", // 19 Washington Park Family House
+    "cottage", // 20 Historic District Cottage
+    "villa", // 21 Red Rock View Villa
+    "house", // 22 Desert Modern House
+    "apartment", // 23 Capitol Hill Apartment
+    "house", // 24 Lake Union Waterfront Home
+    "apartment", // 25 South Beach Art Deco Apartment
+    "villa", // 26 Biscayne Bay Waterfront Villa
+];
+
+const toUrl = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=80`;
+
+function pickImages(pool, offset, count) {
+    const picked = [];
+    for (let i = 0; i < count; i++) {
+        picked.push(pool[(offset + i) % pool.length]);
+    }
+    return picked;
+}
+
 module.exports = {
-    async up(queryInterface, Sequelize) {
+    async up(queryInterface) {
         options.tableName = "SpotImages";
-        await queryInterface.bulkInsert(
-            options,
-            [
-                // Empire State Building
-                {
-                    spotId: 1,
-                    url: "https://www.esbnyc.com/sites/default/files/2024-06/ESB-DarkBlueSky.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 1,
-                    url: "https://assets.simpleviewinc.com/simpleview/image/upload/crm/newyorkstate/GettyImages-486334510_CC36FC20-0DCE-7408-77C72CD93ED4A476-cc36f9e70fc9b45_cc36fc73-07dd-b6b3-09b619cd4694393e.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 1,
-                    url: "https://images.ctfassets.net/1aemqu6a6t65/6iCC1vCYS1Br0sfIVbVBAH/13cc013e2e3f76bb247452bcfa4eb6d6/empire-state-building-observatory-ctc-7009-3000x2000?w=1200&h=800&q=75",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 1,
-                    url: "https://www.esbnyc.com/sites/default/files/2020-01/ESB%20Day.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 1,
-                    url: "https://www.esbnyc.com/sites/default/files/styles/small_feature/public/2020-07/General-Cityscape2.jpg?itok=sWy2vug1",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Eiffel Tower
-                {
-                    spotId: 2,
-                    url: "https://www.travelandleisure.com/thmb/SPUPzO88ZXq6P4Sm4mC5Xuinoik=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/eiffel-tower-paris-france-EIFFEL0217-6ccc3553e98946f18c893018d5b42bde.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 2,
-                    url: "https://quiltripping.com/wp-content/uploads/2017/07/DSC_0379-scaled.jpg",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 2,
-                    url: "https://as1.ftcdn.net/v2/jpg/01/70/58/92/1000_F_170589233_65jydTJ365ZlCtsFyenQ0f3HH5TeE16A.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 2,
-                    url: "https://worldinparis.com/wp-content/uploads/2020/12/View-from-Eiffel-Tower.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Great Wall of China
-                {
-                    spotId: 3,
-                    url: "https://cdn.thecollector.com/wp-content/uploads/2020/08/great-wall-of-china-photo-smithsonian.jpg",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 3,
-                    url: "https://lik.com/cdn/shop/products/Peter-Lik-Great-Wall-Framed-Recess-Mount_1800x.jpg?v=1654818277",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 3,
-                    url: "https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2023/02/11164059/Jinshanling-great-wall.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 3,
-                    url: "https://lh4.googleusercontent.com/proxy/C7tyFryPoKPm4_Ukuwc5Rq1vlWrLjcpd9JwNwQxj-_9sQZOp0cJH03dV72rbIANgli9BdzCamho0CfUthwVHYMJlMeLj02ASI8LZTukpujk-uKAvVp8yoQO-3HftFZ8pqEz6L2AycWiWHRcwKB8fRszb0A",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Taj Mahal
-                {
-                    spotId: 4,
-                    url: "https://www.travelandleisure.com/thmb/wdUcyBQyQ0wUVs4wLahp0iWgZhc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/taj-mahal-agra-india-TAJ0217-9eab8f20d11d4391901867ed1ce222b8.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 4,
-                    url: "https://storyateverycorner.com/wp-content/uploads/2023/12/Taj-Mahal-at-sunrise-4.jpeg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 4,
-                    url: "https://images.unsplash.com/photo-1548013146-72479768bada?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dGFqJTIwbWFoYWx8ZW58MHx8MHx8fDA%3D",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 4,
-                    url: "https://kenzly.com/wp-content/uploads/2024/08/Taj-Mahal.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 4,
-                    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Taj_Mahal_Mosque_Interior_Hall.jpg/2560px-Taj_Mahal_Mosque_Interior_Hall.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Colosseum
-                {
-                    spotId: 5,
-                    url: "https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 5,
-                    url: "https://cdn.britannica.com/02/179502-138-AE3BE74C/effects-construction-Rome-Colosseum.jpg?w=800&h=450&c=crop",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 5,
-                    url: "https://cdn.shortpixel.ai/spai/q_lossy+w_977+h_549+to_auto+ret_img/www.thecolosseum.org/wp-content/uploads/colosseum-inside-optimized-1600x900.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 5,
-                    url: "https://media.cntraveler.com/photos/59d3a805ddaded4e04772233/16:9/w_2560%2Cc_limit/Rome_GettyImages-841851056.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 5,
-                    url: "https://www.touristitaly.com/wp-content/uploads/2023/10/shutterstock_2087415520-1024x576.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 5,
-                    url: "https://visit-rome-in-italy.global.ssl.fastly.net/pics/ancient-rome/colosseum/colosseum-arena-rome-italy-15.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Sydney Opera House
-                {
-                    spotId: 6,
-                    url: "https://shorturl.at/sjZh4",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 6,
-                    url: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Sydney_Australia._%2821339175489%29.jpg",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 6,
-                    url: "https://cdn.britannica.com/85/95085-050-C749819D/Sydney-Opera-House-Bennelong-Point-Port-Jackson.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 6,
-                    url: "https://destinationlesstravel.com/wp-content/uploads/2023/10/Inside-the-concert-hall-of-the-Sydney-Opera-House-as-seen-on-a-tour-1200x800.jpg.webp",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Stonehenge
-                {
-                    spotId: 7,
-                    url: "https://cdn.mos.cms.futurecdn.net/q4i42ws72RZ3sEcx2QT3iV-1200-80.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 7,
-                    url: "https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2024-08/240812-Stonehenge-al-1453-500701.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 7,
-                    url: "https://stonehengetickets.tours/wp-content/uploads/2022/04/red-sky-stonehenge.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 7,
-                    url: "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-682586546.jpg?c=16x9&q=h_833,w_1480,c_fill",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Pyramids of Giza
-                {
-                    spotId: 8,
-                    url: "https://cdn.britannica.com/06/122506-050-C8E03A8A/Pyramid-of-Khafre-Giza-Egypt.jpg",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 8,
-                    url: "https://www.touristegypt.com/wp-content/uploads/2023/03/giza-pyramids-cairo-egypt-with-palm-1024x634.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 8,
-                    url: "https://i.natgeofe.com/n/535f3cba-f8bb-4df2-b0c5-aaca16e9ff31/giza-plateau-pyramids.jpg?w=2560&h=1706",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 8,
-                    url: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/06/7e/7d/2c/pyramids-of-giza.jpg?w=1200&h=-1&s=1",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 8,
-                    url: "https://images.ladbible.com/resize?type=webp&quality=70&width=3840&fit=contain&gravity=auto&url=https://images.ladbiblegroup.com/v3/assets/blt949ea8e16e463049/blta705aa69124df8bf/664e3523305fa453f1725bb0/pyramid-giza.png",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Machu Picchu
-                {
-                    spotId: 9,
-                    url: "https://www.peru.travel/Contenido/Noticia/Imagen/en/2052/1.0/Principal/circuits_mapi_Desktop.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 9,
-                    url: "https://cdn.britannica.com/25/180725-050-03DE70E6/area-Machu-Picchu-Peru.jpg",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 9,
-                    url: "https://i.natgeofe.com/n/819ea774-aa80-435e-af5a-ae56efee7ce3/92491_4x3.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 9,
-                    url: "https://caminoincamachupicchu.org/cmingutd/wp-content/uploads/2021/06/machu-picchu-llama.jpg",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 9,
-                    url: "https://www.southamerica.travel/wp-content/uploads/2020/03/machu-picchu-mountain-in-the-clouds.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 9,
-                    url: "https://etrvls-website.s3.amazonaws.com/uploads/2023/09/Enchanting-Travels-Peru-Tours-Panoramic-HDR-image-of-Machu-Picchu-the-lost-city-of-the-Incas-on-a-cloudy-day.-Machu-Picchu-is-one-of-the-new-7-Wonder-of-the-Word-near-Cusco.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                // Burj Khalifa
-                {
-                    spotId: 10,
-                    url: "https://cdn1.matadornetwork.com/blogs/1/2023/04/Burj-Khalifa-Dubai.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 10,
-                    url: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/f3/49/93/photo5jpg.jpg?w=1200&h=-1&s=1",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 10,
-                    url: "https://volzero.com/img/news/88071_banner.jpg",
-                    preview: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    spotId: 10,
-                    url: "https://worldoflina.com/wp-content/uploads/2023/05/DSC_0744.jpg",
-                    preview: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-            ],
-            { validate: true }
-        );
+        const now = new Date();
+        const categoryCounters = {};
+        const rows = [];
+
+        SPOT_CATEGORIES.forEach((category, idx) => {
+            const spotId = idx + 1;
+            const pool = IMAGE_POOLS[category];
+            const seen = categoryCounters[category] || 0;
+            categoryCounters[category] = seen + 1;
+            const ids = pickImages(pool, seen * 4, 4);
+
+            ids.forEach((id, imgIdx) => {
+                rows.push({
+                    spotId,
+                    url: toUrl(id),
+                    preview: imgIdx === 0,
+                    createdAt: now,
+                    updatedAt: now,
+                });
+            });
+        });
+
+        await queryInterface.bulkInsert(options, rows, { validate: true });
     },
 
-    async down(queryInterface, Sequelize) {
+    async down(queryInterface) {
         options.tableName = "SpotImages";
         await queryInterface.bulkDelete(options, null, {});
     },

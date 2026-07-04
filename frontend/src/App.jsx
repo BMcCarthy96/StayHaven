@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Navigation from "./components/Navigation";
+import Footer from "./components/Footer/Footer";
 import * as sessionActions from "./store/session";
 import LoginFormModal from "./components/LoginFormModal";
 import SignupFormModal from "./components/SignupFormModal";
@@ -13,6 +16,9 @@ import CreateSpot from "./components/CreateSpot";
 import ManageSpots from "./components/ManageSpots";
 import UpdateSpot from "./components/UpdateSpot";
 import ManageReviews from "./components/ManageReviews";
+import SearchResults from "./components/SearchResults";
+import WishlistPage from "./components/WishlistPage";
+import TripsPage from "./components/TripsPage";
 import NotFound from "./components/NotFound";
 
 function Layout() {
@@ -29,7 +35,9 @@ function Layout() {
     return (
         <>
             <Navigation isLoaded={isLoaded} />
-            {isLoaded && <Outlet />}
+            <ToastContainer position="top-right" autoClose={3000} />
+            <div className="page-content">{isLoaded && <Outlet />}</div>
+            <Footer />
         </>
     );
 }
@@ -43,6 +51,10 @@ const router = createBrowserRouter([
                 element: <LandingPage />,
             },
             {
+                path: "/search",
+                element: <SearchResults />,
+            },
+            {
                 path: "/login",
                 element: <LoginFormModal />,
             },
@@ -51,11 +63,11 @@ const router = createBrowserRouter([
                 element: <SignupFormModal />,
             },
             {
-                path: "/api/spots",
+                path: "/spots/new",
                 element: <CreateSpot />,
             },
             {
-                path: "api/spots/current",
+                path: "/host/spots",
                 element: <ManageSpots />,
             },
             {
@@ -63,16 +75,24 @@ const router = createBrowserRouter([
                 element: <SpotDetails />,
             },
             {
-                path: "/api/spots/:spotId/edit",
+                path: "/spots/:spotId/edit",
                 element: <UpdateSpot />,
             },
             {
-                path: "/api/reviews/current",
+                path: "/host/reviews",
                 element: <ManageReviews />,
             },
             {
                 path: "/profile",
                 element: <UserProfile />,
+            },
+            {
+                path: "/wishlist",
+                element: <WishlistPage />,
+            },
+            {
+                path: "/trips",
+                element: <TripsPage />,
             },
             {
                 path: "*",

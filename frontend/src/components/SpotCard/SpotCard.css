@@ -1,0 +1,158 @@
+.spot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--space-5);
+}
+
+@media (max-width: 600px) {
+    .spot-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+    }
+}
+
+.spot-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.spot-card:hover,
+.spot-card:focus-within {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.spot-card-link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    color: inherit;
+    text-decoration: none;
+}
+
+.spot-card-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+
+.spot-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.spot-card:hover .spot-card-image img {
+    transform: scale(1.04);
+}
+
+.spot-card-badge {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    background: var(--color-surface);
+    color: var(--color-ink-900);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-sm);
+    letter-spacing: 0.02em;
+}
+
+.spot-card-badge--superhost {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.spot-card-body {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.spot-card-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.spot-card-name {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-ink-900);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.spot-card-location {
+    color: var(--color-ink-500);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.spot-card-details {
+    color: var(--color-ink-500);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.spot-card-price-row {
+    margin: auto 0 0;
+    padding-top: var(--space-2);
+}
+
+.spot-card-heart {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface);
+    border: none;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-ink-500);
+    cursor: pointer;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.spot-card-heart:hover {
+    transform: scale(1.08);
+}
+
+.spot-card-heart.liked {
+    color: var(--color-accent);
+}
+
+.spot-card-footer {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    gap: var(--space-2);
+}
+
+.spot-card--carousel {
+    margin: 0 10px;
+}
