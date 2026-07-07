@@ -43,15 +43,11 @@ StayHaven is a full-stack Airbnb-style booking platform where users can browse, 
 
 ## Screenshots
 
-> **Note:** The screenshots below predate the visual redesign (new design system, realistic listings, redone search/booking/wishlist/trips flows) and need to be retaken against the current UI.
-
-![Landing Page](images/LandingPage1_SH.png)
-[![Landing Page 2](images/LandingPage2_SH.png)]
-[![Landing Page 3](images/LandingPage3_SH.png)]
-![Spot Details](images/SpotDetails1_SH.png)
-[![Spot Details 2](images/SpotDetails2_SH.png)]
-[![Spot Details 3](images/SpotDetails3_SH.png)]
-![Booking Modal](images/BookingModal_SH.png)
+![Landing page](images/landing-light.jpg)
+![Explore Stays, logged in](images/explore-stays.jpg)
+![Landing page, dark mode](images/landing-dark.jpg)
+![Spot details, gallery and availability calendar](images/spot-details.jpg)
+![Spot details, amenities and map](images/spot-amenities-map.jpg)
 ![Database Schema](images/dbSchema.png)
 
 ---
